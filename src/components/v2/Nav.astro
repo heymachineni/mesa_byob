@@ -1,25 +1,16 @@
 ---
-/** The top bar carries the six most-used stops; the phone sheet carries all nine. */
-const links = [
-  { href: '#weeks', label: 'Weeks' },
-  { href: '#selling', label: 'Selling' },
-  { href: '#sessions', label: 'Sessions' },
-  { href: '#money', label: 'Money' },
-  { href: '#breaks', label: 'Stuck' },
-  { href: '#flea', label: 'Flea' },
-];
+/**
+ * The header: brand, menu, search.
+ *
+ * The menu is rendered **once** and presented twice — a row of buttons with
+ * drop panels on a wide screen, a full-height accordion tree on a narrow one.
+ * Two DOM trees would be two things to keep in step, and they would eventually
+ * disagree.
+ */
+import { getMenu } from '../../lib/nav';
+import Find from './Find.astro';
 
-const stops = [
-  { href: '#brief', num: '01', label: 'The brief' },
-  { href: '#climb', num: '02', label: 'The climb' },
-  { href: '#weeks', num: '03', label: 'Eight weeks' },
-  { href: '#selling', num: '04', label: 'Five ways to sell' },
-  { href: '#sessions', num: '05', label: 'Thirteen sessions' },
-  { href: '#money', num: '06', label: 'The money' },
-  { href: '#breaks', num: '07', label: 'When it breaks' },
-  { href: '#flea', num: '08', label: 'The last day' },
-  { href: '#asked', num: '09', label: 'Questions' },
-];
+const menu = await getMenu();
 ---
 
 <header class="bar">
@@ -27,57 +18,100 @@ const stops = [
     <a href="#top" class="bar__brand">
       <span class="bar__m" aria-hidden="true">m</span>
       <span class="bar__t">BYOB</span>
-      <span class="bar__s">Starter Kit</span>
     </a>
 
-    <nav class="bar__nav" aria-label="Sections">
-      <ul>
-        {links.map((l) => <li><a href={l.href} data-spy={l.href.slice(1)}>{l.label}</a></li>)}
+    <nav class="nav" id="nav" aria-label="Sections">
+      <ul class="nav__list">
+        {
+          menu.map((item) =>
+            item.groups ? (
+              <li class="nav__item">
+                <button
+                  class="nav__btn"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls={`np-${item.id}`}
+                  data-top={item.id}
+                >
+                  <span>{item.label}</span>
+                  <svg class="nav__chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                    <path
+                      d="M3.5 6 8 10.5 12.5 6"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="square"></path>
+                  </svg>
+                </button>
+
+                <div class="nav__panel" id={`np-${item.id}`} hidden>
+                  <div class:list={['page', 'nav__in', item.split && 'nav__in--split']}>
+                    {item.groups.map((g) => (
+                      <div class="nav__g">
+                        {g.head && <p class="nav__h">{g.head}</p>}
+                        <ul class="nav__rows">
+                          {g.items.map((leaf) => (
+                            <li>
+                              <a
+                                class="nav__row"
+                                href={leaf.target.startsWith('#') ? leaf.target : '#'}
+                                data-go={leaf.target}
+                              >
+                                {leaf.num && <span class="nav__n mono">{leaf.num}</span>}
+                                <span class="nav__label">{leaf.label}</span>
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </li>
+            ) : (
+              /* No panel, so it navigates. The affordance says so: an arrow,
+                 not a chevron. */
+              <li class="nav__item">
+                <a class="nav__btn" href={item.href} data-go={item.href} data-spy={item.href.slice(1)}>
+                  <span>{item.label}</span>
+                  <span class="nav__arrow" aria-hidden="true">→</span>
+                </a>
+              </li>
+            )
+          )
+        }
       </ul>
     </nav>
+
+    <div class="bar__tools">
+      <Find />
+      <button class="bar__burger" type="button" aria-expanded="false" aria-controls="nav" data-burger>
+        <span class="sr-only">Menu</span>
+        <span class="bar__bars" aria-hidden="true"></span>
+      </button>
+    </div>
   </div>
 </header>
 
-<!--
-  Phones don't get a row of tabs to scroll through — a nine-stop rail in a
-  360px-wide bar is a horizontal scroller that hides most of itself and never
-  tells you where you are. Instead: step back and forward on the edges, and a
-  middle that states the stop you're on and opens the full list. `<details>` so
-  the list is a real disclosure — keyboard-operable and announced.
--->
-<details class="dock" id="dock">
-  <summary class="dock__now" aria-label="Choose a section">
-    <span class="dock__lead">
-      <span class="dock__num mono" data-dock-num hidden></span>
-      <span class="dock__label" data-dock-label>Contents</span>
-    </span>
-    <svg class="dock__chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-      <path d="M3.5 10.5 8 6l4.5 4.5" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="square" />
-    </svg>
-  </summary>
-
-  <nav class="dock__sheet" aria-label="All sections">
-    <ul>
-      {stops.map((s) => (
-        <li>
-          <a href={s.href} data-spy-m={s.href.slice(1)}>
-            <span class="dock__n mono">{s.num}</span>
-            <span>{s.label}</span>
-            <span class="dock__tick" aria-hidden="true">●</span>
-          </a>
-        </li>
-      ))}
-    </ul>
-  </nav>
-</details>
+<!-- Phones: a thumb-reachable marker of where you are, which opens the same
+     tree. One list, two ways in — not two lists. -->
+<button class="dock" type="button" data-dock aria-expanded="false" aria-controls="nav">
+  <span class="dock__lead">
+    <span class="dock__num mono" data-dock-num hidden></span>
+    <span class="dock__label" data-dock-label>Contents</span>
+  </span>
+  <svg class="dock__chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+    <path d="M3.5 10.5 8 6l4.5 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"
+    ></path>
+  </svg>
+</button>
 
 <style>
   .bar {
     position: sticky;
     inset-block-start: 0;
     z-index: 90;
-    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    background: color-mix(in srgb, var(--paper) 92%, transparent);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-block-end: 1px solid var(--line-soft);
@@ -85,7 +119,6 @@ const stops = [
   .bar__in {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: var(--sp-4);
     min-block-size: var(--hdr-h);
   }
@@ -115,67 +148,244 @@ const stops = [
     font-size: 1.15rem;
     color: var(--ink-2);
   }
-  .bar__s {
-    font-size: var(--s--2);
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-faint);
-  }
 
-  .bar__nav ul {
+  .bar__tools {
     display: flex;
     align-items: center;
-    gap: clamp(0.7rem, 2vw, 1.7rem);
+    gap: var(--sp-2);
+    margin-inline-start: auto;
+    flex: 0 0 auto;
   }
-  .bar__nav a {
+
+  .bar__burger {
+    display: none;
+    place-items: center;
+    inline-size: 2.6rem;
+    block-size: 2.6rem;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .bar__bars,
+  .bar__bars::before,
+  .bar__bars::after {
+    display: block;
+    inline-size: 1.05rem;
+    block-size: 2px;
+    background: currentColor;
+    transition:
+      translate var(--fast) var(--ease),
+      rotate var(--fast) var(--ease);
+  }
+  .bar__bars::before,
+  .bar__bars::after {
+    content: '';
     position: relative;
-    display: inline-block;
-    padding-block: 0.3rem;
+  }
+  .bar__bars::before {
+    inset-block-start: -6px;
+  }
+  .bar__bars::after {
+    inset-block-start: 4px;
+  }
+  [aria-expanded='true'] .bar__bars {
+    background: transparent;
+  }
+  [aria-expanded='true'] .bar__bars::before {
+    translate: 0 6px;
+    rotate: 45deg;
+  }
+  [aria-expanded='true'] .bar__bars::after {
+    translate: 0 -4px;
+    rotate: -45deg;
+  }
+
+  /* ═════════════════════════════════════════════════════════════ the menu */
+
+  .nav__list {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.1rem, 1vw, 0.7rem);
+  }
+  .nav__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.45rem 0.5rem;
     font-size: var(--s--2);
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--text-faint);
     text-decoration: none;
+    cursor: pointer;
     transition: color var(--fast) var(--ease);
   }
-  .bar__nav a::after {
-    content: '';
-    position: absolute;
-    inset-inline: -2px;
-    inset-block-end: 0.05rem;
-    block-size: 3px;
-    background: var(--coral);
-    scale: 0 1;
-    transform-origin: left;
-    transition: scale var(--base) var(--ease);
+  .nav__btn:hover,
+  .nav__btn.is-here,
+  .nav__btn[aria-expanded='true'] {
+    color: var(--ink-2);
   }
-  .bar__nav a:hover { color: var(--ink-2); }
-  .bar__nav a:hover::after,
-  .bar__nav a.is-here::after { scale: 1 1; }
-  .bar__nav a.is-here { color: var(--ink-2); }
+  .nav__chev {
+    inline-size: 0.7rem;
+    block-size: 0.7rem;
+    transition: rotate var(--base) var(--ease);
+  }
+  .nav__btn[aria-expanded='true'] .nav__chev {
+    rotate: 180deg;
+  }
+  .nav__arrow {
+    font-size: 0.85em;
+  }
 
-  /* ──────────────────────────────────────────── the phone section picker */
+  /* Wide screens: the panel drops out of the bar, full width. */
+  .nav__panel {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 100%;
+    background: var(--paper);
+    border-block-end: 1px solid var(--line);
+  }
+  .nav__in {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+    gap: var(--sp-5) var(--sp-7);
+    padding-block: var(--sp-6);
+    align-items: start;
+  }
+  /* Thirteen workshops in one column is a scroll; two halves the height. */
+  .nav__in--split .nav__rows {
+    columns: 2;
+    column-gap: var(--sp-7);
+  }
+  .nav__in--split li {
+    break-inside: avoid;
+  }
+
+  .nav__h {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--coral);
+    margin-block-end: var(--sp-3);
+  }
+  .nav__rows {
+    display: grid;
+    gap: 0.1rem;
+  }
+  .nav__row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0.55rem;
+    padding: 0.42rem 0.5rem;
+    margin-inline: -0.5rem;
+    font-size: var(--s--1);
+    color: var(--text-soft);
+    text-decoration: none;
+    transition:
+      background var(--fast) var(--ease),
+      color var(--fast) var(--ease);
+  }
+  .nav__row:hover,
+  .nav__row:focus-visible {
+    background: color-mix(in srgb, var(--coral) 12%, transparent);
+    color: var(--ink);
+  }
+  .nav__n {
+    font-size: 0.66rem;
+    font-weight: 700;
+    color: var(--coral);
+  }
+  /* Long titles are Mesa's names, not copy I chose — so they truncate rather
+     than getting a second, shorter name invented for them. */
+  .nav__label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ══════════════════════════════════ narrow screens: one tree, full height */
+
+  @media (max-width: 62rem) {
+    .bar__burger {
+      display: grid;
+    }
+
+    .nav {
+      position: fixed;
+      inset: var(--hdr-h) 0 0;
+      z-index: 88;
+      background: var(--paper);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding-block-end: 6rem;
+      display: none;
+    }
+    .nav[data-open] {
+      display: block;
+    }
+
+    .nav__list {
+      display: block;
+      max-inline-size: var(--w-page);
+      margin-inline: auto;
+      padding-inline: var(--gutter);
+    }
+    .nav__item + .nav__item {
+      border-block-start: 1px solid var(--line-soft);
+    }
+
+    .nav__btn {
+      inline-size: 100%;
+      justify-content: space-between;
+      min-block-size: 3.4rem;
+      padding-inline: 0;
+      font-size: var(--s--1);
+      letter-spacing: 0.04em;
+      color: var(--ink);
+    }
+    .nav__chev {
+      inline-size: 0.95rem;
+      block-size: 0.95rem;
+    }
+
+    .nav__panel {
+      position: static;
+      border: 0;
+      background: none;
+    }
+    .nav__in {
+      display: block;
+      max-inline-size: none;
+      margin-inline: 0;
+      padding: 0 0 var(--sp-5);
+    }
+    .nav__in--split .nav__rows {
+      columns: 1;
+    }
+    .nav__g + .nav__g {
+      margin-block-start: var(--sp-4);
+    }
+    .nav__h {
+      margin-block: var(--sp-3) var(--sp-2);
+    }
+    .nav__row {
+      min-block-size: 2.9rem;
+      align-items: center;
+      padding-inline: 0.6rem;
+      margin-inline: -0.6rem;
+    }
+  }
+
+  /* ───────────────────────────────────────────── where you are, on phones */
   .dock {
     display: none;
     position: fixed;
     inset-block-end: calc(env(safe-area-inset-bottom, 0px) + 0.7rem);
     inset-inline: 0.7rem;
     z-index: 80;
-  }
-
-  /* Tapping anywhere else closes the list. Behind the sheet, over the page. */
-  .dock[open]::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    background: color-mix(in srgb, var(--ink) 28%, transparent);
-  }
-
-  .dock__now {
-    display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--sp-3);
@@ -188,11 +398,19 @@ const stops = [
       inset 0 0 0 1.4px var(--ink),
       3px 3px 0 color-mix(in srgb, var(--coral) 40%, var(--paper));
     cursor: pointer;
-    list-style: none;
   }
-  .dock__now::-webkit-details-marker { display: none; }
-  .dock__lead { display: flex; align-items: baseline; gap: 0.6rem; min-inline-size: 0; }
-  .dock__num { flex: 0 0 auto; font-size: 0.7rem; font-weight: 700; color: var(--coral); }
+  .dock__lead {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    min-inline-size: 0;
+  }
+  .dock__num {
+    flex: 0 0 auto;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--coral);
+  }
   .dock__label {
     font-size: var(--s--1);
     font-weight: 700;
@@ -206,136 +424,150 @@ const stops = [
     inline-size: 1.1rem;
     block-size: 1.1rem;
     color: var(--ink-2);
-    rotate: 180deg;
-    transition: rotate var(--base) var(--ease);
   }
-  .dock[open] .dock__chev { rotate: 0deg; }
-
-  .dock__sheet {
-    position: absolute;
-    inset-block-end: calc(100% + 0.55rem);
-    inset-inline: 0;
-    max-block-size: min(58vh, 24rem);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    background: var(--paper);
-    box-shadow:
-      inset 0 0 0 1.4px var(--ink),
-      4px 4px 0 color-mix(in srgb, var(--violet) 22%, var(--paper));
-  }
-  .dock__sheet a {
-    display: grid;
-    grid-template-columns: 1.9rem minmax(0, 1fr) 1rem;
-    align-items: center;
-    gap: 0.5rem;
-    min-block-size: 3rem;
-    padding-inline: 1rem;
-    font-size: var(--s--1);
-    color: var(--text-soft);
-    text-decoration: none;
-  }
-  .dock__sheet li + li a { border-block-start: 1px solid var(--line-soft); }
-  .dock__n { font-size: 0.7rem; font-weight: 700; color: var(--text-faint); }
-  .dock__tick { color: var(--coral); font-size: 0.6rem; opacity: 0; }
-  .dock__sheet a[aria-current='true'] { color: var(--ink); font-weight: 700; }
-  .dock__sheet a[aria-current='true'] .dock__n { color: var(--coral); }
-  .dock__sheet a[aria-current='true'] .dock__tick { opacity: 1; }
-
   @media (max-width: 46rem) {
-    .bar__nav { display: none; }
-    .bar__s { display: none; }
-    .dock { display: block; }
+    .dock {
+      display: flex;
+    }
+    .dock[aria-expanded='true'] {
+      display: none;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .bar__nav a::after,
-    .dock__chev { transition: none; }
+    .nav__chev,
+    .bar__bars,
+    .bar__bars::before,
+    .bar__bars::after {
+      transition: none;
+    }
   }
 </style>
 
 <script>
-  /* One observer drives the top bar and the phone picker. */
-  const desktop = new Map<string, HTMLAnchorElement>();
-  const mobile = new Map<string, HTMLAnchorElement>();
-  document
-    .querySelectorAll<HTMLAnchorElement>('[data-spy]')
-    .forEach((a) => desktop.set(a.dataset.spy!, a));
-  document
-    .querySelectorAll<HTMLAnchorElement>('[data-spy-m]')
-    .forEach((a) => mobile.set(a.dataset.spyM!, a));
+  import { go } from '../../lib/goto.client';
 
-  const dock = document.getElementById('dock') as HTMLDetailsElement | null;
-  const dockLabel = document.querySelector<HTMLElement>('[data-dock-label]');
-  const dockNum = document.querySelector<HTMLElement>('[data-dock-num]');
+  const nav = document.getElementById('nav')!;
+  const tops = [...document.querySelectorAll<HTMLButtonElement>('[data-top]')];
+  const burger = document.querySelector<HTMLButtonElement>('[data-burger]')!;
+  const dock = document.querySelector<HTMLButtonElement>('[data-dock]')!;
+  const wide = () => !matchMedia('(max-width: 62rem)').matches;
 
-  /* Document order, so "which section am I in" is a first-match, not a guess. */
-  const ids = [...mobile.keys()];
-  const targets = ids
-    .map((id) => document.getElementById(id))
-    .filter((el): el is HTMLElement => Boolean(el));
+  const panelOf = (b: HTMLButtonElement) =>
+    document.getElementById(b.getAttribute('aria-controls')!)!;
 
-  /* -1 means "above the first stop": on the cover, not in a section yet. */
-  let index = -1;
+  function setTop(btn: HTMLButtonElement, open: boolean) {
+    btn.setAttribute('aria-expanded', String(open));
+    panelOf(btn).hidden = !open;
+  }
 
-  const paint = () => {
-    const at = ids[index];
-    desktop.forEach((a, id) => a.classList.toggle('is-here', id === at));
-    mobile.forEach((a, id) => {
-      /* aria-current, not just colour — the state is announced, not implied. */
-      if (id === at) a.setAttribute('aria-current', 'true');
-      else a.removeAttribute('aria-current');
-    });
+  /** One panel at a time, in both presentations. */
+  function closeTops(except?: HTMLButtonElement) {
+    tops.forEach((b) => b !== except && setTop(b, false));
+  }
 
-    /* The closed control states where you are, so the list stays closed. Above
-       the first section you are nowhere in particular, and it says so rather
-       than naming a section you haven't reached. */
-    const current = at ? mobile.get(at) : null;
-    if (dockLabel && dockNum) {
-      const [n, label] = current ? [...current.querySelectorAll('span')] : [];
-      dockNum.textContent = n?.textContent ?? '';
-      dockNum.toggleAttribute('hidden', !n);
-      dockLabel.textContent = label?.textContent ?? 'Contents';
+  const treeOpen = () => nav.hasAttribute('data-open');
+
+  function setTree(open: boolean) {
+    if (open) document.dispatchEvent(new CustomEvent('kit:close-find'));
+    nav.toggleAttribute('data-open', open);
+    burger.setAttribute('aria-expanded', String(open));
+    dock.setAttribute('aria-expanded', String(open));
+    document.body.classList.toggle('is-locked', open);
+    if (!open) closeTops();
+  }
+
+  tops.forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      closeTops(btn);
+      setTop(btn, !open);
+    })
+  );
+
+  burger.addEventListener('click', () => setTree(!treeOpen()));
+  document.addEventListener('kit:close-menu', () => setTree(false));
+  dock.addEventListener('click', () => setTree(true));
+
+  /* Every destination goes through the same opener as search, so a link to a
+     milestone opens its panel and a link into a fold opens the fold. */
+  document.querySelectorAll<HTMLAnchorElement>('.nav [data-go]').forEach((a) =>
+    a.addEventListener('click', (e) => {
+      if (!go(a.dataset.go!)) return;
+      e.preventDefault();
+      closeTops();
+      if (!wide()) setTree(false);
+    })
+  );
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (treeOpen()) {
+      setTree(false);
+      burger.focus();
+      return;
     }
-  };
+    const open = tops.find((b) => b.getAttribute('aria-expanded') === 'true');
+    if (open) {
+      setTop(open, false);
+      open.focus();
+    }
+  });
+
+  /* A click outside a wide-screen drop panel closes it. The full-height tree
+     has its own control and shouldn't vanish on a stray tap. */
+  document.addEventListener('click', (e) => {
+    if (!wide()) return;
+    if (!(e.target as HTMLElement).closest('.nav, [data-burger]')) closeTops();
+  });
+
+  /* Panels are laid out for one presentation or the other; leaving one open
+     across the boundary strands it. */
+  matchMedia('(max-width: 62rem)').addEventListener('change', () => {
+    closeTops();
+    setTree(false);
+  });
+
+  /* ── where you are ───────────────────────────────────────────────────── */
+  const STOPS: Array<[string, string, string]> = [
+    ['brief', '01', 'The brief'],
+    ['climb', '02', 'Revenue ladder'],
+    ['weeks', '03', 'Milestones'],
+    ['selling', '04', 'Channels'],
+    ['sessions', '05', 'Workshops'],
+    ['money', '06', 'Money'],
+    ['breaks', '07', 'Troubleshooting'],
+    ['flea', '08', 'Flea'],
+    ['asked', '09', 'Questions'],
+  ];
+  const num = document.querySelector<HTMLElement>('[data-dock-num]')!;
+  const label = document.querySelector<HTMLElement>('[data-dock-label]')!;
+  const targets = STOPS.map(([id]) => document.getElementById(id)).filter(
+    (el): el is HTMLElement => Boolean(el)
+  );
 
   if (targets.length) {
-    /* Track what is currently in the band rather than reacting to each entry.
-       Entries only arrive on change, so reading them alone can't tell you that
-       you have scrolled back above the first section — which left the control
-       claiming a section you were no longer in. */
+    let at = -1;
     const live = new Set<string>();
-
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
           if (e.isIntersecting) live.add(e.target.id);
           else live.delete(e.target.id);
         });
-        const next = ids.findIndex((id) => live.has(id));
-        if (next === index) return;
-        index = next;
-        paint();
+        const next = STOPS.findIndex(([id]) => live.has(id));
+        if (next === at) return;
+        at = next;
+        const stop = STOPS[at];
+        num.textContent = stop ? stop[1] : '';
+        num.toggleAttribute('hidden', !stop);
+        label.textContent = stop ? stop[2] : 'Contents';
+        document
+          .querySelectorAll<HTMLElement>('[data-spy]')
+          .forEach((a) => a.classList.toggle('is-here', !!stop && a.dataset.spy === stop[0]));
       },
       { rootMargin: '-18% 0px -70% 0px' }
     );
     targets.forEach((t) => io.observe(t));
-  }
-
-  paint();
-
-  if (dock) {
-    const shut = () => dock.removeAttribute('open');
-    /* Picking a stop is the whole point of opening it. */
-    dock.querySelectorAll('a').forEach((a) => a.addEventListener('click', shut));
-    /* `<details>` has no native dismissal, so wire up the two people expect. */
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && dock.open) {
-        shut();
-        dock.querySelector('summary')?.focus();
-      }
-    });
-    document.addEventListener('click', (e) => {
-      if (dock.open && !dock.contains(e.target as Node)) shut();
-    });
   }
 </script>

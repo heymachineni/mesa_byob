@@ -387,3 +387,84 @@ A bottom sheet has no left edge, so it takes the plate along its top instead.
 Also: `TOF / MIN / WIN / BUDGET` in the channel sheet are fixed labels, and the column got
 tight enough to hyphenate the longest into `BUDGE / T`. Verified by counting line boxes at
 320 / 390 / 1200 that every label now sets on one line.
+
+
+---
+
+# Pass 10 — an index for the whole kit
+
+The feedback was that content wasn't reachable. It was measurably true:
+
+| | |
+|---|---|
+| Text inside **collapsed** `<details>` | 31,796 of 67,043 chars — **47%** |
+| Drawer panels hidden until clicked | **26** |
+| Search on this page | **none** |
+| Addressable locations | 9 anchors + 26 deep links, for ~150 items |
+
+Ctrl+F — the index a student actually reaches for — could see none of the folds
+or panels. So half the kit was invisible to the browser's own find.
+
+## A menu that is the index
+
+Seven top-level items, 34 destinations. Three sections had no route into them at
+all before this: **The brief**, **The climb** and **Questions** were unreachable
+from the navigation.
+
+The tree is rendered **once** and presented twice — a row of drop panels on a wide
+screen, a full-height accordion on a narrow one. Two DOM trees would be two things
+to keep in step, and they would eventually disagree.
+
+**Labels are navigation copy; names are Mesa's.** A menu label is read while
+*deciding*, so it's a noun that predicts the destination — "Revenue ladder", not
+"₹7 lakhs, in seven steps". But milestone headlines, channel names and workshop
+titles are programme terminology and appear verbatim, however long. Where a title
+is long the fix is truncation in CSS, never a second name invented here — that is
+exactly the kind of quiet drift that produced the channel-numbering mismatch.
+
+Renames: *Weeks* → **Milestones** (you navigate to M4, not to a week), *Selling* →
+**Channels** (the Starter Pack's own word), *Sessions* → **Workshops** (the data
+and the panels both say workshop; only the section heading said sessions).
+
+## Search, and the part that actually matters
+
+The index is the one already built for the Forge design — 100 entries over the
+same content, remapped onto this page's destinations. Forking it would give two
+indexes over one body of content, and they would drift.
+
+The hard part isn't matching, it's **arriving**. With 47% of the text folded away
+and 26 panels unrendered, scrolling to a section drops you somewhere that still
+looks empty. So a result *opens its container* first: `panel:` targets click the
+page's own trigger — keeping history, focus and the scroll lock identical to a
+real click — and anchor targets walk up the DOM opening every `<details>` on the
+way, then scroll, then flash the destination.
+
+A field on a wide screen; an icon opening a full-screen view on a narrow one,
+where a cramped input would give cramped results.
+
+## Now asserted, not hoped for
+
+`scripts/verify_nav.py` runs in `npm run verify` and fails the build if any menu
+row or search result points nowhere. It also checks something easy to miss: a
+panel is opened by clicking one of the page's own `[data-open]` triggers, so a
+panel with no trigger is unreachable however well it is linked.
+
+    top-level items: 7
+    menu rows: 39 (34 distinct destinations)
+    menu covers 8 milestones, 5 channels, 13 workshops
+    search entries: 100
+    panels reachable: 26/26
+
+## Costs
+
+The page goes from **39 KB to 56 KB gzipped** — the search index inlines at
+61 KB raw. And it is no longer 0 external JS: three bundles totalling **2.4 KB
+gzipped**, because the menu and search share the destination-opening module
+rather than duplicating it.
+
+## Not yet verified in a browser
+
+The Chrome extension disconnected partway through and did not come back, so the
+**interaction** pass is outstanding: menu open/close and keyboard behaviour, the
+mobile tree, search result rendering, and overflow at 320–1440. Everything above
+is static verification. This is the honest state of it.

@@ -1,0 +1,460 @@
+---
+/**
+ * Search.
+ *
+ * The index is the one already built for the Forge design — same content, same
+ * entries, remapped onto this page's destinations. Forking it would give us two
+ * indexes over one body of content, and they would drift.
+ *
+ * A field on a wide screen; an icon opening a full-screen view on a narrow one,
+ * where a cramped input would give cramped results.
+ */
+import { getSearchIndex, SEARCH_SUGGESTIONS } from '../../lib/content';
+import { localise } from '../../lib/nav';
+
+const index = localise(await getSearchIndex());
+---
+
+<div class="find" data-find>
+  <button class="find__open" type="button" data-find-open>
+    <span class="sr-only">Search</span>
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <circle cx="9" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="2"></circle>
+      <path d="M13.2 13.2 17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+  </button>
+
+  <div class="find__sheet">
+    <div class="find__bar">
+      <svg class="find__icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+        <circle cx="9" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="2"></circle>
+        <path d="M13.2 13.2 17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+      </svg>
+      <label class="sr-only" for="find-q">Search the kit</label>
+      <input
+        id="find-q"
+        class="find__q"
+        type="text"
+        placeholder="Search the kit"
+        autocomplete="off"
+        spellcheck="false"
+        role="combobox"
+        aria-expanded="false"
+        aria-controls="find-out"
+        aria-autocomplete="list"
+        data-find-q
+      />
+      <button class="find__close" type="button" data-find-close>
+        <span class="sr-only">Close search</span>
+        <span aria-hidden="true">✕</span>
+      </button>
+    </div>
+
+    <div class="find__out" id="find-out" role="listbox" aria-label="Results" data-find-out hidden></div>
+  </div>
+</div>
+
+<script is:inline type="application/json" data-find-index set:html={JSON.stringify(index)} />
+<script is:inline type="application/json" data-find-hints set:html={JSON.stringify(SEARCH_SUGGESTIONS)} />
+
+<style>
+  .find {
+    display: flex;
+    align-items: center;
+  }
+
+  .find__open {
+    display: none;
+    place-items: center;
+    inline-size: 2.6rem;
+    block-size: 2.6rem;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .find__open svg {
+    inline-size: 1.05rem;
+    block-size: 1.05rem;
+  }
+
+  .find__bar {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding-inline: 0.6rem;
+    background: var(--paper-2);
+    box-shadow: inset 0 0 0 1.4px var(--line);
+    transition: box-shadow var(--fast) var(--ease);
+  }
+  .find__bar:focus-within {
+    box-shadow: inset 0 0 0 1.4px var(--ink);
+  }
+  .find__icon {
+    flex: 0 0 auto;
+    inline-size: 0.9rem;
+    block-size: 0.9rem;
+    color: var(--text-faint);
+  }
+  .find__q {
+    inline-size: 11rem;
+    min-block-size: 2.3rem;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: var(--s--1);
+    color: var(--ink);
+  }
+  .find__q::placeholder {
+    color: var(--text-faint);
+  }
+  .find__q:focus {
+    outline: none;
+  }
+  .find__close {
+    display: none;
+    padding: 0.4rem;
+    color: var(--text-faint);
+    cursor: pointer;
+  }
+
+  /* Wide screens: results drop under the field. */
+  .find__sheet {
+    position: relative;
+  }
+  .find__out {
+    position: absolute;
+    inset-inline-end: 0;
+    inset-block-start: calc(100% + 0.5rem);
+    inline-size: min(30rem, 92vw);
+    max-block-size: min(70vh, 34rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--paper);
+    box-shadow:
+      inset 0 0 0 1.4px var(--ink),
+      6px 6px 0 var(--reg-coral);
+    z-index: 95;
+  }
+
+  /* ─────────────────────────────── narrow screens: a full-screen search view */
+  @media (max-width: 62rem) {
+    .find__open {
+      display: grid;
+    }
+    .find__sheet {
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      display: none;
+      background: var(--paper);
+      padding: var(--sp-4);
+      padding-block-start: calc(var(--sp-4) + env(safe-area-inset-top, 0px));
+    }
+    .find[data-open] .find__sheet {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: var(--sp-4);
+    }
+    .find__q {
+      inline-size: 100%;
+      min-block-size: 2.9rem;
+    }
+    .find__close {
+      display: block;
+    }
+    .find__out {
+      position: static;
+      inline-size: auto;
+      max-block-size: none;
+      box-shadow: none;
+      border-block-start: 1px solid var(--line-soft);
+    }
+  }
+</style>
+
+<style is:global>
+  /* Result rows are built in JS and never receive Astro's scoped attribute,
+     so these selectors have to be global — the same trap that once rendered
+     the Forge search results as one run-on blob. */
+  .find__group {
+    padding: var(--sp-3) var(--sp-4) 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--coral);
+  }
+  .find__hit {
+    display: block;
+    inline-size: 100%;
+    padding: 0.55rem var(--sp-4) 0.6rem;
+    text-align: start;
+    cursor: pointer;
+    border-block-start: 1px solid transparent;
+  }
+  .find__hit:hover,
+  .find__hit[data-on] {
+    background: color-mix(in srgb, var(--coral) 14%, transparent);
+  }
+  .find__t {
+    display: block;
+    font-size: var(--s--1);
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .find__s {
+    display: block;
+    margin-block-start: 0.1rem;
+    font-size: var(--s--2);
+    line-height: 1.5;
+    color: var(--text-soft);
+  }
+  .find__w {
+    display: block;
+    margin-block-start: 0.2rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+  }
+  .find__hit mark {
+    background: color-mix(in srgb, var(--coral) 30%, transparent);
+    color: inherit;
+  }
+  .find__none {
+    padding: var(--sp-5) var(--sp-4);
+    font-size: var(--s--1);
+    color: var(--text-soft);
+  }
+  .find__hints {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding: var(--sp-4);
+  }
+  .find__hint {
+    padding: 0.3rem 0.6rem;
+    font-size: var(--s--2);
+    color: var(--ink-2);
+    box-shadow: inset 0 0 0 1px var(--line);
+    cursor: pointer;
+  }
+  .find__hint:hover {
+    background: color-mix(in srgb, var(--coral) 14%, transparent);
+  }
+
+  /* Where search sent you. Without it you arrive mid-section and still have to
+     hunt for the line that answered the question. */
+  .is-found {
+    animation: found 2s var(--ease);
+  }
+  @keyframes found {
+    0%,
+    62% {
+      background-color: color-mix(in srgb, var(--coral) 26%, transparent);
+    }
+    100% {
+      background-color: transparent;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .is-found {
+      animation: none;
+      outline: 2px solid var(--coral);
+      outline-offset: 3px;
+    }
+  }
+</style>
+
+<script>
+  import { go } from '../../lib/goto.client';
+
+  type Hit = { t: string; s: string; w: string; g: string; x: string; a: string };
+
+  const read = <T,>(sel: string): T =>
+    JSON.parse(document.querySelector<HTMLScriptElement>(sel)!.textContent!);
+
+  const INDEX = read<Hit[]>('[data-find-index]');
+  const HINTS = read<string[]>('[data-find-hints]');
+
+  const root = document.querySelector<HTMLElement>('[data-find]')!;
+  const q = document.querySelector<HTMLInputElement>('[data-find-q]')!;
+  const out = document.querySelector<HTMLElement>('[data-find-out]')!;
+  const openBtn = document.querySelector<HTMLButtonElement>('[data-find-open]')!;
+  const closeBtn = document.querySelector<HTMLButtonElement>('[data-find-close]')!;
+  const narrow = () => matchMedia('(max-width: 62rem)').matches;
+
+  /* "replies" should find "replying". Cheap suffix trimming beats a stemmer
+     here — the index is 100 entries, not a corpus. */
+  const stem = (w: string) => w.replace(/(ing|ies|ed|es|s)$/, '');
+  const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  function search(raw: string) {
+    const terms = raw.toLowerCase().trim().split(/\s+/).filter(Boolean);
+    if (!terms.length) return [];
+    return INDEX.map((h) => {
+      let score = 0;
+      for (const term of terms) {
+        const t = stem(term);
+        /* Every term must appear somewhere, or "week 4 flea" matches half the kit. */
+        if (!h.x.includes(t)) return null;
+        if (h.t.toLowerCase().includes(t)) score += 8;
+        if (h.s.toLowerCase().includes(t)) score += 3;
+        if (h.w.toLowerCase().includes(t)) score += 2;
+        score += 1;
+      }
+      return { h, score };
+    })
+      .filter((r): r is { h: Hit; score: number } => r !== null)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 24);
+  }
+
+  const mark = (text: string, terms: string[]) => {
+    let html = text.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!);
+    for (const term of terms) {
+      if (term.length < 2) continue;
+      html = html.replace(new RegExp(`(${esc(term)})`, 'gi'), '<mark>$1</mark>');
+    }
+    return html;
+  };
+
+  let active = -1;
+
+  function render(raw: string) {
+    const terms = raw.toLowerCase().trim().split(/\s+/).filter(Boolean);
+    active = -1;
+
+    if (!terms.length) {
+      out.innerHTML =
+        `<div class="find__hints">` +
+        HINTS.map((h) => `<button class="find__hint" type="button" data-hint="${h}">${h}</button>`).join('') +
+        `</div>`;
+      show(true);
+      return;
+    }
+
+    const results = search(raw);
+    if (!results.length) {
+      out.innerHTML = `<p class="find__none">Nothing for “${mark(raw, [])}”. Try a channel, a milestone, or a word from the question.</p>`;
+      show(true);
+      return;
+    }
+
+    /* Group headings ordered by their best hit, so the most relevant kind of
+       thing is at the top rather than a fixed order putting Journey first. */
+    const groups = new Map<string, typeof results>();
+    for (const r of results) {
+      if (!groups.has(r.h.g)) groups.set(r.h.g, []);
+      groups.get(r.h.g)!.push(r);
+    }
+
+    out.innerHTML = [...groups.entries()]
+      .map(([name, rows]) => {
+        const items = rows
+          .map(
+            ({ h }) =>
+              `<button class="find__hit" type="button" role="option" aria-selected="false" data-a="${h.a}">` +
+              `<span class="find__t">${mark(h.t, terms)}</span>` +
+              (h.s ? `<span class="find__s">${mark(h.s, terms)}</span>` : '') +
+              `<span class="find__w">${mark(h.w, terms)}</span>` +
+              `</button>`
+          )
+          .join('');
+        return (
+          `<div role="group" aria-label="${name}">` +
+          `<p class="find__group" aria-hidden="true">${name}</p>${items}</div>`
+        );
+      })
+      .join('');
+    show(true);
+  }
+
+  const hits = () => [...out.querySelectorAll<HTMLButtonElement>('.find__hit')];
+
+  function show(on: boolean) {
+    out.hidden = !on;
+    q.setAttribute('aria-expanded', String(on));
+  }
+
+  function setActive(i: number) {
+    const list = hits();
+    if (!list.length) return;
+    active = (i + list.length) % list.length;
+    list.forEach((el, n) => {
+      el.toggleAttribute('data-on', n === active);
+      el.setAttribute('aria-selected', String(n === active));
+    });
+    list[active].scrollIntoView({ block: 'nearest' });
+  }
+
+  function openSheet() {
+    document.dispatchEvent(new CustomEvent('kit:close-menu'));
+    root.setAttribute('data-open', '');
+    if (narrow()) document.body.classList.add('is-locked');
+    q.focus();
+    render(q.value);
+  }
+
+  function closeSheet() {
+    root.removeAttribute('data-open');
+    document.body.classList.remove('is-locked');
+    show(false);
+  }
+
+  function activate(el: HTMLElement) {
+    const target = el.dataset.a!;
+    closeSheet();
+    q.value = '';
+    /* The drawer takes focus when a panel opens; give it the frame it needs
+       rather than fighting it for focus. */
+    requestAnimationFrame(() => go(target));
+  }
+
+  openBtn.addEventListener('click', openSheet);
+  document.addEventListener('kit:close-find', () => closeSheet());
+  closeBtn.addEventListener('click', () => {
+    closeSheet();
+    openBtn.focus();
+  });
+
+  q.addEventListener('input', () => render(q.value));
+  q.addEventListener('focus', () => render(q.value));
+
+  q.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActive(active + 1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActive(active - 1);
+    } else if (e.key === 'Enter') {
+      const list = hits();
+      const pick = list[active >= 0 ? active : 0];
+      if (pick) {
+        e.preventDefault();
+        activate(pick);
+      }
+    } else if (e.key === 'Escape') {
+      closeSheet();
+      q.blur();
+    }
+  });
+
+  out.addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    const hit = t.closest<HTMLElement>('.find__hit');
+    if (hit) return activate(hit);
+    const hint = t.closest<HTMLElement>('[data-hint]');
+    if (hint) {
+      q.value = hint.dataset.hint!;
+      render(q.value);
+      q.focus();
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (narrow()) return;
+    if (!(e.target as HTMLElement).closest('[data-find]')) show(false);
+  });
+</script>
