@@ -33,7 +33,14 @@ export function go(target: string): boolean {
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
-  flash(el);
+
+  /* The mark exists to point at the line that answered the question. A whole
+     section is one and a half to three and a half screens tall, so marking it
+     washes the viewport in colour and says nothing you don't already know from
+     the heading you just landed on. Only mark a target small enough to point. */
+  if (el.tagName !== 'SECTION' && el.getBoundingClientRect().height < innerHeight * 0.55) {
+    flash(el);
+  }
   return true;
 }
 

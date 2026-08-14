@@ -518,3 +518,24 @@ in as you scroll.
 Verified: clicking a label navigates and flashes the target *without* opening the
 panel; clicking the chevron opens the panel and leaves the page where it was;
 7 labels, 6 chevrons, no console errors, no overflow at 390.
+
+
+---
+
+# Pass 12 — stop marking whole sections
+
+Navigating from the menu washed the screen violet. The "you were sent here" mark
+was being applied to the destination whatever its size, and every top-level menu
+target is a `<section>` between **158% and 352% of the viewport**:
+
+    #brief 158%   #weeks 319%   #selling 166%   #sessions 163%
+    #money 159%   #flea 352%    #breaks 248%
+
+The mark exists to point at the line that answered your question. Painting a
+section three screens tall says nothing you don't already know from the heading
+you just landed on — and on the Flea's dark sheet it fought the background too.
+
+It's now applied only to a target small enough to point at: not a `<section>`,
+and under 55% of the viewport. Verified across the boundary — `#targets` (41%)
+marks, `#gates` (99%) doesn't, `#climb` (a 65% section) doesn't, and a single FAQ
+still opens its fold and marks itself.
