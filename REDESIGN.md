@@ -304,3 +304,36 @@ The connected browser reported `screen.width: 413` and would not resize, so ever
 passed to an iframe harness was silently clamped to 413 — an early run "at 1180px and
 1440px" was really six measurements of the same phone viewport. Widths must be read back
 from `contentWindow.innerWidth`, never assumed from what was requested.
+
+
+---
+
+# Pass 8 — the sheet keeps only its content
+
+At **≤64rem** the panel is now a bottom sheet on tablets as well as phones, and everything
+that isn't the panel has moved off it:
+
+- **Close sits above the sheet**, on the backdrop, right-aligned. It's the one control
+  that dismisses everything, so it doesn't compete for room inside the sheet and it stays
+  put while the panel scrolls under it. The sheet's height is capped at
+  `100dvh - 4.6rem - env(safe-area-inset-top)` so there is always room for it, clear of a
+  notch.
+- **Stepping sits below**, pinned to the sheet's foot.
+- **The context label** is in the accessibility tree only.
+
+What's left in the top bar is the grab handle. Measured settled (transitions disabled) at
+413×700 for all three sheet sizes: `translate: 0`, sheet flush to the bottom edge and full
+width, close button 44px and fully on screen above the sheet, stepping row's bottom edge
+exactly at the viewport bottom.
+
+## A testing note that cost real time
+
+Chrome **freezes CSS transitions in hidden tabs**, so an opening sheet stays pinned at its
+`@starting-style` value forever. That read as a cascade bug — `translate: 0px 32px` on an
+open dialog, with `.dw[open] { translate: 0 0 }` sitting right there at higher specificity
+— and sent me looking for a specificity or `@starting-style` leak that did not exist. The
+tell was `getAnimations()` still listing a running transition 2.5 seconds in.
+
+Measure settled layout with `*{transition:none!important}` injected, rather than waiting
+out a duration that may never elapse. Combined with the earlier IntersectionObserver
+finding, the rule for this project is: **a hidden tab cannot verify anything time-based.**
