@@ -225,3 +225,45 @@ nine-stop sheet.
 in offscreen iframes, and it does not deliver them to the extension's execution context
 at all. Both produced false "the scroll spy is broken" readings before the harness was
 moved on-screen and switched to observing the page's own side effects.
+
+
+---
+
+# Pass 6 — the swap, contrast, and the phone bar
+
+## `/` and `/v2` swapped
+
+The riso field note now serves `/`; the Mesa Forge design moved to `/v2`. Two page files
+swapped with their relative import depths rewritten (13 imports down a level, 9 up), and
+the `noindex` moved with the *role*, not the file — the alternate design is the one kept
+out of search results, and that is now Forge. `npm run verify` passes on both pages after
+the swap.
+
+## Bugs found and fixed
+
+| # | Bug | Root cause |
+|---|---|---|
+| 11 | **The Flea's proof card printed near-white text on a cream card — 1.1:1.** | `--card: var(--paper-2)` was declared on `:root`, and a custom property's `var()` is substituted **where it is declared**, not where it is used. The dark sheet inherited the already-resolved light cream while its text stayed light. `--card` and `--card-line` are now re-stated inside the `[data-ink='flood']` scope. **This is the second time this trap has bitten this build** — the first was `color: var(--text)` on `body`. |
+| 12 | Small caption labels on the dark card sat at 4.05:1, under AA. | `--text-faint` was tuned against the sheet (`#1b1226`), not the card (`#251838`), which prints lighter. Raised 46% → 58%. |
+
+Every text node in the Flea section now passes WCAG AA against its own computed
+background (4.5:1 normal, 3:1 large): **0 failures**, measured element by element.
+
+## The phone bar
+
+Replaced the single label-plus-chevron with a three-part control: **step back · where you
+are · step forward**. The middle states position as `3/9` alongside the section name and
+still opens the nine-stop sheet; the arrows walk one stop at a time and disable at each
+end. Above the first section the middle reads `9 stops / Contents` and back is disabled.
+
+Verified: 50px tap targets on all three controls, sheet spans the full bar width and
+stays in the viewport, no overflow at 320–430px, 9 stops in document order with numbers
+01–09 and counts 1/9…9/9, arrow bounds correct at both ends.
+
+## Note on browser testing
+
+Chrome **suspends IntersectionObserver and scrolling in hidden tabs**. When the browser
+window is behind another application, every IO-driven behaviour — the reveal animations,
+the travelling dot, the section spy — reads as broken. This produced several false
+"the scroll spy is dead" findings across this session before `document.visibilityState`
+was checked. Any future QA run should assert `visibilityState === 'visible'` first.

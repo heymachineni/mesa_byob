@@ -98,10 +98,15 @@
   --paper-3: #150e1e;
   --text: #fbf7f0;
   --text-soft: color-mix(in srgb, #fbf7f0 70%, var(--ink));
-  --text-faint: color-mix(in srgb, #fbf7f0 46%, var(--ink));
+  --text-faint: color-mix(in srgb, #fbf7f0 58%, var(--ink));
   --line: color-mix(in srgb, #fbf7f0 26%, transparent);
   --line-soft: color-mix(in srgb, #fbf7f0 13%, transparent);
   --ink-2: #fbf7f0;
+  /* Re-stated, not inherited. A custom property whose value is `var(--paper-2)`
+     is substituted where it is *declared* — on :root — so the dark sheet would
+     inherit the light cream and print near-white text on it. */
+  --card: #251838;
+  --card-line: color-mix(in srgb, #fbf7f0 18%, transparent);
   /* On the dark sheet the ghost prints lighter than the paper, not darker. */
   --reg-violet: color-mix(in srgb, var(--violet) 55%, var(--paper));
   --reg-coral: color-mix(in srgb, var(--coral) 55%, var(--paper));
