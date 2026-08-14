@@ -491,3 +491,30 @@ rather than duplicating it.
 
 Scrolling could not be exercised — the tab was backgrounded throughout, and Chrome
 suspends scrolling there. `scrollIntoView` is the only unverified step.
+
+
+---
+
+# Pass 11 — a menu item is two controls
+
+Clicking a top-level item only opened its submenu; there was no way to reach the
+section itself. The obvious fix — make the click do both — doesn't survive
+contact with a touch screen, where one tap can only mean one thing. And if the
+tap expanded the panel, the section stayed unreachable.
+
+So each item is now **a link and a disclosure, side by side**: the label
+navigates, the chevron opens the submenu. Both are real controls, both are
+keyboard reachable, and the chevron carries its own screen-reader name ("What's
+in Milestones") rather than being an unlabelled glyph.
+
+On a phone that's a 303×54 label and a 54×54 chevron with no overlap — the two
+meanings never share a tap. Hovering either half lights the whole item, so it
+still reads as one thing. `Flea` has no chevron because it has no submenu, which
+is the whole affordance: the missing chevron says it navigates.
+
+All seven items now carry `data-spy`, so the bar also marks which section you're
+in as you scroll.
+
+Verified: clicking a label navigates and flashes the target *without* opening the
+panel; clicking the chevron opens the panel and leaves the page where it was;
+7 labels, 6 chevrons, no console errors, no overflow at 390.

@@ -23,27 +23,45 @@ const menu = await getMenu();
     <nav class="nav" id="nav" aria-label="Sections">
       <ul class="nav__list">
         {
-          menu.map((item) =>
-            item.groups ? (
-              <li class="nav__item">
-                <button
+          /* The label and the chevron are separate controls. One item can't be
+             both "go there" and "show me what's in there" — on a touch screen
+             a single tap can only mean one of them, and if tapping the label
+             expanded the panel there would be no way to reach the section
+             itself. So: label navigates, chevron discloses. */
+          menu.map((item) => (
+            <li class="nav__item">
+              <div class="nav__head">
+                <a
                   class="nav__btn"
-                  type="button"
-                  aria-expanded="false"
-                  aria-controls={`np-${item.id}`}
-                  data-nav-top={item.id}
+                  href={item.href}
+                  data-go={item.href}
+                  data-spy={item.href.slice(1)}
                 >
-                  <span>{item.label}</span>
-                  <svg class="nav__chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                    <path
-                      d="M3.5 6 8 10.5 12.5 6"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="square"></path>
-                  </svg>
-                </button>
+                  {item.label}
+                </a>
 
+                {item.groups && (
+                  <button
+                    class="nav__toggle"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls={`np-${item.id}`}
+                    data-nav-top={item.id}
+                  >
+                    <span class="sr-only">{`What's in ${item.label}`}</span>
+                    <svg class="nav__chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                      <path
+                        d="M3.5 6 8 10.5 12.5 6"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="square"></path>
+                    </svg>
+                  </button>
+                )}
+              </div>
+
+              {item.groups && (
                 <div class="nav__panel" id={`np-${item.id}`} hidden>
                   <div class:list={['page', 'nav__in', item.split && 'nav__in--split']}>
                     {item.groups.map((g) => (
@@ -67,17 +85,9 @@ const menu = await getMenu();
                     ))}
                   </div>
                 </div>
-              </li>
-            ) : (
-              /* No panel, so it navigates. The affordance says so: an arrow,
-                 not a chevron. */
-              <li class="nav__item">
-                <a class="nav__btn" href={item.href} data-go={item.href} data-spy={item.href.slice(1)}>
-                  <span>{item.label}</span>
-                </a>
-              </li>
-            )
-          )
+              )}
+            </li>
+          ))
         }
       </ul>
     </nav>
@@ -214,10 +224,13 @@ const menu = await getMenu();
     align-items: center;
     gap: clamp(0.4rem, 1.6vw, 1.5rem);
   }
+  .nav__head {
+    display: flex;
+    align-items: center;
+  }
   .nav__btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
     padding: 0.5rem 0.15rem;
     font-size: var(--s--2);
     font-weight: 700;
@@ -229,8 +242,25 @@ const menu = await getMenu();
     transition: color var(--fast) var(--ease);
   }
   .nav__btn:hover,
-  .nav__btn.is-here,
-  .nav__btn[aria-expanded='true'] {
+  .nav__btn.is-here {
+    color: var(--ink-2);
+  }
+
+  .nav__toggle {
+    display: grid;
+    place-items: center;
+    padding: 0.5rem 0.25rem;
+    color: var(--text-faint);
+    cursor: pointer;
+    transition: color var(--fast) var(--ease);
+  }
+  .nav__toggle:hover,
+  .nav__toggle[aria-expanded='true'] {
+    color: var(--ink-2);
+  }
+  /* Hovering either half lights the whole item, so it still reads as one thing
+     even though it is two controls. */
+  .nav__item:hover .nav__btn {
     color: var(--ink-2);
   }
   .nav__chev {
@@ -238,7 +268,7 @@ const menu = await getMenu();
     block-size: 0.7rem;
     transition: rotate var(--base) var(--ease);
   }
-  .nav__btn[aria-expanded='true'] .nav__chev {
+  .nav__toggle[aria-expanded='true'] .nav__chev {
     rotate: 180deg;
   }
   /* Wide screens: the panel drops out of the bar, full width. */
@@ -346,13 +376,20 @@ const menu = await getMenu();
     }
 
     .nav__btn {
-      inline-size: 100%;
-      justify-content: space-between;
+      flex: 1 1 auto;
       min-block-size: 3.4rem;
       padding-inline: 0;
       font-size: var(--s--1);
       letter-spacing: 0.04em;
       color: var(--ink);
+    }
+    /* A full-height target of its own, so the two meanings never share a tap. */
+    .nav__toggle {
+      flex: 0 0 auto;
+      inline-size: 3.4rem;
+      min-block-size: 3.4rem;
+      margin-inline-end: -0.6rem;
+      color: var(--ink-2);
     }
     .nav__chev {
       inline-size: 0.95rem;

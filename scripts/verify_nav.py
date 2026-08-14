@@ -37,13 +37,16 @@ def main(path: str) -> int:
         return target.lstrip("#") in ids
 
     # ── the menu ──────────────────────────────────────────────────────────
-    tops = [strip_tags(m) for m in re.findall(r'<button[^>]*data-nav-top="[^"]*"[^>]*>(.*?)</button>', html, re.S)]
-    flea = re.findall(r'<a[^>]*data-go="#flea"[^>]*>(.*?)</a>', html, re.S)
-    labels = tops + [strip_tags(f) for f in flea]
+    # Every top-level item is a link that navigates; those with a submenu also
+    # carry a separate disclosure button beside it.
+    labels = [strip_tags(m) for m in re.findall(r'<a[^>]*class="nav__btn"[^>]*>(.*?)</a>', html, re.S)]
+    toggles = re.findall(r'data-nav-top="([^"]+)"', html)
     for want in EXPECTED_TOP:
         if not any(want.lower() in l.lower() for l in labels):
             fails.append(f"top-level item missing from the menu: {want}")
-    notes.append(f"top-level items: {len(labels)}")
+    notes.append(f"top-level items: {len(labels)} ({len(toggles)} with a submenu)")
+    if len(labels) != len(EXPECTED_TOP):
+        fails.append(f"expected {len(EXPECTED_TOP)} top-level items, found {len(labels)}")
 
     menu_targets = re.findall(r'data-go="([^"]+)"', html)
     dead = sorted({t for t in menu_targets if not resolves(t)})
