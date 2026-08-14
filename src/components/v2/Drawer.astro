@@ -69,6 +69,10 @@
     display: grid;
     opacity: 1;
     translate: 0 0;
+    /* The second ink, printed out of register — the same hard-edged plate the
+       buttons sit on. Horizontal only: the panel is full height, so a diagonal
+       offset would hang off the bottom and leave a gap at the top. */
+    box-shadow: -6px 0 0 var(--coral);
   }
   @starting-style {
     .dw[open] {
@@ -102,17 +106,6 @@
     .dw[open]::backdrop {
       opacity: 0;
     }
-  }
-
-  /* The coral pass, printed out of register down the left edge. */
-  .dw::before {
-    content: '';
-    position: absolute;
-    inset-block: 0;
-    inset-inline-start: -6px;
-    inline-size: 6px;
-    background: var(--coral);
-    opacity: 0.5;
   }
 
 
@@ -208,9 +201,10 @@
       block-size: auto;
       max-block-size: min(74dvh, calc(100dvh - 4.6rem - env(safe-area-inset-top, 0px)));
     }
-    /* The register edge is a left-hand device; a bottom sheet has no left edge. */
-    .dw::before {
-      display: none;
+    /* A left-hand plate makes no sense on a bottom sheet — it prints along the
+       top edge instead, where the sheet meets the backdrop. */
+    .dw[open] {
+      box-shadow: 0 -6px 0 var(--coral);
     }
 
     /* Close sits above the sheet, on the backdrop. It's the one control that
