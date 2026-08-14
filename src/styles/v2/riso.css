@@ -22,14 +22,17 @@
   --card-line: color-mix(in srgb, var(--ink) 16%, transparent);
 
   /* -------------------------------------------------------- the three inks */
-  --ink: #1b1226; /* key: near-black plum */
-  --ink-2: #4a2d7a; /* headings */
-  --violet: #7c4dcc; /* Forge ink 1 */
-  --orchid: #e4a7f3; /* Forge tint */
-  --coral: #e0684a; /* ink 2 — the warmth */
-  --sage: #7f9b78;
-  --marigold: #e0a33d;
-  --rose: #e2879b;
+  /* Mesa Forge, straight from the design system. The second ink was a warm
+     coral that belonged to no palette; it is now Vivid Violet, with Orchid
+     carrying the out-of-register pass so the two passes stay distinguishable
+     by hue and not just by depth. */
+  --ink: #2a1849; /* Deep Aubergine — key */
+  --ink-2: #452a74; /* Royal Purple — headings */
+  --violet: #5a3a8e; /* Amethyst — the deeper ink */
+  --orchid: #e4a7f3; /* Orchid — the register pass */
+  --coral: #7c4dcc; /* Vivid Violet — the accent. Name kept for now: 75 call
+                       sites, and renaming mid-trial would bury the colour
+                       change in unrelated churn. */
 
   /* ------------------------------------------------------------ semantics */
   --text: color-mix(in srgb, var(--ink) 92%, var(--paper));
@@ -41,7 +44,7 @@
   /* How far the second ink sits out of register. The whole look. */
   --shift: 5px;
   --reg-violet: color-mix(in srgb, var(--violet) 16%, var(--paper));
-  --reg-coral: color-mix(in srgb, var(--coral) 26%, var(--paper));
+  --reg-coral: color-mix(in srgb, var(--orchid) 58%, var(--paper));
   --reg-key: color-mix(in srgb, var(--ink) 14%, var(--paper));
 
   /* ------------------------------------------------------------ typography */
@@ -102,6 +105,10 @@
   --line: color-mix(in srgb, #fbf7f0 26%, transparent);
   --line-soft: color-mix(in srgb, #fbf7f0 13%, transparent);
   --ink-2: #fbf7f0;
+  /* Vivid Violet is too dark to carry an accent on the flood; Orchid is the
+     Forge tint made for it. Every dark-on-accent rule in this scope already
+     assumes a light plate, so the polarity is unchanged. */
+  --coral: #e4a7f3;
   /* Re-stated, not inherited. A custom property whose value is `var(--paper-2)`
      is substituted where it is *declared* — on :root — so the dark sheet would
      inherit the light cream and print near-white text on it. */

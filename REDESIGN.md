@@ -337,3 +337,53 @@ tell was `getAnimations()` still listing a running transition 2.5 seconds in.
 Measure settled layout with `*{transition:none!important}` injected, rather than waiting
 out a duration that may never elapse. Combined with the earlier IntersectionObserver
 finding, the rule for this project is: **a hidden tab cannot verify anything time-based.**
+
+
+---
+
+# Pass 9 — onto the Forge palette
+
+The second ink was a warm coral belonging to no palette. `/` now runs entirely on Mesa
+Forge: **Deep Aubergine** `#2A1849` as the key, **Royal Purple** `#452A74` for headings,
+**Amethyst** `#5A3A8E` as the deeper ink, **Vivid Violet** `#7C4DCC` as the accent, and
+**Orchid** `#E4A7F3` carrying the out-of-register pass. Backgrounds are untouched — the
+same bone stock, the same warm card, the same dark sheet.
+
+Five token values changed and nothing else. Every dark-on-accent rule was already scoped
+to the flood block, so overriding the accent to Orchid there (Vivid Violet manages only
+3.27:1 on the dark sheet) flipped the polarity without touching any of the 75 call sites.
+Three dead tokens went with it — `--marigold`, `--rose`, and `--sage`, the last a **green**,
+which the brand rules forbid outright.
+
+**It is measurably better, not merely on-brand.** Auditing both builds identically:
+
+| | coral | Forge |
+|---|---|---|
+| contrast failures | 386 | **270** |
+| "Start reading" button | 3.15:1 | **5.19:1** |
+| accent on bone | 2.96:1 | **5.19:1** |
+
+Coral never passed AA as text; Vivid Violet does.
+
+**The cost, recorded honestly.** Coral against violet was two genuinely different inks, so
+the misregistration read as a second colour pass. A violet accent with an Orchid ghost is
+tonal — closer to a soft shadow than a second pull. Forge has no warm ink to replace it,
+and Orchid is the only hue-distinct option but far too pale to carry text on bone. The
+device is weaker; the palette is correct. That trade was made deliberately.
+
+**Still outstanding:** `--text-faint` sits at **2.42:1** on paper across ~270 small labels
+(nav links, kickers, sheet numbers) — 2.54:1 before, so marginally worse but failing either
+way. The obvious fix collapses the hierarchy, since `faint` would end up darker than
+`soft`. It needs those elements moved onto `--text-soft`, not a token nudge.
+
+## The panel edge
+
+The side panel's left edge was a 6px bar at `opacity: 0.5`, which against the dimmed
+backdrop read as a smudge rather than a printed edge. It's now the same hard offset plate
+the buttons sit on — solid, no opacity, locked to the edge. Horizontal only: the panel is
+full height, so a diagonal offset would hang off the bottom and leave a gap at the top.
+A bottom sheet has no left edge, so it takes the plate along its top instead.
+
+Also: `TOF / MIN / WIN / BUDGET` in the channel sheet are fixed labels, and the column got
+tight enough to hyphenate the longest into `BUDGE / T`. Verified by counting line boxes at
+320 / 390 / 1200 that every label now sets on one line.
