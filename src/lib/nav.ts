@@ -177,14 +177,43 @@ export function toTarget(action: string): NavTarget {
   return hash;
 }
 
-/** The index as this page needs it: same entries, this page's destinations. */
+/**
+ * The shared index also carries the Forge design's *vocabulary* — "The
+ * journey", "Money matters", "FAQ". A result that says it lives in "The
+ * journey" when the menu calls it "Milestones" makes the reader translate
+ * between two names for the same place. These are labels, not content, so
+ * they follow the menu.
+ */
+const WORDS: Record<string, string> = {
+  Journey: 'Milestones',
+  'The journey': 'Milestones',
+  FAQ: 'Questions',
+  'Flea Market': 'Flea',
+  'Mesa Flea': 'Flea',
+  'Money matters': 'Money',
+  "When you're stuck": 'Troubleshooting',
+  'Five ways to sell': 'Channels',
+};
+
+const reword = (s: string) =>
+  s
+    .split('→')
+    .map((part) => {
+      const t = part.trim();
+      return WORDS[t] ?? t;
+    })
+    .join(' → ');
+
+/** The index as this page needs it: same entries, this page's words and destinations. */
 export function localise(index: SearchEntry[]) {
   return index.map((e) => ({
     t: e.title,
     s: e.sub,
-    w: e.where,
-    g: e.group,
-    x: e.text,
+    w: reword(e.where),
+    g: WORDS[e.group] ?? e.group,
+    /* The haystack keeps the original wording too, so someone who searches
+       "journey" still finds the milestones. */
+    x: `${e.text} ${reword(e.where)} ${WORDS[e.group] ?? e.group}`.toLowerCase(),
     a: toTarget(e.action),
   }));
 }

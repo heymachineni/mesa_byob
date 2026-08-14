@@ -31,7 +31,7 @@ const menu = await getMenu();
                   type="button"
                   aria-expanded="false"
                   aria-controls={`np-${item.id}`}
-                  data-top={item.id}
+                  data-nav-top={item.id}
                 >
                   <span>{item.label}</span>
                   <svg class="nav__chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
@@ -74,7 +74,6 @@ const menu = await getMenu();
               <li class="nav__item">
                 <a class="nav__btn" href={item.href} data-go={item.href} data-spy={item.href.slice(1)}>
                   <span>{item.label}</span>
-                  <span class="nav__arrow" aria-hidden="true">→</span>
                 </a>
               </li>
             )
@@ -119,8 +118,13 @@ const menu = await getMenu();
   .bar__in {
     display: flex;
     align-items: center;
-    gap: var(--sp-4);
+    gap: var(--sp-5);
     min-block-size: var(--hdr-h);
+  }
+  /* Auto margins float the menu into the space between the brand and the
+     search field rather than letting it huddle against the logo. */
+  .nav {
+    margin-inline: auto;
   }
 
   .bar__brand {
@@ -165,37 +169,41 @@ const menu = await getMenu();
     color: var(--ink);
     cursor: pointer;
   }
-  .bar__bars,
-  .bar__bars::before,
-  .bar__bars::after {
+  .bar__bars {
+    position: relative;
     display: block;
     inline-size: 1.05rem;
     block-size: 2px;
     background: currentColor;
-    transition:
-      translate var(--fast) var(--ease),
-      rotate var(--fast) var(--ease);
   }
   .bar__bars::before,
   .bar__bars::after {
     content: '';
-    position: relative;
+    position: absolute;
+    inset-inline: 0;
+    block-size: 2px;
+    background: currentColor;
+    transition:
+      inset-block-start var(--fast) var(--ease),
+      rotate var(--fast) var(--ease);
   }
   .bar__bars::before {
     inset-block-start: -6px;
   }
   .bar__bars::after {
-    inset-block-start: 4px;
+    inset-block-start: 6px;
   }
   [aria-expanded='true'] .bar__bars {
     background: transparent;
   }
+  [aria-expanded='true'] .bar__bars::before,
+  [aria-expanded='true'] .bar__bars::after {
+    inset-block-start: 0;
+  }
   [aria-expanded='true'] .bar__bars::before {
-    translate: 0 6px;
     rotate: 45deg;
   }
   [aria-expanded='true'] .bar__bars::after {
-    translate: 0 -4px;
     rotate: -45deg;
   }
 
@@ -204,16 +212,16 @@ const menu = await getMenu();
   .nav__list {
     display: flex;
     align-items: center;
-    gap: clamp(0.1rem, 1vw, 0.7rem);
+    gap: clamp(0.4rem, 1.6vw, 1.5rem);
   }
   .nav__btn {
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
-    padding: 0.45rem 0.5rem;
+    padding: 0.5rem 0.15rem;
     font-size: var(--s--2);
     font-weight: 700;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text-faint);
     text-decoration: none;
@@ -233,10 +241,6 @@ const menu = await getMenu();
   .nav__btn[aria-expanded='true'] .nav__chev {
     rotate: 180deg;
   }
-  .nav__arrow {
-    font-size: 0.85em;
-  }
-
   /* Wide screens: the panel drops out of the bar, full width. */
   .nav__panel {
     position: absolute;
@@ -252,13 +256,14 @@ const menu = await getMenu();
     padding-block: var(--sp-6);
     align-items: start;
   }
-  /* Thirteen workshops in one column is a scroll; two halves the height. */
+  /* Thirteen workshops in one column is a scroll; two halves the height.
+     Column-flow grid rather than CSS multi-column, which a grid container
+     ignores outright. */
   .nav__in--split .nav__rows {
-    columns: 2;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(7, auto);
+    grid-auto-flow: column;
     column-gap: var(--sp-7);
-  }
-  .nav__in--split li {
-    break-inside: avoid;
   }
 
   .nav__h {
@@ -327,6 +332,9 @@ const menu = await getMenu();
       display: block;
     }
 
+    .nav {
+      margin-inline: 0;
+    }
     .nav__list {
       display: block;
       max-inline-size: var(--w-page);
@@ -363,7 +371,9 @@ const menu = await getMenu();
       padding: 0 0 var(--sp-5);
     }
     .nav__in--split .nav__rows {
-      columns: 1;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: none;
+      grid-auto-flow: row;
     }
     .nav__g + .nav__g {
       margin-block-start: var(--sp-4);
@@ -448,7 +458,7 @@ const menu = await getMenu();
   import { go } from '../../lib/goto.client';
 
   const nav = document.getElementById('nav')!;
-  const tops = [...document.querySelectorAll<HTMLButtonElement>('[data-top]')];
+  const tops = [...document.querySelectorAll<HTMLButtonElement>('[data-nav-top]')];
   const burger = document.querySelector<HTMLButtonElement>('[data-burger]')!;
   const dock = document.querySelector<HTMLButtonElement>('[data-dock]')!;
   const wide = () => !matchMedia('(max-width: 62rem)').matches;
@@ -484,6 +494,32 @@ const menu = await getMenu();
       setTop(btn, !open);
     })
   );
+
+  /* A pointer that can actually hover opens the panel on approach; touch and
+     coarse pointers keep click, which is the only thing they can do. The short
+     delays stop a panel flashing open as the pointer crosses the bar. */
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    let timer = 0;
+    const after = (ms: number, fn: () => void) => {
+      clearTimeout(timer);
+      timer = window.setTimeout(fn, ms);
+    };
+    document.querySelectorAll<HTMLElement>('.nav__item').forEach((li) => {
+      li.addEventListener('pointerenter', () => {
+        if (!wide()) return;
+        const btn = li.querySelector<HTMLButtonElement>('[data-nav-top]');
+        after(110, () => {
+          closeTops(btn ?? undefined);
+          if (btn) setTop(btn, true);
+        });
+      });
+    });
+    /* The panel is a descendant of .nav, so moving down into it doesn't leave. */
+    nav.addEventListener('pointerenter', () => clearTimeout(timer));
+    nav.addEventListener('pointerleave', () => {
+      if (wide()) after(260, () => closeTops());
+    });
+  }
 
   burger.addEventListener('click', () => setTree(!treeOpen()));
   document.addEventListener('kit:close-menu', () => setTree(false));

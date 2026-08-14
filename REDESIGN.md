@@ -462,9 +462,32 @@ The page goes from **39 KB to 56 KB gzipped** — the search index inlines at
 gzipped**, because the menu and search share the destination-opening module
 rather than duplicating it.
 
-## Not yet verified in a browser
+## Bugs the interaction pass found
 
-The Chrome extension disconnected partway through and did not come back, so the
-**interaction** pass is outstanding: menu open/close and keyboard behaviour, the
-mobile tree, search result rendering, and overflow at 320–1440. Everything above
-is static verification. This is the honest state of it.
+| # | Bug | Root cause |
+|---|---|---|
+| 15 | **The whole menu was dead — no panel opened, ever.** | `[data-nav-top]` was originally `data-top`, which the revenue ladder already uses on its top bar: `<span class="climb__bar" data-top>`. The menu's own query picked up that span, `panelOf()` returned null, and setting `.hidden` on it threw on the first click — killing every handler in the file, including the burger. An attribute-name collision inside one's own page. |
+| 16 | **Search results went nowhere.** | Activation was deferred with `requestAnimationFrame`, and a backgrounded tab never gets a frame. Closing the sheet is synchronous, so there was nothing to wait for — the defer bought nothing and silently broke activation whenever the tab wasn't being painted. |
+| 17 | Thirteen workshops laid out in one tall column with the panel half empty. | `columns: 2` on a `display: grid` container is ignored outright. Now a column-flow grid: `grid-auto-flow: column` over seven rows. |
+| 18 | The burger's close state drew a chevron, not a cross. | The two bars were in flow, so "back to centre" was a different distance for each. Positioned absolutely they're symmetric about the middle bar. |
+| 19 | Search said results lived in "The journey" and "Money matters" while the menu called the same places "Milestones" and "Money". | The index carries the Forge design's vocabulary. Those are labels, not content, so they now follow the menu — and the original wording stays in the haystack, so searching "journey" still finds the milestones. |
+
+`verify_nav.py` caught #15's rename itself on the next run, which is the point of it.
+
+## Verified in browser
+
+- **Menu:** six drop panels, click opens, one at a time, Escape closes, no console
+  errors. Workshops in two columns at x=272 and x=856, panel 345px instead of ~500.
+  Milestones shows four phase subheads over eight rows.
+- **Search:** "MOQ" ranks the definition first and the milestone third; breadcrumbs
+  and match highlighting present; "replies" finds "replying" (4 hits); six
+  suggestions when empty; a real no-results state.
+- **Activation:** a panel result opens the right panel *and* sets the deep link
+  (`?c=influencer`), then closes and releases the scroll lock. A result inside a
+  **collapsed** fold opens the fold and flashes it.
+- **320 / 390 / 768:** no overflow, burger and search icon shown, tree opens,
+  accordion expands, 54px tap targets, the dock hides while the tree is up.
+- **1024 / 1280 / 1440:** no overflow, no burger, search field shown.
+
+Scrolling could not be exercised — the tab was backgrounded throughout, and Chrome
+suspends scrolling there. `scrollIntoView` is the only unverified step.

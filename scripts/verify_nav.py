@@ -37,7 +37,7 @@ def main(path: str) -> int:
         return target.lstrip("#") in ids
 
     # ── the menu ──────────────────────────────────────────────────────────
-    tops = [strip_tags(m) for m in re.findall(r'<button[^>]*data-top="[^"]*"[^>]*>(.*?)</button>', html, re.S)]
+    tops = [strip_tags(m) for m in re.findall(r'<button[^>]*data-nav-top="[^"]*"[^>]*>(.*?)</button>', html, re.S)]
     flea = re.findall(r'<a[^>]*data-go="#flea"[^>]*>(.*?)</a>', html, re.S)
     labels = tops + [strip_tags(f) for f in flea]
     for want in EXPECTED_TOP:

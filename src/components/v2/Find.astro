@@ -406,9 +406,7 @@ const index = localise(await getSearchIndex());
     const target = el.dataset.a!;
     closeSheet();
     q.value = '';
-    /* The drawer takes focus when a panel opens; give it the frame it needs
-       rather than fighting it for focus. */
-    requestAnimationFrame(() => go(target));
+    go(target);
   }
 
   openBtn.addEventListener('click', openSheet);
