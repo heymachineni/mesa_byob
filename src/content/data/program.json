@@ -1,0 +1,99 @@
+[
+  {
+    "id": "byob",
+    "title": "The BYOB Challenge",
+    "programme": "PGP Forge",
+    "heroKicker": "Your first day starts here",
+    "heroStatement": "Build something people will actually buy.",
+    "heroSupport": "Eight weeks. Eight milestones. A real product, real customers, and a minimum of ₹7 lakhs in revenue. Not a case study — a venture with your name on it.",
+
+    "revenueTarget": 700000,
+    "revenueTargetLabel": "₹7 lakhs",
+    "capitalMaxLabel": "₹1.5 lakh",
+    "capitalConfirming": {
+      "note": "The total capital amount has not been finalised by the program team yet. ₹1.5 lakh is the figure in the Starter Pack; treat it as indicative until it is confirmed."
+    },
+    "trancheLabel": "₹35–40,000 per tranche",
+    "startLabel": "1 September 2026",
+    "endLabel": "30 October 2026",
+    "repaymentLabel": "15 November 2026",
+    "weeks": 8,
+    "milestoneCount": 8,
+    "teamSizeLabel": "2–3 co-founders",
+
+    "structure": [
+      {
+        "n": "01",
+        "title": "Goal",
+        "body": "Identify a customer need, develop a D2C product, and sell to real customers to generate as much revenue as possible. You must meet a minimum revenue target of ₹7 lakhs. Remember, this is just the minimum revenue target you must meet."
+      },
+      {
+        "n": "02",
+        "title": "Team",
+        "body": "You can choose a 2/3-member team. They are the ‘co-founders’ (team members) with whom you will build your ‘venture’ (BYOB business idea). The allocation optimizes for a diversity of backgrounds within each venture."
+      },
+      {
+        "n": "03",
+        "title": "Milestones",
+        "body": "During BYOB, your venture must hit eight milestones before the stipulated deadline. To meet these milestones, you and your co-founders must submit outputs (e.g., investment memo) and achieve specific business goals (e.g., revenue)."
+      },
+      {
+        "n": "04",
+        "title": "Investment",
+        "body": "You can raise interest-free debt of up to ₹1.5 lakh from Mesa. This will be disbursed in multiple tranches of up to ₹35–40,000 each and tied to performance against specific milestones. The Investment Committee (IC) will evaluate the deliverables of your venture to decide on the investment and the amount — the IC will not release the funds if the deliverables do not meet the milestone targets."
+      },
+      {
+        "n": "05",
+        "title": "Time",
+        "body": "Your time starts now! You have between 1st September, 2026 and 30th October 2026 to complete the BYOB Challenge. Note that each milestone has a specific deadline associated with it."
+      },
+      {
+        "n": "06",
+        "title": "What's Next",
+        "body": "The Challenge doesn't end when the 8 weeks are up. If your venture is working, you're free to keep building it — as a side hustle alongside your coursework, or full-time if you want to go all in. Mesa is happy to support you either way, with continued mentorship and guidance as you take it further."
+      }
+    ],
+
+    "keyOutcome": "Revenue moves directly to your venture. What you earn from customers goes straight to your team — only the Mesa investment tranches route through the IC.",
+    "capitalNote": "Each tranche from Mesa is released only after the IC reviews that milestone's deliverables against the targets — hit the bar, and the next tranche unlocks. Miss it, and the tranche (and your grade) are both at risk.",
+
+    "gainsIntro": "You've joined Mesa to learn the skills, mindsets, and tools required to thrive in India's startup ecosystem. This is your opportunity to do all that as part of an intense sprint. Putting in the effort and fight to build a strong business will set you up for success for the rest of the program.",
+    "gains": [
+      {
+        "title": "Experience Zero to One",
+        "body": "You will experience what it feels like to build a business from scratch — how to identify an opportunity, set up supply chains, and execute a marketing plan. You will also learn to work with diverse teams and manage complex projects under pressure."
+      },
+      {
+        "title": "Build Your Sales Muscle",
+        "body": "Whether you aim to be a founder or join a startup, mastering sales is the most critical skill to set you apart. Here, you will gain the knowledge and confidence to sell to your first 500 customers."
+      },
+      {
+        "title": "Supercharge Your Brand",
+        "body": "Mesa will feature the top-performing teams across each milestone in interviews, podcasts, videos, and other assets. Here's an opportunity to cultivate a personal brand and showcase your work to the world!"
+      },
+      {
+        "title": "Unlock Exclusive Experiences",
+        "body": "Want to grab lunch with your favorite founder? Want to head out to a top conference to pitch your idea? Top-performing teams will get access to these exciting opportunities and more during the BYOB challenge."
+      },
+      {
+        "title": "Impress Startup Leaders",
+        "body": "At the end of BYOB, top-performing teams have the exciting opportunity to present their business to startup leaders. You will showcase your skills, receive valuable feedback, and expand your professional network. You will also have the opportunity to win awards across various categories aligned to milestones."
+      },
+      {
+        "title": "Make Money",
+        "body": "You and your co-founders will keep all profits after returning investments made by Mesa. Here's your chance to own some serious cash! The revenue and profit you generate here becomes the seed capital for whatever you build next — so the harder you push now, the more runway you're building for yourself later."
+      }
+    ],
+    "closingNote": "Finally, Mesa students absolutely love BYOB — they've shared that it is the most fulfilling experience of their time at Mesa. It allowed them to get out of their comfort zone, get close to their cohort mates, and build something that they are proud of.",
+
+    "watch": [
+      {
+        "title": "Hear from Mesa students about their BYOB experience",
+        "url": "https://www.youtube.com/watch?v=bOnJ0bAdZ40",
+        "source": "Mesa School of Business",
+        "kind": "youtube",
+        "placeholder": false
+      }
+    ]
+  }
+]

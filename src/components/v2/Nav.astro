@@ -1,0 +1,334 @@
+---
+/** The top bar carries the six most-used stops; the phone sheet carries all nine. */
+const links = [
+  { href: '#weeks', label: 'Weeks' },
+  { href: '#selling', label: 'Selling' },
+  { href: '#sessions', label: 'Sessions' },
+  { href: '#money', label: 'Money' },
+  { href: '#breaks', label: 'Stuck' },
+  { href: '#flea', label: 'Flea' },
+];
+
+const stops = [
+  { href: '#brief', num: '01', label: 'The brief' },
+  { href: '#climb', num: '02', label: 'The climb' },
+  { href: '#weeks', num: '03', label: 'Eight weeks' },
+  { href: '#selling', num: '04', label: 'Five ways to sell' },
+  { href: '#sessions', num: '05', label: 'Thirteen sessions' },
+  { href: '#money', num: '06', label: 'The money' },
+  { href: '#breaks', num: '07', label: 'When it breaks' },
+  { href: '#flea', num: '08', label: 'The last day' },
+  { href: '#asked', num: '09', label: 'Questions' },
+];
+---
+
+<header class="bar">
+  <div class="page bar__in">
+    <a href="#top" class="bar__brand">
+      <span class="bar__m" aria-hidden="true">m</span>
+      <span class="bar__t">BYOB</span>
+      <span class="bar__s">Starter Kit</span>
+    </a>
+
+    <nav class="bar__nav" aria-label="Sections">
+      <ul>
+        {links.map((l) => <li><a href={l.href} data-spy={l.href.slice(1)}>{l.label}</a></li>)}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!--
+  Phones don't get a row of tabs to scroll through — a nine-stop rail in a
+  360px-wide bar is a horizontal scroller that hides most of itself and never
+  tells you where you are. Instead: one control that *states* the current stop,
+  and a chevron that opens the full list. `<details>` so it is a real disclosure
+  — keyboard-operable and announced — with the label written by the scroll spy.
+-->
+<details class="dock" id="dock">
+  <summary class="dock__now" aria-label="Choose a section">
+    <span class="dock__lead">
+      <span class="dock__num mono" data-dock-num hidden></span>
+      <span class="dock__label" data-dock-label>Contents</span>
+    </span>
+    <svg class="dock__chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+      <path d="M3.5 10.5 8 6l4.5 4.5" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="square" />
+    </svg>
+  </summary>
+
+  <nav class="dock__sheet" aria-label="All sections">
+    <ul>
+      {stops.map((s) => (
+        <li>
+          <a href={s.href} data-spy-m={s.href.slice(1)}>
+            <span class="dock__n mono">{s.num}</span>
+            <span>{s.label}</span>
+            <span class="dock__tick" aria-hidden="true">●</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</details>
+
+<style>
+  .bar {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 90;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-block-end: 1px solid var(--line-soft);
+  }
+  .bar__in {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-4);
+    min-block-size: var(--hdr-h);
+  }
+
+  .bar__brand {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    text-decoration: none;
+    flex: 0 0 auto;
+  }
+  .bar__m {
+    align-self: center;
+    display: grid;
+    place-items: center;
+    inline-size: 1.4rem;
+    block-size: 1.4rem;
+    background: var(--ink);
+    color: var(--paper);
+    font-weight: 800;
+    font-size: 0.8rem;
+    line-height: 1;
+    padding-block-end: 0.06em;
+  }
+  .bar__t {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--ink-2);
+  }
+  .bar__s {
+    font-size: var(--s--2);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .bar__nav ul {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.7rem, 2vw, 1.7rem);
+  }
+  .bar__nav a {
+    position: relative;
+    display: inline-block;
+    padding-block: 0.3rem;
+    font-size: var(--s--2);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    text-decoration: none;
+    transition: color var(--fast) var(--ease);
+  }
+  .bar__nav a::after {
+    content: '';
+    position: absolute;
+    inset-inline: -2px;
+    inset-block-end: 0.05rem;
+    block-size: 3px;
+    background: var(--coral);
+    scale: 0 1;
+    transform-origin: left;
+    transition: scale var(--base) var(--ease);
+  }
+  .bar__nav a:hover { color: var(--ink-2); }
+  .bar__nav a:hover::after,
+  .bar__nav a.is-here::after { scale: 1 1; }
+  .bar__nav a.is-here { color: var(--ink-2); }
+
+  /* ──────────────────────────────────────────── the phone section picker */
+  .dock {
+    display: none;
+    position: fixed;
+    inset-block-end: calc(env(safe-area-inset-bottom, 0px) + 0.7rem);
+    inset-inline: 0.7rem;
+    z-index: 80;
+  }
+
+  /* Tapping anywhere else closes it. Behind the sheet, over the page. */
+  .dock[open]::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: color-mix(in srgb, var(--ink) 28%, transparent);
+  }
+
+  .dock__now {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    min-block-size: 3.1rem;
+    padding-inline: 1rem;
+    background: color-mix(in srgb, var(--paper) 96%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow:
+      inset 0 0 0 1.4px var(--ink),
+      3px 3px 0 color-mix(in srgb, var(--coral) 40%, var(--paper));
+    cursor: pointer;
+    list-style: none;
+  }
+  .dock__now::-webkit-details-marker { display: none; }
+  .dock__lead { display: flex; align-items: baseline; gap: 0.6rem; min-inline-size: 0; }
+  .dock__num { font-size: 0.7rem; font-weight: 700; color: var(--coral); }
+  .dock__label {
+    font-size: var(--s--1);
+    font-weight: 700;
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .dock__chev {
+    flex: 0 0 auto;
+    inline-size: 1.1rem;
+    block-size: 1.1rem;
+    color: var(--ink-2);
+    rotate: 180deg;
+    transition: rotate var(--base) var(--ease);
+  }
+  .dock[open] .dock__chev { rotate: 0deg; }
+
+  .dock__sheet {
+    position: absolute;
+    inset-block-end: calc(100% + 0.55rem);
+    inset-inline: 0;
+    max-block-size: min(62vh, 26rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--paper);
+    box-shadow:
+      inset 0 0 0 1.4px var(--ink),
+      4px 4px 0 color-mix(in srgb, var(--violet) 22%, var(--paper));
+  }
+  .dock__sheet a {
+    display: grid;
+    grid-template-columns: 1.9rem minmax(0, 1fr) 1rem;
+    align-items: center;
+    gap: 0.5rem;
+    min-block-size: 3rem;
+    padding-inline: 1rem;
+    font-size: var(--s--1);
+    color: var(--text-soft);
+    text-decoration: none;
+  }
+  .dock__sheet li + li a { border-block-start: 1px solid var(--line-soft); }
+  .dock__n { font-size: 0.7rem; font-weight: 700; color: var(--text-faint); }
+  .dock__tick { color: var(--coral); font-size: 0.6rem; opacity: 0; }
+  .dock__sheet a[aria-current='true'] { color: var(--ink); font-weight: 700; }
+  .dock__sheet a[aria-current='true'] .dock__n { color: var(--coral); }
+  .dock__sheet a[aria-current='true'] .dock__tick { opacity: 1; }
+
+  @media (max-width: 46rem) {
+    .bar__nav { display: none; }
+    .bar__s { display: none; }
+    .dock { display: block; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bar__nav a::after,
+    .dock__chev { transition: none; }
+  }
+</style>
+
+<script>
+  /* One observer drives the top bar and the phone picker. */
+  const desktop = new Map<string, HTMLAnchorElement>();
+  const mobile = new Map<string, HTMLAnchorElement>();
+  document
+    .querySelectorAll<HTMLAnchorElement>('[data-spy]')
+    .forEach((a) => desktop.set(a.dataset.spy!, a));
+  document
+    .querySelectorAll<HTMLAnchorElement>('[data-spy-m]')
+    .forEach((a) => mobile.set(a.dataset.spyM!, a));
+
+  const dock = document.getElementById('dock') as HTMLDetailsElement | null;
+  const dockLabel = document.querySelector<HTMLElement>('[data-dock-label]');
+  const dockNum = document.querySelector<HTMLElement>('[data-dock-num]');
+
+  /* Document order, so "which section am I in" is a first-match, not a guess. */
+  const ids = [...mobile.keys()];
+  const targets = ids
+    .map((id) => document.getElementById(id))
+    .filter((el): el is HTMLElement => Boolean(el));
+
+  if (targets.length) {
+    let here = '';
+    /* Track what is currently in the band rather than reacting to each entry.
+       Entries only arrive on change, so reading them alone can't tell you that
+       you have scrolled back above the first section — which left the control
+       claiming a section you were no longer in. */
+    const live = new Set<string>();
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) live.add(e.target.id);
+          else live.delete(e.target.id);
+        });
+
+        const next = ids.find((id) => live.has(id)) ?? '';
+        if (next === here) return;
+        here = next;
+
+        desktop.forEach((a, id) => a.classList.toggle('is-here', id === here));
+        mobile.forEach((a, id) => {
+          /* aria-current, not just colour — the state is announced, not implied. */
+          if (id === here) a.setAttribute('aria-current', 'true');
+          else a.removeAttribute('aria-current');
+        });
+
+        /* The closed control states where you are, so the list stays closed.
+           Above the first section you are nowhere in particular, and it says
+           so rather than naming a section you haven't reached. */
+        const current = here ? mobile.get(here) : null;
+        if (dockLabel && dockNum) {
+          const [n, label] = current ? [...current.querySelectorAll('span')] : [];
+          dockNum.textContent = n?.textContent ?? '';
+          dockNum.toggleAttribute('hidden', !n);
+          dockLabel.textContent = label?.textContent ?? 'Contents';
+        }
+      },
+      { rootMargin: '-18% 0px -70% 0px' }
+    );
+    targets.forEach((t) => io.observe(t));
+  }
+
+  if (dock) {
+    const shut = () => dock.removeAttribute('open');
+    /* Picking a stop is the whole point of opening it. */
+    dock.querySelectorAll('a').forEach((a) => a.addEventListener('click', shut));
+    /* `<details>` has no native dismissal, so wire up the two people expect. */
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && dock.open) {
+        shut();
+        dock.querySelector('summary')?.focus();
+      }
+    });
+    document.addEventListener('click', (e) => {
+      if (dock.open && !dock.contains(e.target as Node)) shut();
+    });
+  }
+</script>

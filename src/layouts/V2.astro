@@ -1,0 +1,159 @@
+---
+import '../styles/v2/riso.css';
+import Nav from '../components/v2/Nav.astro';
+import Foot from '../components/v2/Foot.astro';
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" id="top">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#fbf7f0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Instrument Serif does the expressive work; Manrope stays out of the way;
+         Caveat appears three times on the entire page, on purpose. -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400..800&family=Caveat:wght@500;600&display=swap"
+    />
+
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23FBF7F0'/%3E%3Crect x='6' y='6' width='20' height='20' fill='%23E0684A'/%3E%3Crect x='4' y='4' width='20' height='20' fill='%237C4DCC'/%3E%3C/svg%3E"
+    />
+
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+  </head>
+
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <Nav />
+    <span class="tracker" aria-hidden="true"></span>
+    <main id="main">
+      <slot />
+    </main>
+    <Foot />
+
+    <script>
+      const items = document.querySelectorAll<HTMLElement>('[data-in]');
+      if (items.length) {
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          items.forEach((el) => el.classList.add('is-in'));
+        } else {
+          const io = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((e) => {
+                if (!e.isIntersecting) return;
+                e.target.classList.add('is-in');
+                io.unobserve(e.target);
+              });
+            },
+            { rootMargin: '0px 0px -8% 0px', threshold: 0.05 }
+          );
+          items.forEach((el) => {
+            const g = el.closest('[data-in-group]');
+            if (g) {
+              const peers = [...g.querySelectorAll('[data-in]')];
+              el.style.setProperty('--in-delay', `${Math.min(peers.indexOf(el), 6) * 60}ms`);
+            }
+            io.observe(el);
+          });
+        }
+      }
+
+      const t = location.hash ? document.querySelector(location.hash) : null;
+      if (t instanceof HTMLDetailsElement) t.open = true;
+
+      /* ── The travelling dot ────────────────────────────────────────────
+         One marker for the whole page. It sits on whichever section mark is
+         currently in view; because those marks are sticky, the dot appears to
+         park while you read a section and travel when the next one arrives.
+         Decorative only — the nav carries the announced state. */
+      const tracker = document.querySelector<HTMLElement>('.tracker');
+      const marks = [...document.querySelectorAll<HTMLElement>('.run__mark')];
+      const bar = document.querySelector<HTMLElement>('.bar');
+
+      if (tracker && marks.length && !matchMedia('(max-width: 54rem)').matches) {
+        let queued = false;
+
+        const place = () => {
+          queued = false;
+
+          /* A sticky mark comes to rest with its border box at `inset-block-start`;
+             its top margin only offsets where it sits before it gets there. */
+          const restOf = (m: HTMLElement) => parseFloat(getComputedStyle(m).insetBlockStart);
+          const leadOf = (m: HTMLElement) => parseFloat(getComputedStyle(m).marginBlockStart);
+
+          /* The section you are *in* is the last one whose mark has reached the
+             pin line. Choosing the nearest mark instead made the dot hand over
+             early and snap down the page before you had finished a section;
+             handing over at the exact moment the incoming mark pins means the
+             two positions coincide, so there is nothing to jump across. */
+          let best: HTMLElement | null = null;
+          let rest = 0;
+          let past = false;
+          for (const m of marks) {
+            const sec = m.closest('.run');
+            if (!sec) continue;
+            const stick = restOf(m);
+            const box = sec.getBoundingClientRect();
+            if (box.top + leadOf(m) <= stick) {
+              best = m;
+              rest = stick;
+              /* Sections without a mark (the Flea) sit between marked ones, so
+                 the last match can be a section we have already scrolled out
+                 of. Without this the dot stayed behind on the dark sheet. */
+              past = box.bottom <= stick;
+            }
+          }
+
+          const line = best?.closest('.run')?.querySelector('.thread');
+          if (!best || !line || past) {
+            /* Above the first stop, or past it onto a section with no mark or
+               no line (the Flea, the footer): no marker — the dot would be
+               floating with nothing to run along. */
+            tracker.removeAttribute('data-on');
+            return;
+          }
+
+          const r = best.getBoundingClientRect();
+          /* Take the rail's x from the drawn line itself rather than recomputing
+             it — a custom property reads back as "2.05rem", not pixels. */
+          const lineRect = line.getBoundingClientRect();
+          const x = lineRect.left + lineRect.width / 2 - 6.5;
+          /* Never ride above the pin line. A mark unpins and slides away in the
+             last few pixels of its section; without this clamp the dot would
+             follow it up and then drop back down onto the next one. */
+          const y = Math.max(r.top, rest) + r.height / 2 - 6.5;
+          /* Not rounded: the rail is 2px wide, so rounding to whole pixels
+             left the dot visibly off-centre on it. */
+          tracker.style.translate = `${x.toFixed(2)}px ${y.toFixed(2)}px`;
+          tracker.setAttribute('data-on', '');
+        };
+
+        const onScroll = () => {
+          if (queued) return;
+          queued = true;
+          requestAnimationFrame(place);
+        };
+
+        addEventListener('scroll', onScroll, { passive: true });
+        addEventListener('resize', onScroll);
+        place();
+      }
+    </script>
+  </body>
+</html>

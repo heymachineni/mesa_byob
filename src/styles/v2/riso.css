@@ -1,0 +1,804 @@
+/* =========================================================================
+   BYOB STARTER KIT — v2 "RISO"
+   A separate visual system. Nothing here is shared with v1.
+
+   The idea: a risograph-printed field note. Three inks on bone paper, printed
+   slightly out of register — so every block has a coloured ghost sitting a few
+   millimetres behind it. That misregistration is the entire graphic device.
+   It replaces borders, shadows and cards.
+
+   The layout device is a single drawn thread running the length of the page.
+   Content hangs off it asymmetrically. No stacked full-width bands.
+   ========================================================================= */
+
+:root {
+  /* ---------------------------------------------------------- the stock */
+  --paper: #fbf7f0; /* bone */
+  --paper-2: #f3ece0; /* a second pass, slightly warmer */
+  --paper-3: #ebe2d3;
+  /* The surface a card sits on: one press darker than the page, so a block
+     reads as a block without introducing a new colour. */
+  --card: var(--paper-2);
+  --card-line: color-mix(in srgb, var(--ink) 16%, transparent);
+
+  /* -------------------------------------------------------- the three inks */
+  --ink: #1b1226; /* key: near-black plum */
+  --ink-2: #4a2d7a; /* headings */
+  --violet: #7c4dcc; /* Forge ink 1 */
+  --orchid: #e4a7f3; /* Forge tint */
+  --coral: #e0684a; /* ink 2 — the warmth */
+  --sage: #7f9b78;
+  --marigold: #e0a33d;
+  --rose: #e2879b;
+
+  /* ------------------------------------------------------------ semantics */
+  --text: color-mix(in srgb, var(--ink) 92%, var(--paper));
+  --text-soft: color-mix(in srgb, var(--ink) 62%, var(--paper));
+  --text-faint: color-mix(in srgb, var(--ink) 40%, var(--paper));
+  --line: color-mix(in srgb, var(--ink) 22%, transparent);
+  --line-soft: color-mix(in srgb, var(--ink) 11%, transparent);
+
+  /* How far the second ink sits out of register. The whole look. */
+  --shift: 5px;
+  --reg-violet: color-mix(in srgb, var(--violet) 16%, var(--paper));
+  --reg-coral: color-mix(in srgb, var(--coral) 26%, var(--paper));
+  --reg-key: color-mix(in srgb, var(--ink) 14%, var(--paper));
+
+  /* ------------------------------------------------------------ typography */
+  /* Instrument Serif is high-contrast and a little theatrical — it does the
+     expressive work so nothing else has to shout. */
+  --font-display: 'Instrument Serif', 'New York', Georgia, serif;
+  --font-ui: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  --font-hand: 'Caveat', cursive;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --s--2: clamp(0.73rem, 0.71rem + 0.1vw, 0.8rem);
+  --s--1: clamp(0.85rem, 0.82rem + 0.15vw, 0.94rem);
+  --s-0: clamp(1rem, 0.96rem + 0.2vw, 1.13rem);
+  --s-1: clamp(1.2rem, 1.12rem + 0.36vw, 1.46rem);
+  --s-2: clamp(1.45rem, 1.3rem + 0.7vw, 1.95rem);
+  --s-3: clamp(1.8rem, 1.5rem + 1.4vw, 2.8rem);
+  --s-4: clamp(2.3rem, 1.8rem + 2.4vw, 4rem);
+  --s-5: clamp(3rem, 2.1rem + 4.2vw, 6rem);
+  --s-6: clamp(3.6rem, 2.2rem + 6.6vw, 8.5rem);
+
+  /* ---------------------------------------------------------------- space */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+  --sp-8: 4.5rem;
+  --sp-9: 7rem;
+  --sp-10: 10rem;
+
+  --gutter: clamp(1.25rem, 0.5rem + 3.4vw, 4rem);
+  --w-page: 78rem;
+  --w-read: 62ch;
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --fast: 150ms;
+  --base: 260ms;
+  --slow: 480ms;
+
+  --hdr-h: 3.4rem;
+  color-scheme: light;
+}
+
+/* The one inverted moment: the Flea. Inks flood the sheet.
+   `color` must be re-declared here, not just the variable: descendants inherit
+   body's already-computed colour, so redefining --text alone leaves the text
+   near-black on a near-black sheet. */
+[data-ink='flood'] {
+  color: var(--text);
+  --paper: #1b1226;
+  --paper-2: #251838;
+  --paper-3: #150e1e;
+  --text: #fbf7f0;
+  --text-soft: color-mix(in srgb, #fbf7f0 70%, var(--ink));
+  --text-faint: color-mix(in srgb, #fbf7f0 46%, var(--ink));
+  --line: color-mix(in srgb, #fbf7f0 26%, transparent);
+  --line-soft: color-mix(in srgb, #fbf7f0 13%, transparent);
+  --ink-2: #fbf7f0;
+  /* On the dark sheet the ghost prints lighter than the paper, not darker. */
+  --reg-violet: color-mix(in srgb, var(--violet) 55%, var(--paper));
+  --reg-coral: color-mix(in srgb, var(--coral) 55%, var(--paper));
+  --reg-key: color-mix(in srgb, #fbf7f0 22%, var(--paper));
+  color-scheme: dark;
+}
+
+/* Anything that draws with the key ink has to switch to the paper colour when
+   the sheet floods — checkboxes, rules and outlines were invisible otherwise. */
+[data-ink='flood'] .ticks li::before {
+  background: var(--coral);
+}
+[data-ink='flood'] .btn {
+  background: var(--coral);
+  color: #1b1226;
+  box-shadow: 4px 4px 0 color-mix(in srgb, #fbf7f0 30%, transparent);
+}
+[data-ink='flood'] .btn--quiet {
+  color: #fbf7f0;
+  background: transparent;
+  box-shadow:
+    inset 0 0 0 1.5px color-mix(in srgb, #fbf7f0 40%, transparent),
+    4px 4px 0 color-mix(in srgb, var(--coral) 55%, transparent);
+}
+[data-ink='flood'] .btn--quiet:hover,
+[data-ink='flood'] .btn--quiet:focus-visible {
+  background: var(--coral);
+  color: #1b1226;
+  box-shadow: inset 0 0 0 1.5px transparent, 0 0 0 transparent;
+}
+
+/* ============================================================ reset + base */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+}
+[hidden] {
+  display: none !important;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+/* Anchors land below the sticky bar, not behind it. */
+html {
+  scroll-padding-block-start: calc(var(--hdr-h) + 1.25rem);
+}
+
+body {
+  min-height: 100dvh;
+  font-family: var(--font-ui);
+  font-size: var(--s-0);
+  line-height: 1.68;
+  font-weight: 450;
+  color: var(--text);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+body.is-locked {
+  overflow: hidden;
+}
+
+/* Room for the floating dock, so nothing at the end of the page hides behind
+   it. Declared globally — a component's scoped styles can't reach <body>. */
+@media (max-width: 46rem) {
+  body {
+    padding-block-end: calc(4.6rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Halftone tooth. A single tiled dot grid at very low opacity — the paper
+   texture of a riso print, not a noise overlay. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in srgb, var(--ink) 26%, transparent) 0.6px,
+    transparent 0.7px
+  );
+  background-size: 4px 4px;
+}
+
+img,
+svg,
+iframe,
+video {
+  display: block;
+  max-width: 100%;
+}
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+button {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: inherit;
+}
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+p,
+li,
+dd,
+dt,
+h1,
+h2,
+h3,
+h4,
+summary {
+  overflow-wrap: break-word;
+}
+
+/* Grid/flex children shrink below min-content — the usual overflow culprit. */
+.ticks > li,
+.bullets > li,
+.steps > li,
+.nope > li,
+.terms > .term,
+.fold__body,
+.fold__body > *,
+.fold__body li,
+.fold__body li > * {
+  min-inline-size: 0;
+}
+
+:focus-visible {
+  outline: 2.5px solid var(--ink);
+  outline-offset: 3px;
+}
+[data-ink='flood'] :focus-visible {
+  outline-color: #fbf7f0;
+}
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 1rem;
+  z-index: 300;
+  transform: translateY(-160%);
+  background: var(--violet);
+  color: var(--paper);
+  padding: 0.7rem 1.2rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform var(--base) var(--ease);
+}
+.skip:focus-visible {
+  transform: translateY(0);
+}
+
+/* ============================================================== typography */
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 400;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.disp {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.012em;
+  line-height: 1;
+  color: var(--ink-2);
+  text-wrap: balance;
+}
+.disp--xl { font-size: var(--s-6); }
+.disp--lg { font-size: var(--s-5); }
+.disp--md { font-size: var(--s-4); }
+.disp--sm { font-size: var(--s-3); }
+.disp--xs { font-size: var(--s-2); }
+
+/* Italic serif carries the asides. Handwriting is used three times on the
+   whole page, deliberately — any more and it starts to look like a craft fair. */
+.say {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--text-soft);
+  line-height: 1.35;
+}
+.hand {
+  font-family: var(--font-hand);
+  font-weight: 600;
+  color: var(--coral);
+  line-height: 1.3;
+}
+
+/* The margin number. The layout's spine marker. */
+/* A plain mono label. The rail mark adds the pill; nothing else does — a
+   kicker over a headline should not look like a chip. */
+.num-mark {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  justify-self: start;
+  align-self: start;
+  inline-size: fit-content;
+}
+[data-ink='flood'] .num-mark { color: var(--coral); }
+
+.kicker {
+  font-family: var(--font-ui);
+  font-size: var(--s--2);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.lede {
+  font-size: var(--s-1);
+  line-height: 1.65;
+  color: var(--text-soft);
+  max-inline-size: 48ch;
+  text-wrap: pretty;
+}
+
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.num { font-variant-numeric: tabular-nums; }
+
+a {
+  color: var(--ink-2);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: color-mix(in srgb, var(--coral) 60%, transparent);
+  transition: text-decoration-color var(--fast) var(--ease);
+}
+a:hover { text-decoration-color: var(--coral); }
+
+/* =========================================================================
+   THE PAGE GRID
+   A wide left margin holds the section number and the thread. Content sits in
+   the main column and is allowed to break out of it deliberately.
+   ========================================================================= */
+
+.page {
+  width: 100%;
+  max-inline-size: var(--w-page);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  position: relative;
+  z-index: 1;
+}
+
+/* `.run` IS the page container — it carries the max width and gutters itself,
+   so the thread and its nodes can be positioned against a known left edge. */
+.run {
+  --mark-w: 8.25rem;
+  /* The line sits in the gutter between the mark column and the content,
+     so the section pills read down the left of it. */
+  --rail-in: calc(var(--mark-w) + var(--sp-6) / 2);
+  --rail: calc(var(--gutter) + var(--rail-in)); /* from the section edge */
+  display: grid;
+  grid-template-columns: [mark] var(--mark-w) [main] minmax(0, 1fr);
+  gap: 0 var(--sp-6);
+  position: relative;
+  width: 100%;
+  max-inline-size: var(--w-page);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.run__mark {
+  grid-column: mark;
+  position: sticky;
+  inset-block-start: calc(var(--hdr-h) + 2rem);
+  align-self: start;
+  justify-self: end;
+  margin-block-start: 0.55rem;
+  padding: 0.24rem 0.62rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--coral) 22%, var(--paper));
+  white-space: nowrap;
+  inline-size: fit-content;
+}
+
+/* Phones: the margin rail is desktop furniture. Sections become single-column
+   blocks and the thread, nodes and tracker all go away. */
+@media (max-width: 54rem) {
+  .run {
+    display: block;
+  }
+  /* No rail, so nothing for the dot to travel along and nothing to pin a
+     margin mark to. The mark becomes a plain header at the top of each run —
+     it says where you are without following you down the screen. */
+  .thread,
+  .tracker {
+    display: none;
+  }
+  .run__mark {
+    position: static;
+    display: block;
+    /* Chrome honours `justify-self` on block-level boxes, so the desktop
+       `end` alignment survived into the phone layout and pinned the header to
+       the right edge at its text width. */
+    justify-self: normal;
+    align-self: auto;
+    inline-size: auto;
+    margin-block: 0 var(--sp-5);
+    padding: 0 0 var(--sp-2);
+    background: none;
+    color: var(--text-faint);
+    border-block-end: 2px solid color-mix(in srgb, var(--coral) 55%, var(--paper));
+  }
+  [data-ink='flood'] .run__mark {
+    color: var(--coral);
+    border-block-end-color: color-mix(in srgb, var(--coral) 70%, transparent);
+  }
+}
+
+.run__main {
+  grid-column: main;
+  min-inline-size: 0;
+  padding-block: var(--sp-8);
+}
+
+/* Content may step out of the main column into the margin, on purpose. */
+.bleed-left { margin-inline-start: calc(var(--mark-w) * -1 - var(--sp-6)); }
+@media (max-width: 54rem) { .bleed-left { margin-inline-start: 0; } }
+
+/* =========================================================================
+   THE THREAD
+   One continuous drawn line down the left margin, linking every stop.
+   Drawn once as an SVG in the layout; sections just sit against it.
+   ========================================================================= */
+
+.thread {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: var(--rail);
+  inline-size: 2px;
+  z-index: 0;
+  pointer-events: none;
+}
+.thread__line {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+}
+.thread__line path {
+  fill: none;
+  stroke: var(--thread-ink, color-mix(in srgb, var(--ink) 22%, transparent));
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+/* The coral pass, printed out of register. */
+.thread__line path:last-child {
+  stroke: var(--thread-ink-2, color-mix(in srgb, var(--coral) 45%, transparent));
+  translate: 2px 0;
+}
+/* The line is drawn per section but must read as one continuous stroke, so the
+   ends fade instead of stopping dead at a section boundary. */
+.thread--fade-in {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 22%);
+  mask-image: linear-gradient(to bottom, transparent, #000 22%);
+}
+.thread--fade-out {
+  -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent);
+  mask-image: linear-gradient(to bottom, #000 70%, transparent);
+}
+[data-ink='flood'] .thread {
+  --thread-ink: color-mix(in srgb, #fbf7f0 26%, transparent);
+  --thread-ink-2: color-mix(in srgb, var(--coral) 65%, transparent);
+}
+
+/* A node on the thread. */
+/* One dot for the whole page. It parks on the current section's mark and
+   travels down the line when you move to the next — so the line reads as a
+   position, not as a row of decorations. Purely decorative; the nav announces
+   the real state. */
+.tracker {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 13px;
+  block-size: 13px;
+  z-index: 40;
+  pointer-events: none;
+  opacity: 0;
+  /* The position is clamped to the pin line and only changes at a handover,
+     so a short ease reads as the dot stepping to the next stop. Easing every
+     frame of a continuously-updated position is what made it wobble. */
+  transition:
+    translate 200ms var(--ease),
+    opacity var(--base) var(--ease);
+}
+.tracker::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--coral);
+}
+.tracker::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.4px color-mix(in srgb, var(--coral) 45%, transparent);
+}
+.tracker[data-on] { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .tracker { transition: opacity var(--base) var(--ease); }
+}
+
+/* =========================================================================
+   MISREGISTRATION
+   The one graphic device. A block of ink sits a few millimetres behind the
+   element it belongs to. No borders, no shadows, no wobbly outlines.
+   ========================================================================= */
+
+.reg {
+  position: relative;
+  /* Held in a variable so the hover state keeps the edge while dropping the
+     ghost. */
+  --ring: inset 0 0 0 1.4px var(--card-line);
+  background: var(--card);
+  /* The second ink, offset. A box-shadow is painted behind the box and stays
+     locked to its edges — a negative-z pseudo-element does neither. */
+  box-shadow: var(--ring), var(--shift) var(--shift) 0 var(--reg-ink, var(--reg-violet));
+  transition:
+    box-shadow var(--base) var(--ease),
+    translate var(--base) var(--ease);
+}
+.reg--coral { --reg-ink: var(--reg-coral); }
+.reg--ink { --reg-ink: var(--reg-key); }
+
+/* Interactive blocks press into register when you reach for them: the block
+   moves onto its own ghost rather than the ghost sliding out. */
+.reg--live { cursor: pointer; inline-size: 100%; text-align: start; }
+.reg--live:hover,
+.reg--live:focus-visible {
+  translate: var(--shift) var(--shift);
+  box-shadow: var(--ring), 0 0 0 var(--reg-ink, var(--reg-violet));
+}
+
+/* The emphasis in the headline is carried by the italic and the second ink —
+   nothing behind it. */
+.overprint {
+  color: var(--coral);
+  font-style: italic;
+}
+
+/* A hairline, the printed kind. */
+.rule {
+  border: 0;
+  block-size: 1px;
+  background: var(--line);
+}
+
+/* =============================================================== controls */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.4rem;
+  min-block-size: 2.9rem;
+  font-size: var(--s--1);
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--paper);
+  background: var(--coral);
+  /* Key-ink ghost behind the coral plate, locked to its edges. */
+  box-shadow: 4px 4px 0 var(--ink);
+  transition:
+    box-shadow var(--fast) var(--ease),
+    translate var(--fast) var(--ease);
+}
+/* Pressing moves the plate exactly onto its ghost — nothing drifts. */
+.btn:hover,
+.btn:focus-visible {
+  translate: 4px 4px;
+  box-shadow: 0 0 0 var(--ink);
+}
+.btn--quiet {
+  background: transparent;
+  color: var(--ink-2);
+  box-shadow:
+    inset 0 0 0 1.5px var(--ink),
+    4px 4px 0 color-mix(in srgb, var(--violet) 30%, var(--paper));
+}
+.btn--quiet:hover,
+.btn--quiet:focus-visible {
+  box-shadow: inset 0 0 0 1.5px var(--ink), 0 0 0 transparent;
+}
+.btn--sm { padding: 0.45rem 0.85rem; min-block-size: 2.2rem; font-size: var(--s--2); }
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.18rem 0.5rem;
+  font-size: var(--s--2);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--orchid) 45%, var(--paper));
+  white-space: nowrap;
+}
+.tag--coral { background: color-mix(in srgb, var(--coral) 30%, var(--paper)); }
+[data-ink='flood'] .tag--coral {
+  background: var(--coral);
+  color: #1b1226;
+}
+.tag--violet { background: var(--violet); color: var(--paper); }
+.tag--quiet { background: none; box-shadow: inset 0 0 0 1px var(--line); color: var(--text-soft); }
+
+.arrow { display: inline-block; transition: translate var(--base) var(--ease); }
+a:hover .arrow, button:hover .arrow, .btn:hover .arrow { translate: 3px 0; }
+
+/* ================================================================== lists */
+
+.ticks { display: grid; gap: var(--sp-3); }
+.ticks li {
+  display: grid; grid-template-columns: 0.9rem 1fr; gap: var(--sp-3);
+  align-items: start; font-size: var(--s--1); line-height: 1.6;
+}
+.ticks li::before {
+  /* A printed rule, not a checkbox. Nothing in this list is tickable, so it
+     must not borrow the shape of a control. */
+  content: ''; inline-size: 0.9rem; block-size: 2px; margin-block-start: 0.72em;
+  background: var(--coral);
+}
+
+.bullets { display: grid; gap: var(--sp-3); }
+.bullets li {
+  display: grid; grid-template-columns: 0.5rem 1fr; gap: var(--sp-3);
+  align-items: start; line-height: 1.6;
+}
+.bullets li::before {
+  content: ''; inline-size: 0.42rem; block-size: 0.42rem; margin-block-start: 0.66em;
+  background: var(--coral);
+}
+
+.steps { display: grid; gap: var(--sp-5); counter-reset: s; }
+.steps > li {
+  counter-increment: s; display: grid; grid-template-columns: 2rem 1fr;
+  gap: var(--sp-4); align-items: start;
+}
+.steps > li::before {
+  content: counter(s, decimal-leading-zero);
+  font-family: var(--font-mono); font-size: var(--s--2); font-weight: 700;
+  color: var(--coral); padding-block-start: 0.35em;
+}
+
+.nope { display: grid; gap: var(--sp-3); }
+.nope li {
+  display: grid; grid-template-columns: 0.9rem 1fr; gap: var(--sp-3);
+  align-items: start; font-size: var(--s--1); line-height: 1.6; color: var(--text-soft);
+}
+.nope li::before { content: '×'; font-weight: 700; color: var(--coral); line-height: 1.4; }
+
+/* =============================================================== callouts */
+
+.aside {
+  padding-inline-start: var(--sp-5);
+  box-shadow: inset 2px 0 0 var(--coral);
+  font-size: var(--s--1);
+  line-height: 1.72;
+  color: var(--text-soft);
+}
+.aside strong { color: var(--ink-2); }
+.aside--violet { box-shadow: inset 2px 0 0 var(--violet); }
+
+.confirming {
+  border-block-end: 1px dotted var(--coral);
+  cursor: help;
+}
+/* Inside a tag the box already separates it — the rule just adds clutter. */
+.tag .confirming,
+.num-mark .confirming {
+  border-block-end: 0;
+}
+.confirming::after {
+  content: '*'; vertical-align: super; font-size: 0.72em; color: var(--coral); line-height: 0;
+}
+.fineprint {
+  font-size: var(--s--2); color: var(--text-faint); line-height: 1.6; max-inline-size: 58ch;
+}
+
+/* ============================================================= disclosure */
+
+.fold { border-block-end: 1px solid var(--line-soft); }
+.fold > summary {
+  display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-4);
+  padding-block: var(--sp-4); cursor: pointer; list-style: none;
+  font-weight: 700; font-size: var(--s--1); color: var(--ink-2);
+  transition: color var(--fast) var(--ease);
+}
+.fold > summary::-webkit-details-marker { display: none; }
+.fold > summary:hover { color: var(--coral); }
+.fold > summary::after {
+  content: '+'; font-family: var(--font-mono); font-size: 1.1em; line-height: 1;
+  color: var(--coral); flex: 0 0 auto; transition: rotate var(--base) var(--ease);
+}
+.fold[open] > summary::after { content: '–'; }
+.fold__body {
+  padding-block-end: var(--sp-5); color: var(--text-soft);
+  max-inline-size: var(--w-read); line-height: 1.75;
+}
+.fold[open] .fold__body { animation: rise var(--base) var(--ease) both; }
+@keyframes rise { from { opacity: 0; translate: 0 -4px; } }
+
+/* =========================================================================
+   WRAPPING
+   Set once, here. Headings balance across their lines so no line is left
+   holding a single word; running text avoids orphans. Doing this per-component
+   meant some blocks broke badly and others didn't.
+   ========================================================================= */
+
+h1,
+h2,
+h3,
+h4,
+.disp,
+.lede,
+.say,
+.kicker,
+summary {
+  text-wrap: balance;
+}
+
+p,
+li,
+dd,
+dt,
+figcaption,
+blockquote {
+  text-wrap: pretty;
+}
+
+/* ================================================================= motion */
+
+.js [data-in] {
+  opacity: 0;
+  translate: 0 12px;
+  transition: opacity var(--slow) var(--ease), translate var(--slow) var(--ease);
+  transition-delay: var(--in-delay, 0ms);
+}
+.js [data-in].is-in { opacity: 1; translate: 0 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+  .js [data-in] { opacity: 1; translate: 0; }
+}

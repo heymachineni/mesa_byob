@@ -1,0 +1,153 @@
+---
+import type { Workshop, Phase, Milestone } from '../../lib/content';
+
+interface Props {
+  w: Workshop;
+  phase: Phase | undefined;
+  milestone: Milestone | undefined;
+  seq: number;
+}
+const { w, phase, milestone, seq } = Astro.props;
+---
+
+<article
+  class="wk"
+  data-panel={w.id}
+  data-group="workshop"
+  data-seq={seq}
+  data-where={`workshop ${w.n} of 13`}
+  hidden
+>
+  <div class="wk__stub">
+    <span class="wk__code mono">{w.code}</span>
+    <h2 class="disp disp--sm wk__t">{w.title}</h2>
+    <div class="wk__tags">
+      {phase && <span class="tag tag--quiet">{phase.code} · {phase.name}</span>}
+      {milestone && <span class="tag">Around {milestone.code}</span>}
+    </div>
+  </div>
+
+  <section class="wk__blk">
+    <h3 class="wk__h">What to expect</h3>
+    <p class="wk__x">{w.expect}</p>
+  </section>
+
+  {
+    milestone && (
+      <section class="wk__blk">
+        <h3 class="wk__h">Feeds into</h3>
+        <button class="wk__ms" type="button" data-open={milestone.id}>
+          <span class="wk__mscode mono">{milestone.code}</span>
+          <span class="wk__msbody">
+            <span class="wk__mstitle">{milestone.headline}</span>
+            <span class="wk__mssub">
+              Week {milestone.week} · {milestone.revenueLabel} · due {milestone.date}
+            </span>
+          </span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </button>
+      </section>
+    )
+  }
+
+  <p class="fineprint wk__note">
+    This pairing is a reading guide for when the session helps most. Check the official
+    program schedule for confirmed dates and times.
+  </p>
+</article>
+
+<style>
+  .wk {
+    display: grid;
+    gap: var(--sp-5);
+    align-content: start;
+    padding: var(--sp-7) var(--sp-6) var(--sp-8);
+  }
+  @media (max-width: 40rem) {
+    .wk {
+      padding: var(--sp-5) var(--gutter) var(--sp-7);
+    }
+  }
+
+  /* The workshop reads like a ticket stub torn from the kit. */
+  .wk__stub {
+    position: relative;
+    display: grid;
+    gap: var(--sp-3);
+    padding: var(--sp-5);
+    background: var(--paper-2);
+    border: 1.8px solid var(--ink);
+    border-radius: 16px 180px 14px 170px / 170px 13px 160px 15px;
+  }
+  .wk__stub :global(.wk__stamp) {
+    position: absolute;
+    inset-block-start: -0.6rem;
+    inset-inline-end: -0.6rem;
+    opacity: 0.75;
+  }
+  .wk__code {
+    font-size: var(--s-0);
+    font-weight: 800;
+    color: var(--violet);
+  }
+  .wk__t {
+    max-inline-size: 18ch;
+  }
+  .wk__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+  }
+
+  .wk__h {
+    font-size: 1.4rem;
+    color: var(--ink-2);
+    margin-block-end: var(--sp-2);
+  }
+  .wk__x {
+    font-size: var(--s-0);
+    line-height: 1.78;
+    color: var(--text-soft);
+    text-wrap: pretty;
+  }
+
+  .wk__ms {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: var(--sp-4);
+    align-items: center;
+    inline-size: 100%;
+    padding: var(--sp-4);
+    background: var(--paper);
+    border: 1.6px dashed var(--line);
+    transition:
+      rotate var(--fast) var(--ease),
+      border-color var(--fast) var(--ease);
+  }
+  .wk__ms:hover {
+    border-color: var(--ink);
+    border-style: solid;
+  }
+  .wk__mscode {
+    font-size: var(--s-1);
+    font-weight: 800;
+    color: var(--violet);
+  }
+  .wk__msbody {
+    display: grid;
+    gap: 0.1rem;
+    text-align: start;
+  }
+  .wk__mstitle {
+    font-size: var(--s--1);
+    font-weight: 700;
+    color: var(--ink-2);
+  }
+  .wk__mssub {
+    font-size: var(--s--2);
+    color: var(--text-faint);
+  }
+  .wk__note {
+    margin-block-start: var(--sp-2);
+  }
+</style>

@@ -1,0 +1,143 @@
+---
+import type { Workshop, Phase, Milestone } from '../lib/content';
+
+interface Props {
+  workshop: Workshop;
+  phase: Phase | undefined;
+  milestone: Milestone | undefined;
+  seq: number;
+}
+const { workshop: w, phase, milestone, seq } = Astro.props;
+---
+
+<article
+  class="wp"
+  data-panel={w.id}
+  data-group="workshop"
+  data-seq={seq}
+  data-ctx={`Workshop ${w.n} of 13`}
+  hidden
+>
+  <span class="wp__code mono">{w.code}</span>
+  <h2 class="display display--sm">{w.title}</h2>
+
+  <div class="wp__meta">
+    {phase && <span class="pill">{phase.code} · {phase.name}</span>}
+    {milestone && <span class="pill pill--accent">Around {milestone.code}</span>}
+  </div>
+
+  <section class="wp__block">
+    <h3 class="wp__h">What to expect</h3>
+    <p class="wp__expect">{w.expect}</p>
+  </section>
+
+  {
+    milestone && (
+      <section class="wp__block">
+        <h3 class="wp__h">The milestone it feeds</h3>
+        <button class="wp__ms" type="button" data-open={milestone.id}>
+          <span class="wp__ms-code mono">{milestone.code}</span>
+          <span class="wp__ms-body">
+            <span class="wp__ms-title">{milestone.headline}</span>
+            <span class="wp__ms-sub">
+              Week {milestone.week} · {milestone.revenueLabel} · due {milestone.date}
+            </span>
+          </span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </button>
+      </section>
+    )
+  }
+
+  <p class="wp__note">
+    This pairing is a reading guide for when the session helps most. Check the official
+    program schedule for confirmed dates and times.
+  </p>
+</article>
+
+<style>
+  .wp {
+    padding: var(--space-7) var(--space-6) var(--space-9);
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+  }
+  @media (max-width: 40rem) {
+    .wp {
+      padding: var(--space-6) var(--gutter) var(--space-8);
+    }
+  }
+
+  .wp__code {
+    font-size: var(--step--1);
+    font-weight: 700;
+    color: var(--accent-ink);
+  }
+  .wp__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-block-start: var(--space-2);
+  }
+
+  .wp__block {
+    padding-block-start: var(--space-5);
+    margin-block-start: var(--space-3);
+    border-block-start: 1px solid var(--rule);
+  }
+  .wp__h {
+    font-size: var(--step--2);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-kicker);
+    color: var(--text-faint);
+    font-weight: 700;
+    margin-block-end: var(--space-3);
+  }
+  .wp__expect {
+    font-size: var(--step-0);
+    line-height: var(--leading-loose);
+    color: var(--text-muted);
+    text-wrap: pretty;
+  }
+
+  .wp__ms {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: var(--space-4);
+    align-items: center;
+    inline-size: 100%;
+    padding: var(--space-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    transition: border-color var(--dur-fast) var(--ease-out);
+  }
+  .wp__ms:hover {
+    border-color: var(--border-strong);
+  }
+  .wp__ms-code {
+    font-size: var(--step-0);
+    font-weight: 700;
+    color: var(--accent-ink);
+  }
+  .wp__ms-body {
+    display: grid;
+    gap: 0.1rem;
+    text-align: start;
+  }
+  .wp__ms-title {
+    font-size: var(--step--1);
+    font-weight: 650;
+    color: var(--text-strong);
+  }
+  .wp__ms-sub {
+    font-size: var(--step--2);
+    color: var(--text-faint);
+  }
+
+  .wp__note {
+    margin-block-start: var(--space-4);
+    font-size: var(--step--2);
+    color: var(--text-faint);
+    line-height: var(--leading-body);
+  }
+</style>

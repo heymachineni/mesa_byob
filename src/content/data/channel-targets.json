@@ -1,0 +1,77 @@
+[
+  {
+    "id": "social-media",
+    "name": "Social Media",
+    "tof": null,
+    "min": [
+      "Conceptualise, shoot, and cross-post 15 reels across 2 channels each"
+    ],
+    "win": ["Get 100k+ total impressions"],
+    "budget": "1k",
+    "winRevenue": null,
+    "channel": "online-organic",
+    "note": "Operational support"
+  },
+  {
+    "id": "influencer-affiliate",
+    "name": "Influencer & Affiliate Marketing",
+    "tof": "50+ influencers",
+    "min": ["Close 3 influencer/affiliate partnerships"],
+    "win": ["Close ₹1,00,000+ of revenue through channel"],
+    "budget": "5k",
+    "winRevenue": 100000,
+    "channel": "influencer",
+    "note": null
+  },
+  {
+    "id": "b2b-sales",
+    "name": "B2B Sales",
+    "tof": "100+ companies (email + LinkedIn closes)",
+    "min": [
+      "Close 3 B2B deals",
+      "Have a B2B page on site",
+      "Post 3x/day on LinkedIn"
+    ],
+    "win": ["Close ₹2,00,000+ of revenue through channel"],
+    "budget": "1k",
+    "winRevenue": 200000,
+    "channel": "b2b",
+    "note": null
+  },
+  {
+    "id": "performance-marketing",
+    "name": "Performance Marketing",
+    "tof": null,
+    "min": ["Make 5 ads (at least 3 types)"],
+    "win": [
+      "Achieve ROAS of 3+",
+      "Close ₹50,000+ of revenue through channel"
+    ],
+    "budget": "10k",
+    "winRevenue": 50000,
+    "channel": "performance",
+    "note": null
+  },
+  {
+    "id": "direct-offline",
+    "name": "Direct/Offline Sales",
+    "tof": null,
+    "min": ["Execute 5+ offline sales/pop-ups/activities"],
+    "win": ["Close ₹2,50,000 of revenue through channel"],
+    "budget": null,
+    "winRevenue": 250000,
+    "channel": "offline",
+    "note": null
+  },
+  {
+    "id": "flea-market",
+    "name": "Flea Market",
+    "tof": null,
+    "min": [],
+    "win": ["Hit revenue target of ₹1,00,000 at the Mesa Flea"],
+    "budget": null,
+    "winRevenue": 100000,
+    "channel": null,
+    "note": null
+  }
+]

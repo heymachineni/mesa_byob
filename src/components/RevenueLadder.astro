@@ -1,0 +1,165 @@
+---
+import type { Rung } from '../lib/content';
+
+interface Props {
+  rungs: Rung[];
+  /** Compact variant for the homepage teaser. */
+  compact?: boolean;
+}
+/**
+ * Wrap in a parent element for spacing. Astro does not forward a parent's
+ * scoped-style attribute to a child component's root node, so a `class` passed
+ * in here would never be styled — hence no `class` prop.
+ */
+const { rungs, compact = false } = Astro.props;
+
+/* Heights use a gentle curve rather than the raw fraction: at a linear scale
+   the first three rungs (₹0, ₹25K, ₹75K) are almost invisible against ₹7L,
+   which misrepresents how hard those early weeks actually are. */
+const height = (fraction: number) => 8 + Math.pow(fraction, 0.62) * 92;
+---
+
+<figure class:list={['ladder', compact && 'ladder--compact']}>
+  <ol class="ladder__track" data-reveal-group style={`--rungs:${rungs.length}`}>
+    {
+      rungs.map((rung, i) => (
+        <li
+          class:list={['ladder__rung', rung.isTarget && 'is-target']}
+          style={`--h:${height(rung.fraction).toFixed(2)}%`}
+          data-reveal
+        >
+          <div class="ladder__bar">
+            <span class="ladder__fill" />
+          </div>
+          <div class="ladder__label">
+            <span class="ladder__value num">{rung.label}</span>
+            <span class="ladder__meta mono">
+              {rung.milestone.code}
+              {i === 0 ? '–M2' : ''}
+            </span>
+            <span class="ladder__week">Wk {rung.milestone.week}</span>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+
+  <figcaption class="ladder__caption">
+    <slot>
+      The cumulative revenue target at each milestone. This is the path ahead — not a
+      record of what your team has earned.
+    </slot>
+  </figcaption>
+</figure>
+
+<style>
+  .ladder {
+    margin: 0;
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .ladder__track {
+    display: grid;
+    grid-template-columns: repeat(var(--rungs, 7), 1fr);
+    gap: clamp(0.25rem, 1vw, 0.75rem);
+    align-items: end;
+    block-size: clamp(11rem, 26vw, 17rem);
+    padding-block-start: var(--space-4);
+  }
+
+  .ladder__rung {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    gap: var(--space-3);
+    block-size: 100%;
+    align-items: end;
+    min-inline-size: 0;
+  }
+
+  .ladder__bar {
+    display: flex;
+    align-items: flex-end;
+    block-size: 100%;
+  }
+
+  .ladder__fill {
+    inline-size: 100%;
+    block-size: var(--h);
+    border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+    background: linear-gradient(
+      to top,
+      color-mix(in srgb, var(--forge-royal) 78%, transparent),
+      color-mix(in srgb, var(--forge-amethyst) 72%, transparent)
+    );
+    transform-origin: bottom;
+    transition: block-size var(--dur-slow) var(--ease-out);
+  }
+
+  /* The ₹7L rung is the only one that gets the CTA colour. */
+  .is-target .ladder__fill {
+    background: linear-gradient(
+      to top,
+      var(--forge-violet),
+      color-mix(in srgb, var(--forge-orchid) 85%, var(--forge-violet))
+    );
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--forge-orchid) 45%, transparent);
+  }
+
+  .js .ladder__rung:not(.is-revealed) .ladder__fill {
+    block-size: 0;
+  }
+
+  .ladder__label {
+    display: grid;
+    gap: 0.15rem;
+    text-align: center;
+    min-inline-size: 0;
+  }
+  .ladder__value {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(0.82rem, 1.8vw, var(--step-0));
+    color: var(--text-strong);
+    line-height: 1.1;
+  }
+  .is-target .ladder__value {
+    color: var(--forge-violet);
+  }
+  [data-tone='dark'] .is-target .ladder__value,
+  [data-tone='deep'] .is-target .ladder__value {
+    color: var(--forge-orchid);
+  }
+  .ladder__meta {
+    font-size: var(--step--2);
+    color: var(--accent-ink);
+    font-weight: 700;
+  }
+  .ladder__week {
+    font-size: var(--step--2);
+    color: var(--text-faint);
+  }
+
+  .ladder__caption {
+    font-size: var(--step--2);
+    color: var(--text-faint);
+    line-height: var(--leading-body);
+    max-inline-size: 60ch;
+  }
+
+  .ladder--compact .ladder__track {
+    block-size: clamp(7rem, 18vw, 10rem);
+  }
+  .ladder--compact .ladder__week {
+    display: none;
+  }
+
+  @media (max-width: 34rem) {
+    .ladder__week {
+      display: none;
+    }
+    .ladder__meta {
+      font-size: 0.62rem;
+    }
+  }
+</style>

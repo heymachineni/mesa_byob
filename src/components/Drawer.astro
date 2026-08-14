@@ -1,0 +1,441 @@
+---
+/**
+ * THE DRAWER
+ *
+ * A single native <dialog> holding every milestone, channel and workshop panel.
+ * Native showModal() gives focus trapping, Escape-to-close and an inert page
+ * for free — no focus-trap library, no framework.
+ *
+ * Panels are static HTML rendered once and toggled with `hidden`, so moving
+ * M1 → M2 or Offline → Online never closes the overlay or refetches anything.
+ *
+ * State lives in the URL (?m=m4, ?c=influencer, ?w=ws11) so a drawer is
+ * shareable and the browser Back button closes it, satisfying the no-maze rule.
+ */
+---
+
+<dialog class="drawer" id="drawer" aria-labelledby="drawer-title">
+  <div class="drawer__chrome">
+    <!-- Context first: the panel always says where you are. -->
+    <p class="drawer__ctx" id="drawer-title" data-drawer-ctx></p>
+
+    <div class="drawer__seq">
+      <button class="drawer__step" type="button" data-drawer-prev>
+        <span aria-hidden="true">←</span><span class="sr-only">Previous</span>
+      </button>
+      <span class="drawer__count mono" data-drawer-count aria-live="polite"></span>
+      <button class="drawer__step" type="button" data-drawer-next>
+        <span aria-hidden="true">→</span><span class="sr-only">Next</span>
+      </button>
+    </div>
+
+    <!-- Exactly one close affordance. Escape also works, silently. -->
+    <button class="drawer__close" type="button" data-drawer-close aria-label="Close panel">
+      <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+        <path d="M3.5 3.5 L12.5 12.5 M12.5 3.5 L3.5 12.5" stroke="currentColor"
+          stroke-width="1.6" stroke-linecap="round"></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="drawer__scroll" data-drawer-scroll tabindex="-1">
+    <slot />
+  </div>
+</dialog>
+
+<style>
+  .drawer {
+    /* Right-hand drawer on desktop. Width follows the weight of the content:
+       a workshop is a quick read, a channel playbook is a long one. */
+    margin: 0 0 0 auto;
+    inline-size: min(var(--drawer-w), 100%);
+    max-inline-size: 100%;
+    block-size: 100dvh;
+    max-block-size: 100dvh;
+    padding: 0;
+    border: 0;
+    background: var(--bg);
+    color: var(--text);
+    box-shadow: var(--shadow-drawer);
+    /* NOTE: no `display` here. Setting it unconditionally would override the UA's
+       `dialog:not([open]) { display: none }`, leaving a closed 44rem panel laid
+       out off-canvas and pushing the page into horizontal overflow. */
+    grid-template-rows: auto 1fr;
+    overflow: hidden;
+
+    opacity: 0;
+    translate: 1.5rem 0;
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      translate var(--dur-base) var(--ease-out),
+      overlay var(--dur-base) allow-discrete,
+      display var(--dur-base) allow-discrete;
+  }
+  .drawer[open] {
+    display: grid;
+    opacity: 1;
+    translate: 0 0;
+  }
+  /* Quick / medium / long-form. */
+  .drawer[data-size='sm'] {
+    --drawer-w: 30rem;
+  }
+  .drawer[data-size='md'] {
+    --drawer-w: 42rem;
+  }
+  .drawer[data-size='lg'] {
+    --drawer-w: 54rem;
+  }
+  @starting-style {
+    .drawer[open] {
+      opacity: 0;
+      translate: 1.5rem 0;
+    }
+  }
+
+  .drawer::backdrop {
+    background: color-mix(in srgb, var(--forge-aubergine) 55%, transparent);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    opacity: 0;
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      overlay var(--dur-base) allow-discrete,
+      display var(--dur-base) allow-discrete;
+  }
+  .drawer[open]::backdrop {
+    opacity: 1;
+  }
+  @starting-style {
+    .drawer[open]::backdrop {
+      opacity: 0;
+    }
+  }
+
+  /* ---------------------------------------------------------------- chrome */
+  .drawer__chrome {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-5);
+    border-block-end: 1px solid var(--rule);
+    background: var(--bg);
+  }
+
+  .drawer__close {
+    display: grid;
+    place-items: center;
+    inline-size: 2.3rem;
+    block-size: 2.3rem;
+    flex: 0 0 auto;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    transition:
+      color var(--dur-fast) var(--ease-out),
+      background var(--dur-fast) var(--ease-out);
+  }
+  .drawer__close svg {
+    inline-size: 1rem;
+  }
+  .drawer__close:hover {
+    color: var(--text-strong);
+    background: var(--surface-inset);
+  }
+
+  .drawer__ctx {
+    font-size: var(--step--2);
+    font-weight: 700;
+    letter-spacing: var(--tracking-kicker);
+    text-transform: uppercase;
+    color: var(--text-faint);
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .drawer__seq {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex: 0 0 auto;
+  }
+  .drawer__step {
+    inline-size: 2.2rem;
+    block-size: 2.2rem;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+  }
+  .drawer__step:hover:not(:disabled) {
+    border-color: var(--border-strong);
+    color: var(--text-strong);
+  }
+  .drawer__step:disabled {
+    opacity: 0.32;
+    cursor: default;
+  }
+  .drawer__count {
+    font-size: var(--step--2);
+    color: var(--text-faint);
+    min-inline-size: 2.6rem;
+    text-align: center;
+  }
+
+  /* ----------------------------------------------------------------- body */
+  .drawer__scroll {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .drawer__scroll:focus {
+    outline: none;
+  }
+
+  /* --------------------------------------------------------------- mobile */
+  /* Bottom sheet on mobile. Height follows content weight so a workshop does
+     not take over the screen, and the safe area is respected. */
+  @media (max-width: 40rem) {
+    .drawer {
+      margin: auto 0 0;
+      inline-size: 100%;
+      block-size: 92dvh;
+      max-block-size: 92dvh;
+      border-start-start-radius: var(--radius-lg);
+      border-start-end-radius: var(--radius-lg);
+      translate: 0 1.5rem;
+    }
+    .drawer[data-size='sm'] {
+      block-size: auto;
+      max-block-size: 72dvh;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+    @starting-style {
+      .drawer[open] {
+        translate: 0 1.5rem;
+      }
+    }
+    /* Grab handle — reads as a sheet you can dismiss. */
+    .drawer__chrome::before {
+      content: '';
+      position: absolute;
+      inset-block-start: 0.4rem;
+      inset-inline-start: 50%;
+      translate: -50% 0;
+      inline-size: 2.25rem;
+      block-size: 3px;
+      border-radius: var(--radius-pill);
+      background: var(--border-strong);
+    }
+    .drawer__chrome {
+      position: relative;
+      padding-block-start: var(--space-5);
+    }
+    .drawer__scroll {
+      padding-block-end: env(safe-area-inset-bottom, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .drawer,
+    .drawer::backdrop {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('#drawer');
+
+  if (dialog) {
+    const scroll = dialog.querySelector<HTMLElement>('[data-drawer-scroll]')!;
+    const ctx = dialog.querySelector<HTMLElement>('[data-drawer-ctx]')!;
+    const count = dialog.querySelector<HTMLElement>('[data-drawer-count]')!;
+    const prevBtn = dialog.querySelector<HTMLButtonElement>('[data-drawer-prev]')!;
+    const nextBtn = dialog.querySelector<HTMLButtonElement>('[data-drawer-next]')!;
+    const panels = [...dialog.querySelectorAll<HTMLElement>('[data-panel]')];
+
+    /** Which URL parameter carries each group's state. */
+    const PARAM: Record<string, string> = {
+      milestone: 'm',
+      channel: 'c',
+      workshop: 'w',
+    };
+
+    const groupOf = (id: string) =>
+      panels.find((p) => p.dataset.panel === id)?.dataset.group ?? '';
+
+    const siblings = (group: string) =>
+      panels
+        .filter((p) => p.dataset.group === group)
+        .sort((a, b) => Number(a.dataset.seq) - Number(b.dataset.seq));
+
+    /** Content weight per group — drives drawer width. */
+    const SIZE: Record<string, string> = {
+      workshop: 'sm',
+      milestone: 'md',
+      channel: 'lg',
+    };
+
+    let current: string | null = null;
+    /** True while the drawer owns a pushed history entry it must unwind. */
+    let pushed = false;
+
+    function render(id: string) {
+      const panel = panels.find((p) => p.dataset.panel === id);
+      if (!panel) return false;
+
+      panels.forEach((p) => {
+        p.hidden = p !== panel;
+      });
+
+      const group = panel.dataset.group!;
+      const peers = siblings(group);
+      const i = peers.indexOf(panel);
+
+      dialog!.dataset.size = SIZE[group] ?? 'md';
+      ctx.textContent = panel.dataset.ctx ?? '';
+      count.textContent = `${i + 1}/${peers.length}`;
+      prevBtn.disabled = i <= 0;
+      nextBtn.disabled = i >= peers.length - 1;
+      prevBtn.dataset.target = peers[i - 1]?.dataset.panel ?? '';
+      nextBtn.dataset.target = peers[i + 1]?.dataset.panel ?? '';
+
+      current = id;
+      scroll.scrollTop = 0;
+      return true;
+    }
+
+    function urlFor(id: string | null) {
+      const url = new URL(location.href);
+      Object.values(PARAM).forEach((k) => url.searchParams.delete(k));
+      if (id) {
+        const key = PARAM[groupOf(id)];
+        if (key) url.searchParams.set(key, id);
+      }
+      return url.pathname + url.search + url.hash;
+    }
+
+    /**
+     * `push` on the first open only. Stepping M1 → M8 replaces, so Back always
+     * returns to the page rather than walking back through eight panels.
+     */
+    function open(id: string, mode: 'push' | 'replace' | 'none' = 'push') {
+      if (!render(id)) return;
+
+      if (!dialog!.open) {
+        dialog!.showModal();
+        document.body.classList.add('is-locked');
+      }
+      scroll.focus({ preventScroll: true });
+
+      if (mode === 'push') {
+        history.pushState({ drawer: id }, '', urlFor(id));
+        pushed = true;
+      } else if (mode === 'replace') {
+        history.replaceState({ drawer: id }, '', urlFor(id));
+      }
+    }
+
+    /**
+     * Close immediately, then unwind our own history entry so Back never
+     * re-opens what was just closed. Closing must not depend on popstate
+     * arriving — if it never fires, the page would be left scroll-locked.
+     */
+    function requestClose() {
+      const owned = pushed;
+      pushed = false;
+      dismiss();
+      if (owned) history.back();
+    }
+
+    function dismiss() {
+      if (dialog!.open) dialog!.close();
+    }
+
+    dialog.addEventListener('close', () => {
+      /* Only release the scroll lock if no other overlay still needs it. */
+      if (!document.querySelector('dialog[open]')) {
+        document.body.classList.remove('is-locked');
+      }
+      panels.forEach((p) => {
+        p.hidden = true;
+      });
+      current = null;
+      /* Strip a stale ?m=… if we closed without a history step. */
+      if (location.search) history.replaceState({ drawer: null }, '', urlFor(null));
+    });
+
+    /* Escape: intercept so it unwinds history like every other dismissal. */
+    dialog.addEventListener('cancel', (event) => {
+      event.preventDefault();
+      requestClose();
+    });
+
+    /* Clicking the backdrop dismisses. */
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) requestClose();
+    });
+
+    dialog.querySelector('[data-drawer-close]')!.addEventListener('click', requestClose);
+
+    [prevBtn, nextBtn].forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.target;
+        if (target) open(target, 'replace');
+      })
+    );
+
+    /* Arrow keys step through the group while the drawer has focus. */
+    dialog.addEventListener('keydown', (event) => {
+      if (event.target instanceof HTMLInputElement) return;
+      if (event.key === 'ArrowLeft' && !prevBtn.disabled) prevBtn.click();
+      if (event.key === 'ArrowRight' && !nextBtn.disabled) nextBtn.click();
+    });
+
+    /* Any element anywhere can open a panel. Cross-group jumps (a workshop chip
+       inside a milestone) replace rather than stack. */
+    document.addEventListener('click', (event) => {
+      const trigger = (event.target as HTMLElement | null)?.closest<HTMLElement>(
+        '[data-open]'
+      );
+      if (!trigger) return;
+      event.preventDefault();
+      open(trigger.dataset.open!, dialog!.open ? 'replace' : 'push');
+    });
+
+    /* Back/forward moves between the page and a drawer state. */
+    addEventListener('popstate', () => {
+      const params = new URLSearchParams(location.search);
+      const id = Object.values(PARAM)
+        .map((k) => params.get(k))
+        .find(Boolean);
+      if (id) {
+        pushed = false; // this state came from history, we don't own it
+        open(id, 'none');
+      } else {
+        pushed = false;
+        dismiss();
+      }
+    });
+
+    /* Deep link on first load — no history entry of our own to unwind. */
+    const initial = new URLSearchParams(location.search);
+    const first = Object.values(PARAM)
+      .map((k) => initial.get(k))
+      .find(Boolean);
+    if (first) open(first, 'none');
+
+    /* Exposed so the search overlay can hand off to the drawer. */
+    (window as unknown as { byobDrawer: { open: typeof open } }).byobDrawer = {
+      open: (id: string) => open(id, dialog!.open ? 'replace' : 'push'),
+    };
+  }
+</script>

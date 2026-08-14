@@ -1,0 +1,120 @@
+[
+  {
+    "id": "money",
+    "inventory": {
+      "intro": "For a D2C brand, inventory is the single biggest way founders accidentally lose money without realising it — either by running out of stock mid-sale, or by over-ordering and tying up cash they need for marketing and operations.",
+      "terms": [
+        {
+          "term": "MOQ",
+          "body": "Minimum Order Quantity — the smallest amount your supplier will produce or sell at once. Know this before you commit; it sets your minimum cash outlay."
+        },
+        {
+          "term": "Safety stock",
+          "body": "A small buffer beyond expected sales, so a sudden spike (a stall does unexpectedly well, a Reel goes semi-viral) doesn't leave you empty-handed."
+        },
+        {
+          "term": "Reorder point",
+          "body": "The stock level at which you should place your next order, accounting for how long your supplier takes to deliver."
+        },
+        {
+          "term": "Dead stock",
+          "body": "Inventory that isn't selling: money sitting on a shelf instead of in your bank account."
+        }
+      ],
+      "phases": [
+        {
+          "label": "Discover & Validate · Wk 1–2",
+          "body": "Order small. Your first order should be just enough to test demand and hit your first sales — not a bulk buy. Getting stuck with 200 units of an unproven product in Week 2 is the single most common way teams lose their working capital early."
+        },
+        {
+          "label": "Build & Brand · Wk 3–4",
+          "body": "Once you have real sales data, reorder based on actual velocity (units sold per week), not guesses or excitement."
+        },
+        {
+          "label": "Sell & Scale · Wk 5–6",
+          "body": "This is where stockouts get expensive — you're spending on ads and influencers to drive traffic, and running out mid-campaign wastes that spend. Build in a safety buffer for your fastest-moving SKU."
+        },
+        {
+          "label": "Optimize & Close · Wk 7–8",
+          "body": "Order specifically for the Flea Market — it's a single-day, high-footfall event, and running out by noon means leaving revenue on the table you can't get back."
+        }
+      ],
+      "system": "Track 3 numbers weekly — opening stock, units sold, closing stock. If closing stock is trending toward zero faster than your next order will arrive, that's your reorder signal.",
+      "avoid": [
+        "Ordering a “safe” large batch upfront for a better per-unit price, before demand is proven",
+        "Not accounting for supplier lead time when reordering — running out while waiting for the next batch",
+        "Treating every unit as identical — track your best-seller separately, it usually needs reordering faster",
+        "Having no plan for slow-moving stock — bundle it or discount it, don't let it just sit"
+      ],
+      "videos": [
+        {
+          "title": "How to Manage Small Business Inventory",
+          "url": "https://www.youtube.com/watch?v=eR5SE683e4k",
+          "source": "YouTube",
+          "kind": "youtube",
+          "placeholder": false
+        },
+        {
+          "title": "Inventory Management 101: Tips for Small Retailers",
+          "url": "https://www.youtube.com/watch?v=CcBREhcgYkA",
+          "source": "YouTube",
+          "kind": "youtube",
+          "placeholder": false
+        }
+      ]
+    },
+    "revenue": {
+      "intro": "Revenue without a sense of your expenses is a vanity number — you could hit ₹75K in sales and still be losing money if your costs aren't in check. Here's a simple way to think about both, at every stage.",
+      "numbers": [
+        {
+          "name": "Revenue",
+          "body": "Total sales, from your daily tracker"
+        },
+        {
+          "name": "COGS",
+          "body": "Cost of Goods Sold — what it cost you to make or source what you sold"
+        },
+        {
+          "name": "Marketing spend",
+          "body": "Ads, influencer payments, flyers, everything spent to get a sale"
+        },
+        {
+          "name": "Other costs",
+          "body": "Packaging, shipping, transaction fees, stall fees"
+        },
+        {
+          "name": "Gross margin",
+          "body": "Revenue minus all of the above: what's actually left"
+        }
+      ],
+      "lens": [
+        {
+          "milestone": "M1–M2 · Discover & Validate",
+          "revGoal": "₹0",
+          "focus": "Spend as little as possible while you validate. Your ₹30K tranche should mostly stay unspent until product and supplier are locked — don't burn it on speculative inventory or ads yet.",
+          "watchFor": "Overspending on “getting ready” (branding, packaging, tools) before you've sold a single unit to a stranger."
+        },
+        {
+          "milestone": "M3–M4 · Build & Brand",
+          "revGoal": "₹75K",
+          "focus": "Your first real cost data starts here — what does it actually cost you, in money and time, to get one sale through each channel? Start learning your rough cost-per-acquisition.",
+          "watchFor": "Spending on ads before your store/landing page can actually convert — that's cash burned with nothing to show for it."
+        },
+        {
+          "milestone": "M5–M6 · Sell & Scale",
+          "revGoal": "₹75K → ₹2.75L",
+          "focus": "Margin discipline matters most here — you're scaling spend on what's working, so know your ROAS and margin per channel before pouring in more money.",
+          "watchFor": "Chasing revenue at the cost of margin — e.g. heavy discounting that grows sales but shrinks what you actually keep."
+        },
+        {
+          "milestone": "M7–M8 · Optimize & Close",
+          "revGoal": "₹2.75L → ₹7L",
+          "focus": "This is repayment math time — know, with real numbers, that you can repay your capital by 15 Nov and still have something left. Reconcile your full P&L before the Flea Market, not after.",
+          "watchFor": "Treating the Flea Market as “extra” sales without planning inventory and float (change, backup UPI) for a single big day."
+        }
+      ],
+      "question": "If I stopped today, could I repay what I owe?",
+      "questionBody": "Ask it every week. If the honest answer is no, that's the conversation to bring to your Wednesday 1:1 — before it becomes a Week 8 problem."
+    }
+  }
+]

@@ -1,0 +1,117 @@
+---
+import '../styles/tokens.css';
+import '../styles/base.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Search from '../components/Search.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Appended to the page title. Set false for the homepage. */
+  suffix?: boolean;
+}
+const { title, description, suffix = true } = Astro.props;
+const fullTitle = suffix ? `${title} · BYOB Challenge` : title;
+---
+
+<!doctype html>
+<html lang="en" id="top">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <!-- The alternate design, reachable by URL only. -->
+    <meta name="robots" content="noindex" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#2A1849" />
+    <meta name="color-scheme" content="light" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap"
+    />
+
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232A1849'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='19' font-weight='700' fill='%23fff' text-anchor='middle'%3Em%3C/text%3E%3C/svg%3E"
+    />
+
+    <!-- Marks JS as available before first paint, so scroll-reveal never leaves
+         content hidden for users without it. -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <Search />
+
+    <script>
+      /* Anchor correction. The display serif swaps in after first layout, which
+         reflows everything above the target and leaves a deep-linked anchor
+         scrolled past its heading. Re-align once fonts have settled. */
+      if (location.hash) {
+        const realign = () => {
+          try {
+            document.querySelector(location.hash)?.scrollIntoView({
+              behavior: 'auto',
+              block: 'start',
+            });
+          } catch {
+            /* Malformed hash — nothing to scroll to. */
+          }
+        };
+        if (document.fonts?.ready) document.fonts.ready.then(realign);
+        else window.addEventListener('load', realign);
+      }
+
+      /* Scroll reveal — one observer for the whole page. Elements stay revealed
+         once seen; nothing re-animates on scroll-up. */
+      const items = document.querySelectorAll<HTMLElement>('[data-reveal]');
+
+      if (items.length) {
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+        if (reduce.matches) {
+          items.forEach((el) => el.classList.add('is-revealed'));
+        } else {
+          const io = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('is-revealed');
+                io.unobserve(entry.target);
+              });
+            },
+            { rootMargin: '0px 0px -8% 0px', threshold: 0.08 }
+          );
+
+          items.forEach((el) => {
+            /* Stagger only within a group, capped so long lists never crawl. */
+            const group = el.closest('[data-reveal-group]');
+            if (group) {
+              const peers = [...group.querySelectorAll('[data-reveal]')];
+              const index = peers.indexOf(el);
+              el.style.setProperty('--reveal-delay', `${Math.min(index, 6) * 55}ms`);
+            }
+            io.observe(el);
+          });
+        }
+      }
+    </script>
+  </body>
+</html>

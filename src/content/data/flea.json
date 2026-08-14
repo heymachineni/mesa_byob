@@ -1,0 +1,89 @@
+[
+  {
+    "id": "flea",
+    "kicker": "Week 8 · M8",
+    "lede": "Eight weeks of building → one day of proving it.",
+    "paragraphs": [
+      "Eight weeks of building, sourcing, pitching, posting, and selling — all of it comes down to one electric day. Mesa Flea is where your venture stops being a project and becomes a business, live, in front of real customers who owe you nothing and have to be won over on the spot.",
+      "Picture it: your own stall, your own brand, your product in your hands, and a stream of strangers walking past who don't know you yet — but will, in about ten seconds, know exactly why they should buy from you instead of anyone else. No algorithm decides who sees you. No ad budget buys you attention. Just you, your pitch, and your ability to close.",
+      "This is the day founders talk about years later. The day the number on your revenue tracker jumps like it never has before. The day you high-five your co-founders because you sold out of your best-seller by 2pm. Every cohort says the same thing afterward: it was the hardest day of BYOB, and the best one."
+    ],
+    "whyBestTitle": "Why it's the best day of BYOB",
+    "whyBest": [
+      {
+        "title": "It's proof, not theory.",
+        "body": "Eight weeks of decisions — product, pricing, positioning — get tested in real time, against real people, all day long."
+      },
+      {
+        "title": "It's your whole cohort, together.",
+        "body": "Every venture on the floor at once — the energy is unmatched."
+      },
+      {
+        "title": "It's usually your best single-day revenue of the entire challenge.",
+        "body": "Teams consistently do more business in one day at the Flea than in the two weeks before it combined."
+      },
+      {
+        "title": "It's a story you'll tell in every future interview.",
+        "body": "“I built a business and sold it live at a flea market” hits different than “I did a case study.”"
+      }
+    ],
+    "proof": {
+      "title": "EverRaw",
+      "body": "A spreads brand born out of a BYOB sprint, hit ₹2.5 lakh in revenue and 500 customers in just 10 weeks. Founder Lucky went on to pitch it on Shark Tank India Season 5. It started exactly where you're starting — a stall, a product, and a Flea Market day.",
+      "link": {
+        "title": "EverRaw's BYOB story",
+        "url": null,
+        "source": "Mesa's site",
+        "kind": "link",
+        "placeholder": true,
+        "note": "The proof point referenced above, straight from Mesa's site."
+      }
+    },
+    "watchIntro": "A mix of real Mesa content and open slots for the Flea Day reels that should headline this section.",
+    "pastReels": [
+      {
+        "title": "Flea Market Day highlights reel",
+        "url": null,
+        "source": "@mesa.school",
+        "kind": "instagram",
+        "placeholder": true,
+        "note": "Pull from @mesa.school"
+      },
+      {
+        "title": "“My first sale” founder reaction reel",
+        "url": null,
+        "source": "@mesa.school",
+        "kind": "instagram",
+        "placeholder": true,
+        "note": "Pull from @mesa.school"
+      },
+      {
+        "title": "Best stall / best pitch moment",
+        "url": null,
+        "source": "@mesa.school",
+        "kind": "instagram",
+        "placeholder": true,
+        "note": "Pull from @mesa.school"
+      }
+    ],
+    "realContent": [
+      {
+        "title": "Mesa School of Business on Instagram",
+        "url": "https://www.instagram.com/mesa.school/",
+        "source": "256K followers",
+        "kind": "instagram",
+        "placeholder": false,
+        "note": "Browse for the actual Flea Day reels to feature above."
+      },
+      {
+        "title": "Mesa School of Business on YouTube",
+        "url": "https://www.youtube.com/@mesaschool",
+        "source": "YouTube",
+        "kind": "youtube",
+        "placeholder": false,
+        "note": "Browse for BYOB and campus culture videos."
+      }
+    ],
+    "placeholderNote": "The three reel slots above are intentionally left as placeholders — Instagram content isn't reliably searchable, so the most accurate move is pulling the actual clips from @mesa.school directly rather than guessing."
+  }
+]

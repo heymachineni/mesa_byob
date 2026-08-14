@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+*.log
+.env
+.env.production
+
+# Reference material, not part of the deliverable. The Starter Pack and design
+# system are Mesa's internal documents and the newsletter is a third party's;
+# the content they carry already lives in src/content/data/*.json.
+*.docx
+ginnis-post-newsletter.html

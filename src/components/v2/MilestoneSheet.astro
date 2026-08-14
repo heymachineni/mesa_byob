@@ -1,0 +1,321 @@
+---
+import type { Milestone, Phase, Workshop, Channel } from '../../lib/content';
+
+interface Props {
+  m: Milestone;
+  phase: Phase;
+  workshops: Workshop[];
+  channels: Channel[];
+  seq: number;
+  fraction: number;
+}
+const { m, phase, workshops, channels, seq, fraction } = Astro.props;
+---
+
+<article
+  class="ms"
+  data-panel={m.id}
+  data-group="milestone"
+  data-seq={seq}
+  data-where={`${phase.name} · week ${m.week}`}
+  hidden
+>
+  <header class="ms__top">
+    <div class="ms__tags">
+      <span class="tag">{m.code}</span>
+      <span class="tag tag--quiet">Week {m.week}</span>
+      {m.gate && <span class="tag tag--violet">{m.gate.name}</span>}
+    </div>
+
+    <h2 class="disp disp--md ms__t">{m.headline}</h2>
+
+    <dl class="ms__facts">
+      <div>
+        <dt class="kicker">Due</dt>
+        <dd>
+          {
+            m.dateConfirming ? (
+              <span class="confirming" title={m.dateConfirming.note}>
+                {m.date}
+                <span class="sr-only"> (being confirmed: {m.dateConfirming.note})</span>
+              </span>
+            ) : (
+              m.date
+            )
+          }
+          <span class="ms__sub">{m.deadlineLabel}</span>
+        </dd>
+      </div>
+      <div>
+        <dt class="kicker">Revenue target</dt>
+        <dd class="ms__rev disp disp--xs num">{m.revenueLabel}</dd>
+      </div>
+      <div>
+        <dt class="kicker">Phase</dt>
+        <dd>
+          {phase.code} · {phase.name}
+          <span class="ms__sub">{phase.weeks}</span>
+        </dd>
+      </div>
+    </dl>
+
+    <!-- Progress drawn as a filled bar on ruled paper. -->
+    <div class="ms__bar">
+      <span class="ms__fill" style={`--w:${(fraction * 100).toFixed(1)}%`}></span>
+    </div>
+    <p class="ms__barnote">
+      {Math.round(fraction * 100)}% of the way to ₹7L — the target here, not your revenue yet
+    </p>
+  </header>
+
+  <section class="ms__blk">
+    <h3 class="ms__h">What you hand in</h3>
+    <ul class="ticks">
+      {m.deliverables.map((d) => <li>{d}</li>)}
+    </ul>
+  </section>
+
+  {
+    m.gate && (
+      <section class="ms__blk ms__gate">
+        <h3 class="ms__h">{m.gate.name} — the unlock</h3>
+        <p class="ms__rule">
+          {m.gateConfirming ? (
+            <span class="confirming" title={m.gateConfirming.note}>
+              {m.gate.rule}
+              <span class="sr-only"> (being confirmed: {m.gateConfirming.note})</span>
+            </span>
+          ) : (
+            m.gate.rule
+          )}
+        </p>
+        {m.gate.spendOn.length > 0 && (
+          <>
+            <p class="ms__spendl kicker">This tranche covers</p>
+            <ul class="ms__spend">
+              {m.gate.spendOn.map((s) => (
+                <li>{s}</li>
+              ))}
+            </ul>
+          </>
+        )}
+      </section>
+    )
+  }
+
+  {
+    m.escalation && (
+      <section class="ms__blk">
+        <h3 class="ms__h">If you fall behind</h3>
+        <p class="aside">{m.escalation}</p>
+      </section>
+    )
+  }
+
+  <section class="ms__blk">
+    <h3 class="ms__h">What good looks like</h3>
+    <blockquote class="ms__q">
+      <p class="say">{m.mentorQuestion}</p>
+      <cite>— what your mentor opens with, at this week's 1:1</cite>
+    </blockquote>
+  </section>
+
+  {
+    (workshops.length > 0 || channels.length > 0) && (
+      <section class="ms__blk">
+        <h3 class="ms__h">Handy right about now</h3>
+        <div class="ms__links">
+          {workshops.map((w) => (
+            <button class="ms__link" type="button" data-open={w.id}>
+              <span class="mono">{w.code}</span>
+              <span>{w.title}</span>
+            </button>
+          ))}
+          {channels.map((c) => (
+            <button class="ms__link ms__link--ch" type="button" data-open={c.id}>
+              <span class="mono">{c.code}</span>
+              <span>{c.name}</span>
+            </button>
+          ))}
+        </div>
+        <p class="fineprint">
+          Workshop pairings are a reading guide for when each session helps most — check the
+          program schedule for confirmed dates.
+        </p>
+      </section>
+    )
+  }
+</article>
+
+<style>
+  .ms {
+    display: grid;
+    gap: var(--sp-6);
+    padding: var(--sp-7) var(--sp-6) var(--sp-9);
+  }
+  @media (max-width: 40rem) {
+    .ms {
+      padding: var(--sp-5) var(--gutter) var(--sp-8);
+    }
+  }
+
+  .ms__top {
+    display: grid;
+    gap: var(--sp-4);
+  }
+  .ms__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+  }
+  .ms__t {
+    max-inline-size: 16ch;
+  }
+
+  .ms__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-5) var(--sp-6);
+    padding-block-start: var(--sp-4);
+    border-block-start: 1.5px dashed var(--line);
+  }
+  .ms__facts dt {
+    margin-block-end: 0.25rem;
+  }
+  .ms__facts dd {
+    font-size: var(--s--1);
+    font-weight: 700;
+    color: var(--ink-2);
+  }
+  .ms__sub {
+    display: block;
+    font-size: var(--s--2);
+    font-weight: 500;
+    color: var(--text-faint);
+  }
+  .ms__rev {
+    color: var(--violet);
+  }
+
+  .ms__bar {
+    block-size: 10px;
+    background: var(--paper-3);
+    border: 1.5px solid var(--ink);
+    border-radius: 100px 30px 100px 30px / 30px 100px 30px 100px;
+    overflow: hidden;
+  }
+  .ms__fill {
+    display: block;
+    block-size: 100%;
+    inline-size: var(--w);
+    background: repeating-linear-gradient(
+      -45deg,
+      var(--violet) 0 7px,
+      color-mix(in srgb, var(--coral) 60%, var(--violet)) 7px 14px
+    );
+  }
+  .ms__barnote {
+    font-size: var(--s-0);
+    color: var(--text-soft);
+  }
+
+  .ms__h {
+    font-size: 1.45rem;
+    color: var(--ink-2);
+    margin-block-end: var(--sp-3);
+  }
+
+  .ms__gate {
+    position: relative;
+    padding: var(--sp-5);
+    background: color-mix(in srgb, var(--violet) 8%, var(--paper));
+    border: 1.6px dashed var(--violet);
+    border-radius: 16px 180px 14px 170px / 170px 13px 160px 15px;
+  }
+  .ms__gate :global(.ms__pin) {
+    position: absolute;
+    inset-block-start: -1.1rem;
+    inset-inline-end: 1.2rem;
+  }
+  .ms__rule {
+    font-size: var(--s-0);
+    font-weight: 600;
+    color: var(--ink-2);
+    line-height: 1.6;
+  }
+  .ms__spendl {
+    margin-block: var(--sp-4) var(--sp-2);
+  }
+  .ms__spend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+  }
+  .ms__spend li {
+    font-size: var(--s--2);
+    padding: 0.2rem 0.6rem;
+    background: var(--paper);
+    border: 1.3px solid var(--line);
+    border-radius: 60px 8px 55px 9px / 9px 50px 8px 60px;
+    color: var(--text-soft);
+  }
+
+  .ms__q {
+    position: relative;
+    padding-inline-start: var(--sp-5);
+    box-shadow: inset 2px 0 0 var(--coral);
+  }
+  .ms__q :global(.ms__ast) {
+    position: absolute;
+    inset-block-start: -0.5rem;
+    inset-inline-start: -0.7rem;
+  }
+  .ms__q p {
+    font-size: var(--s-2);
+    color: var(--ink-2);
+    text-wrap: pretty;
+  }
+  .ms__q cite {
+    display: block;
+    margin-block-start: var(--sp-2);
+    font-size: var(--s--2);
+    font-style: normal;
+    color: var(--text-faint);
+  }
+
+  .ms__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin-block-end: var(--sp-4);
+  }
+  .ms__link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    padding: 0.4rem 0.7rem;
+    min-block-size: 2.2rem;
+    font-size: var(--s--2);
+    color: var(--text-soft);
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    border-radius: 70px 9px 65px 10px / 10px 60px 9px 70px;
+    transition:
+      rotate var(--fast) var(--ease),
+      border-color var(--fast) var(--ease),
+      background var(--fast) var(--ease);
+  }
+  .ms__link:nth-child(even) {
+  }
+  .ms__link:hover {
+    border-color: var(--ink);
+    background: var(--paper-2);
+  }
+  .ms__link .mono {
+    font-weight: 800;
+    color: var(--violet);
+  }
+  .ms__link--ch {
+    background: color-mix(in srgb, var(--coral) 24%, var(--paper));
+  }
+</style>

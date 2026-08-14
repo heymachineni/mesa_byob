@@ -1,0 +1,141 @@
+---
+import { youTubeId } from '../../lib/format';
+
+/**
+ * A video, taped into the kit. The frame is rotated a degree, double-bordered
+ * (dashed pass offset behind a solid pass) and held down with tape — so it
+ * reads as a photo stuck onto a page rather than an embed in a box.
+ *
+ * Real iframes, lazy — inside a closed panel they are never fetched at all.
+ */
+interface Props {
+  video: {
+    title: string;
+    url: string | null;
+    source: string;
+    kind: 'youtube' | 'instagram' | 'link';
+    placeholder: boolean;
+    note?: string | undefined;
+  };
+}
+const { video } = Astro.props;
+const yt = video.kind === 'youtube' ? youTubeId(video.url) : null;
+const empty = video.placeholder || !video.url;
+---
+
+<figure class="clip">
+  {
+    yt ? (
+      <div class="clip__frame">
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${yt}?rel=0`}
+          title={video.title}
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+          referrerpolicy="strict-origin-when-cross-origin"
+        />
+      </div>
+    ) : empty ? (
+      <div class="clip__frame clip__frame--empty">
+        <span class="clip__slot hand">clip goes here</span>
+      </div>
+    ) : (
+      <a class="clip__frame clip__frame--link" href={video.url} target="_blank" rel="noopener noreferrer">
+        <span class="clip__ext hand">
+          {video.kind === 'instagram' ? 'On Instagram' : 'Open'} <span class="arrow">↗</span>
+        </span>
+      </a>
+    )
+  }
+
+  <figcaption class="clip__cap">
+    <span class="clip__title">{video.title}</span>
+    <span class="clip__src">
+      {video.source}{empty ? ' — link to be added' : ''}
+    </span>
+    {video.note && <span class="clip__note hand">{video.note}</span>}
+  </figcaption>
+</figure>
+
+<style>
+  .clip {
+    position: relative;
+    margin: 0;
+    display: grid;
+    gap: var(--sp-3);
+    min-inline-size: 0;
+  }
+
+
+  .clip__frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: var(--paper-2);
+    display: block;
+    text-decoration: none;
+    isolation: isolate;
+  }
+  /* The coral pass, printed out of register. */
+  .clip__frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    translate: var(--shift) var(--shift);
+    background: var(--coral);
+    opacity: 0.22;
+    transition: translate var(--base) var(--ease);
+  }
+  .clip:hover .clip__frame::before {
+    translate: 0 0;
+  }
+  .clip__frame :global(iframe) {
+    inline-size: 100%;
+    block-size: 100%;
+    border: 0;
+    display: block;
+  }
+
+  .clip__frame--empty,
+  .clip__frame--link {
+    display: grid;
+    place-items: center;
+    box-shadow: inset 0 0 0 1.5px var(--line);
+  }
+  .clip__frame--link:hover {
+    background: color-mix(in srgb, var(--coral) 24%, var(--paper));
+  }
+  .clip__slot {
+    font-size: var(--s--1);
+    color: var(--text-faint);
+  }
+  .clip__ext {
+    font-size: var(--s--1);
+    font-weight: 700;
+    color: var(--ink-2);
+  }
+
+  .clip__cap {
+    display: grid;
+    gap: 0.15rem;
+    padding-inline: 0.15rem;
+  }
+  .clip__title {
+    font-size: var(--s--1);
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--ink-2);
+    text-wrap: pretty;
+  }
+  .clip__src {
+    font-size: var(--s--2);
+    color: var(--text-faint);
+  }
+  .clip__note {
+    font-size: var(--s-0);
+    color: var(--text-soft);
+  }
+
+  /* Flat on phones: the tilt overflows a thin gutter. */
+</style>

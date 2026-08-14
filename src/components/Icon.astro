@@ -1,0 +1,172 @@
+---
+/**
+ * A small visual vocabulary drawn from BYOB itself — a supplier box, a stall,
+ * a price tag, a QR code. Two-tone, geometric, slightly imperfect, and used
+ * only where the glyph names the thing beside it. No generic decoration.
+ */
+interface Props {
+  name:
+    | 'box'
+    | 'stall'
+    | 'tag'
+    | 'qr'
+    | 'phone'
+    | 'megaphone'
+    | 'target'
+    | 'handshake'
+    | 'deck'
+    | 'receipt';
+  size?: number;
+  class?: string;
+}
+const { name, size = 28, class: className = '' } = Astro.props;
+---
+
+<svg
+  class:list={['ico', className]}
+  viewBox="0 0 32 32"
+  width={size}
+  height={size}
+  aria-hidden="true"
+  focusable="false"
+>
+  {/* Supplier / inventory box */}
+  {
+    name === 'box' && (
+      <>
+        <path class="ico__fill" d="M5 11.5 16 7l11 4.5v12L16 28 5 23.5z" />
+        <path class="ico__line" d="M5 11.5 16 7l11 4.5v12L16 28 5 23.5z" />
+        <path class="ico__line" d="M5 11.5 16 16l11-4.5M16 16v12" />
+      </>
+    )
+  }
+
+  {/* Market stall — the Flea */}
+  {
+    name === 'stall' && (
+      <>
+        <path class="ico__fill" d="M6 12h20l-2 4H8z" />
+        <path class="ico__line" d="M4.5 12h23l-2.5 4.5H7z" />
+        <path class="ico__line" d="M8 16.5V27h16V16.5M11.5 27v-6h5v6" />
+      </>
+    )
+  }
+
+  {/* Price tag */}
+  {
+    name === 'tag' && (
+      <>
+        <path class="ico__fill" d="M16.5 5H27v10.5L15 27.5 4.5 17z" />
+        <path class="ico__line" d="M16.8 5.2 27 5v10.2L15.2 27 4.8 16.8z" />
+        <circle class="ico__line" cx="22" cy="10" r="2" />
+      </>
+    )
+  }
+
+  {/* UPI / QR — the thing that takes the money */}
+  {
+    name === 'qr' && (
+      <>
+        <rect class="ico__line" x="5" y="5" width="9" height="9" rx="1" />
+        <rect class="ico__line" x="18" y="5" width="9" height="9" rx="1" />
+        <rect class="ico__line" x="5" y="18" width="9" height="9" rx="1" />
+        <rect class="ico__fill" x="8" y="8" width="3" height="3" />
+        <rect class="ico__fill" x="21" y="8" width="3" height="3" />
+        <rect class="ico__fill" x="8" y="21" width="3" height="3" />
+        <path class="ico__line" d="M18 18h4v4M25 18h2M22 25h5M18 25h1" />
+      </>
+    )
+  }
+
+  {/* Phone — online organic */}
+  {
+    name === 'phone' && (
+      <>
+        <rect class="ico__fill" x="9.5" y="4.5" width="13" height="23" rx="2.5" />
+        <rect class="ico__line" x="9.5" y="4.5" width="13" height="23" rx="2.5" />
+        <path class="ico__line" d="M13.5 8h5" />
+        <circle class="ico__line" cx="16" cy="23" r="1.2" />
+      </>
+    )
+  }
+
+  {/* Megaphone — influencer */}
+  {
+    name === 'megaphone' && (
+      <>
+        <path class="ico__fill" d="M6 13.5 22 7v18L6 18.5z" />
+        <path class="ico__line" d="M6 13.5 22 7v18L6 18.5z" />
+        <path class="ico__line" d="M9.5 19.5V25a2 2 0 0 0 4 0v-4M24.5 12.5a5 5 0 0 1 0 7" />
+      </>
+    )
+  }
+
+  {/* Target — performance marketing */}
+  {
+    name === 'target' && (
+      <>
+        <circle class="ico__line" cx="16" cy="16" r="11" />
+        <circle class="ico__line" cx="16" cy="16" r="6.5" />
+        <circle class="ico__fill" cx="16" cy="16" r="2.5" />
+      </>
+    )
+  }
+
+  {/* Handshake — B2B */}
+  {
+    name === 'handshake' && (
+      <>
+        <path class="ico__fill" d="M4 14h7l5 4 5-4h7v6l-6 6-6-3-6 3-6-6z" />
+        <path class="ico__line" d="M4 13.5h7.5l4.5 4 4.5-4H28" />
+        <path class="ico__line" d="M11.5 13.5 6 19.5l5 5 5-2.5 5 2.5 5-5-5.5-6" />
+      </>
+    )
+  }
+
+  {/* Pitch deck */}
+  {
+    name === 'deck' && (
+      <>
+        <rect class="ico__fill" x="4.5" y="6.5" width="23" height="14" rx="1.5" />
+        <rect class="ico__line" x="4.5" y="6.5" width="23" height="14" rx="1.5" />
+        <path class="ico__line" d="M16 20.5V26M11 27l5-1 5 1M9.5 11.5h6M9.5 15h11" />
+      </>
+    )
+  }
+
+  {/* Receipt — revenue & expenses */}
+  {
+    name === 'receipt' && (
+      <>
+        <path class="ico__fill" d="M7 4.5h18v23l-3-2-3 2-3-2-3 2-3-2-3 2z" />
+        <path class="ico__line" d="M7 4.5h18v23l-3-2-3 2-3-2-3 2-3-2-3 2z" />
+        <path class="ico__line" d="M11 11h10M11 15.5h10M11 20h6" />
+      </>
+    )
+  }
+</svg>
+
+<style>
+  .ico {
+    display: block;
+    flex: 0 0 auto;
+    /* A hair off-axis — drawn, not generated. */
+    rotate: -1deg;
+  }
+  .ico__line {
+    fill: none;
+    stroke: var(--ico-line, currentColor);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .ico__fill {
+    fill: var(--ico-fill, color-mix(in srgb, var(--forge-orchid) 40%, transparent));
+    stroke: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ico {
+      rotate: none;
+    }
+  }
+</style>

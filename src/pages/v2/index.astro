@@ -1,0 +1,2200 @@
+---
+import Base from '../../layouts/Base.astro';
+import Chapter from '../../components/Chapter.astro';
+import Drawer from '../../components/Drawer.astro';
+import MilestonePanel from '../../components/MilestonePanel.astro';
+import ChannelPanel from '../../components/ChannelPanel.astro';
+import WorkshopPanel from '../../components/WorkshopPanel.astro';
+import VideoEmbed from '../../components/VideoEmbed.astro';
+import Confirming from '../../components/Confirming.astro';
+import RevenueLadder from '../../components/RevenueLadder.astro';
+import Icon from '../../components/Icon.astro';
+import Comma from '../../components/Comma.astro';
+import {
+  getProgram,
+  getPhases,
+  getMilestones,
+  getWorkshops,
+  getChannels,
+  getChannelTargets,
+  getTargetBreakdown,
+  getRevenueLadder,
+  getMoney,
+  getFlea,
+  getFaqs,
+  getFaqTags,
+  getWip,
+  getAllSymptoms,
+  getStillStuck,
+} from '../../lib/content';
+import { rupeesCompact, rupees } from '../../lib/format';
+
+const program = await getProgram();
+const phases = await getPhases();
+const milestones = await getMilestones();
+const workshops = await getWorkshops();
+const channels = await getChannels();
+const targets = await getChannelTargets();
+const breakdown = await getTargetBreakdown();
+const ladder = await getRevenueLadder();
+const money = await getMoney();
+const flea = await getFlea();
+const faqs = await getFaqs();
+const faqTags = await getFaqTags();
+const wip = await getWip();
+const symptoms = await getAllSymptoms();
+const stillStuck = await getStillStuck();
+
+const { inventory, revenue } = money;
+const m8 = milestones.find((m) => m.id === 'm8')!;
+const ws13 = workshops.find((w) => w.id === 'ws13');
+const fleaTarget = targets.find((t) => t.id === 'flea-market');
+const gated = milestones.filter((m) => m.gate);
+const sumsToTarget = breakdown.total === program.revenueTarget;
+
+/* A glyph per channel, naming the thing rather than decorating it. */
+const CHANNEL_ICON = {
+  offline: 'stall',
+  'online-organic': 'phone',
+  influencer: 'megaphone',
+  performance: 'target',
+  b2b: 'handshake',
+} as const;
+
+const fractionOf = (v: number) =>
+  program.revenueTarget > 0 ? v / program.revenueTarget : 0;
+
+const stats = [
+  { v: String(program.weeks), u: 'weeks', s: `${program.startLabel} → ${program.endLabel}` },
+  { v: String(program.milestoneCount), u: 'milestones', s: 'Every one mandatory and dated' },
+  { v: '₹7L', u: 'minimum revenue', s: 'From real customers, not projections' },
+  { v: program.teamSizeLabel, u: '', s: 'Your team for the whole sprint' },
+];
+---
+
+<Base title={program.title} description={program.heroSupport} suffix={false}>
+  <!-- ═══════════════════════════════════════════════════════════ OPENING -->
+  <section class="hero band" data-tone="dark">
+    <div class="hero__comma" aria-hidden="true"><Comma tone="orchid" opacity={0.08} /></div>
+    <div class="u-container hero__inner">
+      <p class="hero__kicker label">{program.heroKicker}</p>
+      <h1 class="display display--xl hero__title">{program.heroStatement}</h1>
+      <p class="hero__lede">{program.heroSupport}</p>
+
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="#journey">
+          Start the journey <span class="arrow">↓</span>
+        </a>
+        <button class="btn btn--ghost" type="button" data-cmd-open>
+          Search the kit <kbd class="hero__kbd">⌘K</kbd>
+        </button>
+      </div>
+
+      <ul class="hero__stats" data-reveal-group>
+        {
+          stats.map((s) => (
+            <li data-reveal>
+              <span class="hero__stat-v display">{s.v}</span>
+              {s.u && <span class="hero__stat-u">{s.u}</span>}
+              <span class="hero__stat-s">{s.s}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ WHAT THIS IS -->
+  <section class="section band" id="what">
+    <div class="u-container">
+      <Chapter
+        n="01"
+        label="What you're getting into"
+        title="Six things that define BYOB"
+        lede="Identify a customer need, build a D2C product, and sell it to real people. Everything else follows from that."
+      />
+
+      <ol class="defs" data-reveal-group>
+        {
+          program.structure.map((item) => (
+            <li class="def" data-reveal>
+              <span class="def__n mono">{item.n}</span>
+              <h3 class="def__t">{item.title}</h3>
+              <p class="def__b">{item.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="notes">
+        <p class="callout"><strong>Key outcome.</strong> {program.keyOutcome}</p>
+        <p class="callout callout--cta">
+          <strong>How capital works.</strong> {program.capitalNote}
+        </p>
+      </div>
+
+      <details class="acc gains" data-reveal>
+        <summary>Why this is worth eight hard weeks — 6 things you'll gain</summary>
+        <div class="acc__body">
+          <p class="gains__intro">{program.gainsIntro}</p>
+          <ol class="gains__list">
+            {
+              program.gains.map((g, i) => (
+                <li>
+                  <span class="gains__n mono">{String(i + 1).padStart(2, '0')}</span>
+                  <div>
+                    <h4 class="gains__t">{g.title}</h4>
+                    <p class="gains__b">{g.body}</p>
+                  </div>
+                </li>
+              ))
+            }
+          </ol>
+          <p class="gains__close hand">{program.closingNote}</p>
+          <div class="gains__video">
+            {program.watch.map((v) => <VideoEmbed video={v} />)}
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════ THE CLIMB -->
+  <section class="section band" data-tone="dark">
+    <div class="u-container">
+      <Chapter
+        n="02"
+        label="The number"
+        title="Zero to ₹7 lakhs, in eight steps"
+        lede="₹7 lakhs sounds like a lot until you see it broken into checkpoints. Each rung is a bar your venture clears before the next one unlocks."
+      />
+      <RevenueLadder rungs={ladder} />
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ JOURNEY -->
+  <section class="section band" id="journey">
+    <div class="u-container">
+      <Chapter
+        n="03"
+        label="Weeks 1–8"
+        title="The journey"
+        lede="Four phases, eight milestones. Each is mandatory and dated — you can hit them early, but missing a deadline affects your grade, your next capital tranche, and gets escalated to your mentor and the Investment Committee."
+      />
+
+      <div class="jrn" data-reveal-group>
+        {
+          phases.map((phase) => {
+            const ms = milestones.filter((m) => m.phase === phase.id);
+            return (
+              <section class="jrn__phase" data-reveal>
+                <header class="jrn__ph-head">
+                  <div class="jrn__ph-top">
+                    <span class="jrn__ph-n mono">{phase.code}</span>
+                    <h3 class="jrn__ph-name display display--sm">{phase.name}</h3>
+                  </div>
+                  <p class="jrn__ph-weeks label">{phase.weeks}</p>
+                  <p class="jrn__ph-sum">{phase.summary}</p>
+                  <ul class="jrn__beats">
+                    {phase.beats.map((b) => (
+                      <li class="hand">{b}</li>
+                    ))}
+                  </ul>
+                </header>
+
+                <div class="jrn__cards">
+                  {ms.map((m) => (
+                    <button class="ms" type="button" data-open={m.id}>
+                      {m.gate && <span class="tape tape--right" aria-hidden="true" />}
+                      {m.id === 'm1' && <span class="annot">Start here</span>}
+                      {m.id === 'm8' && <span class="annot annot--violet">Final day</span>}
+                      <span class="ms__top">
+                        <span class="ms__code mono">{m.code}</span>
+                        <span class="ms__wk">Week {m.week}</span>
+                      </span>
+                      <span class="ms__head display display--xs">{m.headline}</span>
+                      <span class="ms__rev num">{m.revenueLabel}</span>
+                      <span class="ms__foot">
+                        <span class="ms__date">{m.date}</span>
+                        {m.gate && <span class="ms__gate">{m.gate.name}</span>}
+                      </span>
+                      <span class="ms__cta">
+                        Explore {m.code} <span class="arrow" aria-hidden="true">→</span>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            );
+          })
+        }
+      </div>
+
+      <!-- Investment gates, kept on the page rather than buried in a drawer. -->
+      <div class="gates" id="gate-map" data-reveal>
+        <Chapter n="03·b" label="Investment" title="How the gates work" size="sm" />
+        <p class="gates__lede">
+          Mesa's capital is interest-free debt, released in tranches. The Investment
+          Committee reviews that milestone's deliverables against its targets — hit the bar
+          and the next tranche unlocks.
+        </p>
+        <div class="gates__grid">
+          {
+            gated.map((m) => (
+              <article class="gate">
+                <div class="gate__top">
+                  <span class="pill pill--gate">{m.gate!.name}</span>
+                  <button class="gate__at mono" type="button" data-open={m.id}>
+                    {m.code} <span class="arrow" aria-hidden="true">→</span>
+                  </button>
+                </div>
+                <p class="gate__rule">
+                  {m.gateConfirming ? (
+                    <Confirming note={m.gateConfirming.note}>{m.gate!.rule}</Confirming>
+                  ) : (
+                    m.gate!.rule
+                  )}
+                </p>
+                {m.gate!.spendOn.length > 0 && (
+                  <ul class="gate__spend">
+                    {m.gate!.spendOn.map((s) => (
+                      <li>{s}</li>
+                    ))}
+                  </ul>
+                )}
+              </article>
+            ))
+          }
+        </div>
+        <p class="callout callout--cta gates__cap">
+          <strong>The cap.</strong> You can raise interest-free debt of up to{' '}
+          <Confirming note={program.capitalConfirming!.note}>
+            {program.capitalMaxLabel}
+          </Confirming>{' '}
+          from Mesa, in tranches of {program.trancheLabel}. All of it must be repaid by{' '}
+          {program.repaymentLabel}.
+        </p>
+        <p class="confirming-note">
+          * The total capital amount has not been finalised by the program team yet. Confirm
+          with your mentor before planning around it.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════ WORKSHOPS -->
+  <section class="section band" id="workshops" data-tone="dark">
+    <div class="u-container">
+      <Chapter
+        n="04"
+        label="Support"
+        title="13 things you'll learn before you sell"
+        lede="Mesa runs workshops with functional experts and startup leaders throughout the challenge, timed to what each milestone needs."
+      />
+
+      <ol class="ws" data-reveal-group>
+        {
+          workshops.map((w) => {
+            const ms = milestones.find((m) => m.id === w.milestone);
+            return (
+              <li data-reveal>
+                <button class="ws__row" type="button" data-open={w.id}>
+                  <span class="ws__code mono">{w.code}</span>
+                  <span class="ws__title">{w.title}</span>
+                  <span class="ws__for">{ms ? `for ${ms.code}` : ''}</span>
+                  <span class="arrow ws__go" aria-hidden="true">→</span>
+                </button>
+              </li>
+            );
+          })
+        }
+      </ol>
+
+      <p class="ws__note">
+        Pairings show when each session is most useful — check the program schedule for
+        confirmed dates. You also get a mentor check-in every week; each milestone carries
+        the question yours will open with.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════ CHANNELS -->
+  <section class="section band" id="channels">
+    <div class="u-container">
+      <Chapter
+        n="05"
+        label="Your D2C sales guide"
+        title="Five ways to sell"
+        lede="Every team's path to ₹7L runs through some mix of all five. Open one for the full playbook — the how, when, where, what to do when it stops working, and what good looks like."
+      />
+
+      <ol class="chn" data-reveal-group>
+        {
+          channels.map((c) => {
+            const t = targets.find((x) => x.id === c.target);
+            return (
+              <li data-reveal>
+                <button class="chn__card" type="button" data-open={c.id}>
+                  <span class="chn__top">
+                    <span class="chn__code mono">{c.code}</span>
+                    <Icon name={CHANNEL_ICON[c.id as keyof typeof CHANNEL_ICON]} size={30} />
+                  </span>
+                  <span class="chn__name display display--xs">{c.name}</span>
+                  <span class="chn__line">{c.oneLine}</span>
+                  <span class="chn__meta">
+                    {t?.winRevenue !== null && t?.winRevenue !== undefined && (
+                      <span class="chn__target num">{rupeesCompact(t.winRevenue)} target</span>
+                    )}
+                    <span class="chn__open">
+                      Open playbook <span class="arrow" aria-hidden="true">→</span>
+                    </span>
+                  </span>
+                </button>
+              </li>
+            );
+          })
+        }
+      </ol>
+
+      <!-- The ₹7L breakdown: computed, not asserted. -->
+      <div class="tgt" id="targets" data-reveal>
+        <Chapter
+          n="05·b"
+          label="Channel targets"
+          title={sumsToTarget ? 'This is how ₹7 lakhs adds up' : 'Targets by channel'}
+          size="sm"
+        />
+        <p class="tgt__lede">
+          {
+            sumsToTarget
+              ? `Each channel carries its own win target — and together they come to exactly ${program.revenueTargetLabel}. That's where the number comes from.`
+              : 'The win target set for each channel.'
+          }
+        </p>
+
+        <div class="tgt__bar" role="img" aria-label={`Channel targets summing to ${rupees(breakdown.total)}`}>
+          {
+            breakdown.rows.map((row, i) => (
+              <span class="tgt__seg" style={`--share:${(row.share * 100).toFixed(2)}%;--i:${i}`} />
+            ))
+          }
+        </div>
+
+        <ul class="tgt__key">
+          {
+            breakdown.rows.map((row, i) => (
+              <li>
+                <span class="tgt__dot" style={`--i:${i}`} aria-hidden="true" />
+                <span class="tgt__n">{row.name}</span>
+                <span class="tgt__v num">{rupeesCompact(row.winRevenue)}</span>
+              </li>
+            ))
+          }
+          <li class="tgt__total">
+            <span class="tgt__dot tgt__dot--none" aria-hidden="true"></span>
+            <span class="tgt__n">Total</span>
+            <span class="tgt__v num">{rupeesCompact(breakdown.total)}</span>
+          </li>
+        </ul>
+
+        <details class="acc">
+          <summary>The full target table — minimums, wins and budgets</summary>
+          <div class="acc__body table-scroll">
+            <table>
+              <caption class="sr-only">Minimum and win targets per channel</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Channel</th>
+                  <th scope="col">Minimum</th>
+                  <th scope="col">Win</th>
+                  <th scope="col">Budget</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  [...breakdown.rows, ...breakdown.nonRevenue].map((t) => (
+                    <tr>
+                      <th scope="row">
+                        {t.channel ? (
+                          <button class="tgt__link" type="button" data-open={t.channel}>
+                            {t.name}
+                          </button>
+                        ) : (
+                          t.name
+                        )}
+                        {t.tof && <span class="tgt__tof">Top of funnel: {t.tof}</span>}
+                      </th>
+                      <td>
+                        {t.min.length ? (
+                          <ul class="dotlist">
+                            {t.min.map((x) => (
+                              <li>{x}</li>
+                            ))}
+                          </ul>
+                        ) : (
+                          '—'
+                        )}
+                      </td>
+                      <td>
+                        <ul class="dotlist">
+                          {t.win.map((x) => (
+                            <li>{x}</li>
+                          ))}
+                        </ul>
+                        {t.note && <span class="tgt__tof">{t.note}</span>}
+                      </td>
+                      <td class="num">{t.budget ?? '—'}</td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+            <p class="confirming-note">
+              Budget figures appear in the Starter Pack without a stated unit or period, and
+              are reproduced exactly as written. Check with your mentor before planning spend.
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════ MONEY -->
+  <section class="section band" id="money" data-tone="dark">
+    <div class="u-container">
+      <Chapter
+        n="06"
+        label="Cuts across every channel"
+        title="Money matters"
+        lede="Two things decide whether your revenue number means anything: how you manage stock, and whether you know what each sale actually costs you."
+      />
+
+      <div class="mm">
+        <!-- ---------------------------------------------------- inventory -->
+        <article class="mm__half">
+          <span class="mm__ico"><Icon name="box" size={34} /></span>
+          <h3 class="mm__t display display--sm">Inventory</h3>
+          <p class="mm__hook hand">Don't let your cash sit on a shelf.</p>
+          <p class="mm__intro">{inventory.intro}</p>
+
+          <dl class="terms">
+            {
+              inventory.terms.map((t) => (
+                <div class="term">
+                  <dt>{t.term}</dt>
+                  <dd>{t.body}</dd>
+                </div>
+              ))
+            }
+          </dl>
+
+          <details class="acc">
+            <summary>How to think about it, phase by phase</summary>
+            <div class="acc__body">
+              <ol class="mm__phases">
+                {
+                  inventory.phases.map((p) => (
+                    <li>
+                      <h4 class="mm__ph-l">{p.label}</h4>
+                      <p>{p.body}</p>
+                    </li>
+                  ))
+                }
+              </ol>
+              <p class="callout mm__sys"><strong>A simple system.</strong> {inventory.system}</p>
+            </div>
+          </details>
+
+          <details class="acc">
+            <summary>Avoid this</summary>
+            <div class="acc__body">
+              <ul class="avoid">
+                {inventory.avoid.map((a) => <li>{a}</li>)}
+              </ul>
+            </div>
+          </details>
+
+          <details class="acc">
+            <summary>Watch & learn · {inventory.videos.length}</summary>
+            <div class="acc__body">
+              <div class="mm__vids">
+                {inventory.videos.map((v) => <VideoEmbed video={v} />)}
+              </div>
+            </div>
+          </details>
+        </article>
+
+        <!-- ----------------------------------------------- revenue/expense -->
+        <article class="mm__half">
+          <span class="mm__ico"><Icon name="receipt" size={34} /></span>
+          <h3 class="mm__t display display--sm">Revenue & expenses</h3>
+          <p class="mm__hook hand">₹7L in sales doesn't mean ₹7L in your pocket.</p>
+          <p class="mm__intro">{revenue.intro}</p>
+
+          <!-- The margin equation, drawn as the subtraction it actually is. -->
+          <div class="eq">
+            <p class="label eq__cap">Track these five numbers weekly</p>
+            {
+              revenue.numbers.map((n, i) => {
+                const last = i === revenue.numbers.length - 1;
+                return (
+                  <div class:list={['eq__row', last && 'eq__row--out']}>
+                    <span class="eq__op mono" aria-hidden="true">
+                      {i === 0 ? '' : last ? '=' : '−'}
+                    </span>
+                    <span class="eq__n">{n.name}</span>
+                    <span class="eq__d">{n.body}</span>
+                  </div>
+                );
+              })
+            }
+          </div>
+
+          <details class="acc">
+            <summary>The financial lens at each milestone</summary>
+            <div class="acc__body">
+              <div class="lens">
+                {
+                  revenue.lens.map((l) => (
+                    <div class="lens__i">
+                      <div class="lens__top">
+                        <h4 class="lens__m">{l.milestone}</h4>
+                        <span class="lens__g num">{l.revGoal}</span>
+                      </div>
+                      <p class="lens__f"><span class="label">Focus</span>{l.focus}</p>
+                      <p class="lens__w"><span class="label">Watch for</span>{l.watchFor}</p>
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
+          </details>
+        </article>
+      </div>
+
+      <!-- The memorable moment. -->
+      <blockquote class="qq" data-reveal>
+        <p class="qq__q display">{revenue.question}</p>
+        <footer class="qq__f">{revenue.questionBody}</footer>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ STUCK -->
+  <section class="section band" id="stuck">
+    <div class="u-container">
+      <Chapter
+        n="07"
+        label="Diagnostic"
+        title="Something not working?"
+        lede="Every fix from all five playbooks, in one place. Pick what's actually happening — not the channel you think is at fault."
+      />
+
+      <div class="dx plane plane--drawn" data-reveal>
+        <span class="annot">Stuck? Start here</span>
+        <div class="dx__controls">
+          <label class="sr-only" for="dx-search">Describe what's happening</label>
+          <input
+            id="dx-search"
+            type="text"
+            placeholder="Describe it — “nobody buys”, “no replies”, “low ROAS”…"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <div class="dx__filters" role="group" aria-label="Filter by channel">
+            <button type="button" class="dx__chip is-on" data-filter="all" aria-pressed="true">
+              All
+            </button>
+            {
+              channels.map((c) => (
+                <button type="button" class="dx__chip" data-filter={c.id} aria-pressed="false">
+                  {c.name}
+                </button>
+              ))
+            }
+          </div>
+        </div>
+
+        <p class="dx__count" role="status" aria-live="polite">
+          {symptoms.length} symptoms
+        </p>
+
+        <ul class="dx__list">
+          {
+            symptoms.map((s) => (
+              <li
+                class="dx__item"
+                data-channel={s.channelId}
+                data-text={`${s.symptom} ${s.fix} ${s.channelName}`.toLowerCase()}
+              >
+                <!-- `name` makes these a native exclusive accordion: opening one
+                     answer closes the last, so two fixes are never on screen. -->
+                <details name="diagnostic">
+                  <summary>
+                    <span class="dx__sym hand">{s.symptom}</span>
+                    <span class="dx__ch">{s.channelName}</span>
+                    <span class="dx__chev" aria-hidden="true" />
+                  </summary>
+                  <div class="dx__fix">
+                    <p>{s.fix}</p>
+                    <button class="dx__more" type="button" data-open={s.channelId}>
+                      Full {s.channelName} playbook <span class="arrow" aria-hidden="true">→</span>
+                    </button>
+                  </div>
+                </details>
+              </li>
+            ))
+          }
+        </ul>
+
+        <p class="dx__empty" hidden>
+          Nothing matches that. Try a shorter phrase, clear the filter, or take it straight
+          to your Wednesday 1:1.
+        </p>
+      </div>
+
+      <aside class="ss" data-reveal>
+        <h3 class="ss__t display display--xs">{stillStuck.title}</h3>
+        <p class="ss__b">{stillStuck.body}</p>
+        <ul class="dotlist ss__bring">
+          {stillStuck.bring.map((b) => <li>{b}</li>)}
+        </ul>
+        <p class="ss__c hand">{stillStuck.closing}</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════ FLEA -->
+  <section class="flea band" id="flea" data-tone="deep">
+    <div class="flea__comma" aria-hidden="true"><Comma tone="orchid" opacity={0.1} /></div>
+    <div class="u-container">
+      <div class="flea__open" data-reveal>
+        <p class="label">{flea.kicker}</p>
+        <p class="flea__seq">{flea.lede}</p>
+        <span class="flea__arrow" aria-hidden="true">↓</span>
+        <h2 class="display display--xl flea__name">Mesa Flea</h2>
+        <div class="flea__chips">
+          <span class="pill">
+            {m8.dateConfirming ? (
+              <Confirming note={m8.dateConfirming.note}>{m8.date}</Confirming>
+            ) : (
+              m8.date
+            )}
+          </span>
+          <span class="pill">{m8.deadlineLabel}</span>
+          {
+            fleaTarget?.winRevenue && (
+              <span class="pill pill--accent">
+                {rupeesCompact(fleaTarget.winRevenue)} target on the day
+              </span>
+            )
+          }
+        </div>
+      </div>
+
+      <div class="flea__story prose" data-reveal-group>
+        {
+          flea.paragraphs.map((p, i) => (
+            <p class:list={[i === 0 && 'flea__first']} data-reveal>
+              {p}
+            </p>
+          ))
+        }
+      </div>
+
+      <div class="flea__grid">
+        <section class="flea__why" data-reveal>
+          <h3 class="flea__h">{flea.whyBestTitle}</h3>
+          <ol class="flea__why-list">
+            {
+              flea.whyBest.map((w) => (
+                <li>
+                  <h4>{w.title}</h4>
+                  <p>{w.body}</p>
+                </li>
+              ))
+            }
+          </ol>
+        </section>
+
+        <aside class="proof plane plane--kit" data-reveal>
+          <span class="tape tape--left" aria-hidden="true"></span>
+          <span class="flag">Proof it works</span>
+          <h3 class="proof__n display display--sm">{flea.proof.title}</h3>
+          <p class="proof__b">{flea.proof.body}</p>
+          <div class="proof__l"><VideoEmbed video={flea.proof.link} /></div>
+        </aside>
+      </div>
+
+      <div class="flea__prep" data-reveal>
+        <h3 class="flea__h">Getting ready</h3>
+        <div class="prep">
+          <article class="prep__c">
+            <h4><span class="mono">{m8.code}</span> deliverables</h4>
+            <ul class="checklist">{m8.deliverables.map((d) => <li>{d}</li>)}</ul>
+            <button class="prep__b" type="button" data-open="m8">
+              Open M8 <span class="arrow" aria-hidden="true">→</span>
+            </button>
+          </article>
+
+          {
+            ws13 && (
+              <article class="prep__c">
+                <h4><span class="mono">{ws13.code}</span> {ws13.title}</h4>
+                <p>{ws13.expect}</p>
+                <button class="prep__b" type="button" data-open={ws13.id}>
+                  Open workshop <span class="arrow" aria-hidden="true">→</span>
+                </button>
+              </article>
+            )
+          }
+
+          <article class="prep__c">
+            <span class="prep__ico"><Icon name="box" size={26} /></span>
+            <h4>Stock & float</h4>
+            <p>
+              Order specifically for the Flea — a single-day, high-footfall event. Running
+              out by noon means leaving revenue you can't get back. Plan inventory and float
+              (change, backup UPI) for one big day.
+            </p>
+            <a class="prep__b" href="#money">
+              Inventory guidance <span class="arrow" aria-hidden="true">→</span>
+            </a>
+          </article>
+
+          <article class="prep__c">
+            <span class="prep__ico"><Icon name="stall" size={26} /></span>
+            <h4>Working the stall</h4>
+            <p>
+              The Offline playbook is the Flea playbook: pick your spot, lead with a hook,
+              let people hold the product, close with a bundle, capture every contact.
+            </p>
+            <button class="prep__b" type="button" data-open="offline">
+              Offline playbook <span class="arrow" aria-hidden="true">→</span>
+            </button>
+          </article>
+        </div>
+      </div>
+
+      <div class="flea__watch" id="watch" data-reveal>
+        <h3 class="flea__h">Watch — get hyped</h3>
+        <p class="flea__watch-i">{flea.watchIntro}</p>
+
+        <p class="label flea__wl">From past Flea Days</p>
+        <div class="flea__vids">
+          {flea.pastReels.map((v) => <VideoEmbed video={v} />)}
+        </div>
+        <p class="confirming-note flea__pn">{flea.placeholderNote}</p>
+
+        <p class="label flea__wl">Real Mesa content</p>
+        <div class="flea__vids">
+          {flea.realContent.map((v) => <VideoEmbed video={v} />)}
+        </div>
+        <p class="confirming-note flea__pn">{stillStuck.videoNote}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════ FAQ -->
+  <section class="section band" id="faq">
+    <div class="u-container u-narrow">
+      <Chapter
+        n="08"
+        label="Before you start"
+        title="What students ask"
+        lede={`${faqs.length} questions, answered by the program team.`}
+      />
+
+      <div class="fq" data-reveal>
+        <label class="sr-only" for="fq-search">Search questions</label>
+        <input
+          id="fq-search"
+          type="text"
+          placeholder="Search the FAQ…"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <div class="fq__tags" role="group" aria-label="Filter by topic">
+          <button type="button" class="dx__chip is-on" data-tag="all" aria-pressed="true">
+            All
+          </button>
+          {
+            faqTags.map((t) => (
+              <button type="button" class="dx__chip" data-tag={t} aria-pressed="false">
+                {t}
+              </button>
+            ))
+          }
+        </div>
+
+        <p class="fq__count" role="status" aria-live="polite">{faqs.length} questions</p>
+
+        <div class="fq__list">
+          {
+            faqs.map((f) => (
+              <details
+                class="acc fq__i"
+                id={`faq-${f.id}`}
+                data-tags={f.tags.join(' ').toLowerCase()}
+                data-text={`${f.q} ${f.a}`.toLowerCase()}
+              >
+                <summary>{f.q}</summary>
+                <div class="acc__body">
+                  <p>{f.a}</p>
+                </div>
+              </details>
+            ))
+          }
+        </div>
+
+        <p class="fq__empty" hidden>
+          No question matches that. Try fewer words — or ask your mentor at the Wednesday 1:1.
+        </p>
+      </div>
+
+      <div class="wip" data-reveal>
+        <p class="label wip__l">Still being written</p>
+        <div class="wip__grid">
+          {
+            wip.map((w) => (
+              <article class="wip__c">
+                <span class="wip__badge">Coming soon</span>
+                <h3>{w.title}</h3>
+                <p>{w.body}</p>
+                {w.pointer && <p class="wip__p">{w.pointer}</p>}
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════ ALL PANELS -->
+  <Drawer>
+    {
+      milestones.map((m, i) => (
+        <MilestonePanel
+          milestone={m}
+          phase={phases.find((p) => p.id === m.phase)!}
+          workshops={m.workshops
+            .map((id) => workshops.find((w) => w.id === id))
+            .filter((w): w is NonNullable<typeof w> => Boolean(w))}
+          channels={m.channels
+            .map((id) => channels.find((c) => c.id === id))
+            .filter((c): c is NonNullable<typeof c> => Boolean(c))}
+          seq={i}
+          fraction={fractionOf(m.revenueGoal)}
+        />
+      ))
+    }
+    {
+      channels.map((c, i) => (
+        <ChannelPanel
+          channel={c}
+          target={targets.find((t) => t.id === c.target) ?? null}
+          milestones={milestones.filter((m) => m.channels.includes(c.id))}
+          seq={i}
+        />
+      ))
+    }
+    {
+      workshops.map((w, i) => (
+        <WorkshopPanel
+          workshop={w}
+          phase={phases.find((p) => p.id === w.phase)}
+          milestone={milestones.find((m) => m.id === w.milestone)}
+          seq={i}
+        />
+      ))
+    }
+  </Drawer>
+</Base>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════ hero */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(4rem, 11vw, 8.5rem) clamp(3rem, 7vw, 5rem);
+  }
+  /* Forge moment 1 of 2. Large, cropped off the edge, barely there. */
+  .hero__comma {
+    position: absolute;
+    inset-block-start: -18%;
+    inset-inline-end: -12%;
+    inline-size: min(42rem, 58vw);
+    rotate: 14deg;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .hero__inner {
+    position: relative;
+    z-index: 1;
+  }
+  .hero__inner {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .hero__kicker {
+    color: var(--forge-orchid);
+  }
+  .hero__title {
+    max-inline-size: 14ch;
+    margin-block-start: var(--space-2);
+  }
+  .hero__lede {
+    font-size: var(--step-1);
+    line-height: var(--leading-loose);
+    color: var(--text-muted);
+    max-inline-size: 46ch;
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-block-start: var(--space-4);
+  }
+  .hero__kbd {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    padding: 0.1rem 0.3rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    margin-inline-start: 0.15rem;
+  }
+  .hero__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(10rem, 100%), 1fr));
+    gap: var(--space-5);
+    margin-block-start: clamp(3rem, 7vw, 5rem);
+    padding-block-start: var(--space-6);
+    border-block-start: 1px solid var(--rule);
+  }
+  .hero__stats li {
+    display: grid;
+    gap: 0.15rem;
+    align-content: start;
+  }
+  .hero__stat-v {
+    font-size: var(--step-4);
+    line-height: 1;
+    color: var(--forge-orchid);
+  }
+  .hero__stat-u {
+    font-size: var(--step--1);
+    font-weight: 700;
+    color: var(--text-strong);
+  }
+  .hero__stat-s {
+    font-size: var(--step--2);
+    color: var(--text-faint);
+    line-height: var(--leading-body);
+    text-wrap: pretty;
+  }
+
+  /* ══════════════════════════════════════════════════════════ what/defs */
+  .defs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+    gap: var(--space-6) var(--space-8);
+  }
+  .def {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas: 'n t' '. b';
+    gap: var(--space-2) var(--space-4);
+    align-content: start;
+  }
+  .def__n {
+    grid-area: n;
+    font-size: var(--step--2);
+    font-weight: 700;
+    color: var(--accent-ink);
+    padding-block-start: 0.3em;
+  }
+  .def__t {
+    grid-area: t;
+    font-size: var(--step-1);
+    color: var(--text-strong);
+  }
+  .def__b {
+    grid-area: b;
+    font-size: var(--step--1);
+    color: var(--text-muted);
+    line-height: var(--leading-loose);
+    text-wrap: pretty;
+  }
+
+  .notes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
+    gap: var(--space-5);
+    margin-block: var(--space-8);
+  }
+
+  .gains {
+    border-block-start: 1px solid var(--rule);
+  }
+  .gains__intro {
+    margin-block-end: var(--space-6);
+    max-inline-size: var(--width-text);
+  }
+  .gains__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+    gap: var(--space-5) var(--space-7);
+  }
+  .gains__list li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-3);
+    align-items: start;
+  }
+  .gains__n {
+    font-size: var(--step--2);
+    color: var(--accent-ink);
+    font-weight: 700;
+    padding-block-start: 0.25em;
+  }
+  .gains__t {
+    font-size: var(--step-0);
+    color: var(--text-strong);
+    margin-block-end: var(--space-2);
+  }
+  .gains__b {
+    font-size: var(--step--1);
+    line-height: var(--leading-loose);
+  }
+  .gains__close {
+    font-size: var(--step-1);
+    line-height: 1.55;
+    margin-block: var(--space-7) var(--space-6);
+    max-inline-size: 54ch;
+  }
+  .gains__video {
+    max-inline-size: 34rem;
+  }
+
+  /* ════════════════════════════════════════════════════════════ journey */
+  .jrn {
+    display: grid;
+    gap: var(--space-9);
+  }
+  .jrn__phase {
+    display: grid;
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+    gap: var(--space-6) var(--space-8);
+    align-items: start;
+  }
+  @media (max-width: 56rem) {
+    .jrn__phase {
+      grid-template-columns: 1fr;
+      gap: var(--space-5);
+    }
+  }
+  .jrn__ph-head {
+    display: grid;
+    gap: var(--space-2);
+    position: sticky;
+    inset-block-start: calc(var(--header-h) + var(--space-5));
+  }
+  @media (max-width: 56rem) {
+    .jrn__ph-head {
+      position: static;
+    }
+  }
+  .jrn__ph-top {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+  }
+  .jrn__ph-n {
+    font-size: var(--step--2);
+    font-weight: 700;
+    color: var(--accent-ink);
+  }
+  .jrn__ph-weeks {
+    color: var(--text-faint);
+  }
+  .jrn__ph-sum {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+    line-height: var(--leading-loose);
+    margin-block-start: var(--space-2);
+  }
+  .jrn__beats {
+    display: grid;
+    gap: 0.1rem;
+    margin-block-start: var(--space-3);
+  }
+  .jrn__beats li {
+    font-size: var(--step--1);
+    color: var(--accent-ink);
+  }
+
+  .jrn__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+    gap: var(--space-4);
+  }
+
+  /* Milestone card — an object placed in the kit, not a SaaS tile. */
+  .ms {
+    position: relative;
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    padding: var(--space-5);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    inline-size: 100%;
+    transition:
+      border-color var(--dur-base) var(--ease-out),
+      background var(--dur-base) var(--ease-out);
+  }
+  .ms:hover {
+    border-color: var(--border-strong);
+    background: var(--surface-2);
+  }
+  .ms__top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  .ms__code {
+    font-size: var(--step-0);
+    font-weight: 700;
+    color: var(--accent-ink);
+  }
+  .ms__wk {
+    font-size: var(--step--2);
+    color: var(--text-faint);
+  }
+  .ms__head {
+    color: var(--text-strong);
+    text-align: start;
+  }
+  .ms__rev {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+    color: var(--text-strong);
+  }
+  .ms__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+    padding-block-start: var(--space-3);
+    border-block-start: 1px solid var(--rule);
+    font-size: var(--step--2);
+    color: var(--text-faint);
+  }
+  .ms__gate {
+    font-weight: 700;
+    color: var(--forge-violet);
+  }
+  [data-tone='dark'] .ms__gate {
+    color: var(--forge-orchid);
+  }
+  .ms__cta {
+    font-size: var(--step--2);
+    font-weight: 700;
+    color: var(--accent-ink);
+    text-align: start;
+  }
+
+  /* ══════════════════════════════════════════════════════════════ gates */
+  .gates {
+    margin-block-start: var(--space-10);
+    padding-block-start: var(--space-8);
+    border-block-start: 1px solid var(--rule);
+  }
+  .gates__lede {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+    max-inline-size: 60ch;
+    line-height: var(--leading-loose);
+    margin-block-end: var(--space-6);
+  }
+  .gates__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+    gap: var(--space-4);
+  }
+  .gate {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    padding: var(--space-5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+  }
+  .gate__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+  .gate__at {
+    font-size: var(--step--2);
+    font-weight: 700;
+    color: var(--accent-ink);
+  }
+  .gate__rule {
+    font-size: var(--step--1);
+    line-height: var(--leading-body);
+    color: var(--text-muted);
+  }
+  .gate__spend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .gate__spend li {
+    font-size: var(--step--2);
+    padding: 0.16rem 0.5rem;
+    border-radius: var(--radius-pill);
+    background: var(--surface-inset);
+    color: var(--text-faint);
+  }
+  .gates__cap {
+    margin-block: var(--space-6) var(--space-4);
+  }
+
+  /* ══════════════════════════════════════════════════════════ workshops */
+  .ws {
+    display: grid;
+    border-block-start: 1px solid var(--rule);
+  }
+  .ws__row {
+    display: grid;
+    grid-template-columns: 3.4rem minmax(0, 1fr) auto auto;
+    gap: var(--space-4);
+    align-items: baseline;
+    inline-size: 100%;
+    padding-block: var(--space-4);
+    border-block-end: 1px solid var(--rule);
+    transition: padding-inline var(--dur-base) var(--ease-out);
+  }
+  .ws__row:hover {
+    padding-inline: var(--space-3) 0;
+  }
+  .ws__code {
+    font-size: var(--step--2);
+    font-weight: 700;
+    color: var(--accent-ink);
+  }
+  .ws__title {
+    font-size: var(--step-0);
+    font-weight: 600;
+    color: var(--text-strong);
+    text-align: start;
+    text-wrap: pretty;
+  }
+  .ws__for {
+    font-size: var(--step--2);
+    color: var(--text-faint);
+    white-space: nowrap;
+  }
+  .ws__go {
+    color: var(--accent-ink);
+  }
+  @media (max-width: 40rem) {
+    .ws__row {
+      grid-template-columns: 3rem 1fr auto;
+    }
+    .ws__for {
+      display: none;
+    }
+  }
+  .ws__note {
+    margin-block-start: var(--space-6);
+    font-size: var(--step--2);
+    color: var(--text-faint);
+    max-inline-size: 62ch;
+    line-height: var(--leading-body);
+  }
+
+  /* ═══════════════════════════════════════════════════════════ channels */
+  .chn {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+    gap: var(--space-4);
+  }
+  .chn__card {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    block-size: 100%;
+    inline-size: 100%;
+    padding: var(--space-5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    transition:
+      border-color var(--dur-base) var(--ease-out),
+      background var(--dur-base) var(--ease-out);
+  }
+  .chn__card:hover {
+    border-color: var(--border-strong);
+    background: var(--surface-inset);
+  }
+  .chn__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    --ico-line: var(--accent-ink);
+  }
+  .chn__code {
+    font-size: var(--step--2);
+    font-weight: 700;
+    color: var(--accent-ink);
+  }
+  .chn__name {
+    color: var(--text-strong);
+    text-align: start;
+  }
+  .chn__line {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+    line-height: var(--leading-body);
+    text-align: start;
+    text-wrap: pretty;
+  }
+  .chn__meta {
+    display: grid;
+    gap: var(--space-2);
+    margin-block-start: auto;
+    padding-block-start: var(--space-3);
+    border-block-start: 1px solid var(--rule);
+    text-align: start;
+  }
+  .chn__target {
+    font-size: var(--step--2);
+    font-weight: 700;
+    color: var(--text-strong);
+  }
+  .chn__open {
+    font-size: var(--step--2);
+    font-weight: 700;
+    color: var(--accent-ink);
+  }
+
+  /* ════════════════════════════════════════════════════════════ targets */
+  .tgt {
+    margin-block-start: var(--space-10);
+    padding-block-start: var(--space-8);
+    border-block-start: 1px solid var(--rule);
+  }
+  .tgt__lede {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+    max-inline-size: 62ch;
+    line-height: var(--leading-loose);
+    margin-block-end: var(--space-6);
+  }
+  .tgt__bar {
+    display: flex;
+    block-size: 2.4rem;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .tgt__seg {
+    inline-size: var(--share);
+    background: hsl(calc(276 - var(--i) * 9) calc(46% + var(--i) * 8%) calc(44% + var(--i) * 8%));
+  }
+  .tgt__key {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(13rem, 100%), 1fr));
+    gap: 0 var(--space-6);
+    margin-block: var(--space-5) var(--space-7);
+  }
+  .tgt__key li {
+    display: grid;
+    grid-template-columns: 0.55rem 1fr auto;
+    gap: var(--space-3);
+    align-items: center;
+    font-size: var(--step--1);
+    padding-block: var(--space-2);
+    border-block-end: 1px solid var(--rule);
+  }
+  .tgt__dot {
+    inline-size: 0.55rem;
+    block-size: 0.55rem;
+    border-radius: 2px;
+    background: hsl(calc(276 - var(--i) * 9) calc(46% + var(--i) * 8%) calc(44% + var(--i) * 8%));
+  }
+  .tgt__dot--none {
+    background: none;
+  }
+  .tgt__n {
+    color: var(--text-muted);
+  }
+  .tgt__v {
+    font-weight: 700;
+    color: var(--text-strong);
+  }
+  .tgt__total .tgt__n,
+  .tgt__total .tgt__v {
+    color: var(--accent-ink);
+    font-weight: 700;
+  }
+  .tgt__link {
+    font-weight: 700;
+    color: var(--text-strong);
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+  }
+  .tgt__tof {
+    display: block;
+    margin-block-start: var(--space-2);
+    font-size: var(--step--2);
+    font-weight: 500;
+    color: var(--text-faint);
+    text-wrap: pretty;
+  }
+  .tgt th[scope='row'] {
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: var(--step--1);
+    color: var(--text-strong);
+    white-space: normal;
+    min-inline-size: 9rem;
+  }
+
+  /* ══════════════════════════════════════════════════════════════ money */
+  .mm {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(21rem, 100%), 1fr));
+    gap: var(--space-8);
+  }
+  .mm__ico {
+    display: block;
+    margin-block-end: var(--space-3);
+    --ico-line: var(--forge-orchid);
+    --ico-fill: color-mix(in srgb, var(--forge-orchid) 22%, transparent);
+  }
+  .mm__t {
+    color: var(--text-strong);
+  }
+  .mm__hook {
+    font-size: var(--step-1);
+    color: var(--accent-ink);
+    margin-block: var(--space-2) var(--space-4);
+  }
+  .mm__intro {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+    line-height: var(--leading-loose);
+    margin-block-end: var(--space-6);
+    text-wrap: pretty;
+  }
+
+  .terms {
+    display: grid;
+    gap: var(--space-4);
+    margin-block-end: var(--space-6);
+  }
+  .term {
+    display: grid;
+    grid-template-columns: minmax(6.5rem, auto) 1fr;
+    gap: var(--space-4);
+    align-items: baseline;
+    padding-block-end: var(--space-4);
+    border-block-end: 1px solid var(--rule);
+  }
+  .term dt {
+    font-family: var(--font-display);
+    font-size: var(--step-0);
+    font-weight: 600;
+    color: var(--text-strong);
+  }
+  .term dd {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+    line-height: var(--leading-body);
+    text-wrap: pretty;
+  }
+  @media (max-width: 34rem) {
+    .term {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+  }
+
+  .mm__phases {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .mm__ph-l {
+    font-size: var(--step--1);
+    color: var(--text-strong);
+    margin-block-end: var(--space-2);
+  }
+  .mm__sys {
+    margin-block-start: var(--space-6);
+  }
+  .mm__vids {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  /* the margin equation */
+  .eq {
+    display: grid;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    margin-block-end: var(--space-6);
+  }
+  .eq__cap {
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface-inset);
+    border-block-end: 1px solid var(--rule);
+  }
+  .eq__row {
+    display: grid;
+    grid-template-columns: 1.5rem minmax(7rem, auto) 1fr;
+    gap: var(--space-3);
+    align-items: baseline;
+    padding: var(--space-4);
+    border-block-end: 1px solid var(--rule);
+  }
+  .eq__row:last-child {
+    border-block-end: 0;
+  }
+  .eq__row--out {
+    background: color-mix(in srgb, var(--forge-orchid) 14%, transparent);
+  }
+  .eq__op {
+    font-size: var(--step-1);
+    color: var(--accent-ink);
+    text-align: center;
+  }
+  .eq__n {
+    font-weight: 700;
+    color: var(--text-strong);
+    font-size: var(--step--1);
+  }
+  .eq__d {
+    font-size: var(--step--2);
+    color: var(--text-muted);
+    line-height: var(--leading-body);
+  }
+  @media (max-width: 34rem) {
+    .eq__row {
+      grid-template-columns: 1.2rem 1fr;
+    }
+    .eq__d {
+      grid-column: 2;
+    }
+  }
+
+  .lens {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .lens__top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    padding-block-end: var(--space-2);
+    border-block-end: 1px solid var(--rule);
+    margin-block-end: var(--space-3);
+  }
+  .lens__m {
+    font-size: var(--step--1);
+    color: var(--text-strong);
+  }
+  .lens__g {
+    font-family: var(--font-display);
+    font-size: var(--step-0);
+    font-weight: 600;
+    color: var(--accent-ink);
+  }
+  .lens__f,
+  .lens__w {
+    font-size: var(--step--1);
+    line-height: var(--leading-loose);
+    margin-block-end: var(--space-3);
+  }
+  .lens__f :global(.label),
+  .lens__w :global(.label) {
+    display: block;
+    margin-block-end: 0.15rem;
+  }
+  .lens__w :global(.label) {
+    color: var(--accent-ink);
+  }
+
+  .qq {
+    margin-block-start: var(--space-10);
+    padding-block-start: var(--space-8);
+    border-block-start: 1px solid var(--rule);
+    text-align: center;
+    display: grid;
+    gap: var(--space-4);
+    justify-items: center;
+  }
+  .qq__q {
+    font-size: var(--step-6);
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1.1;
+    color: var(--forge-orchid);
+    max-inline-size: 20ch;
+  }
+  .qq__f {
+    font-size: var(--step-0);
+    color: var(--text-muted);
+    max-inline-size: 54ch;
+    line-height: var(--leading-loose);
+  }
+
+  /* ══════════════════════════════════════════════════════════════ stuck */
+  .dx {
+    position: relative;
+    padding: var(--space-7) var(--space-6) var(--space-6);
+    background: var(--surface);
+  }
+  @media (max-width: 34rem) {
+    .dx {
+      padding: var(--space-7) var(--space-4) var(--space-5);
+    }
+  }
+  .dx__controls {
+    display: grid;
+    grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+    gap: var(--space-5);
+    align-items: center;
+    margin-block-end: var(--space-5);
+  }
+  @media (max-width: 48rem) {
+    .dx__controls {
+      grid-template-columns: 1fr;
+    }
+  }
+  .dx__controls input,
+  .fq input {
+    inline-size: 100%;
+    min-block-size: 2.9rem;
+    padding: 0.65rem 0.95rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    font-size: var(--step--1);
+  }
+  .dx__filters,
+  .fq__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .dx__chip {
+    padding: 0.4rem 0.8rem;
+    min-block-size: 2.2rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border);
+    font-size: var(--step--2);
+    font-weight: 650;
+    color: var(--text-muted);
+    transition:
+      background var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
+  }
+  .dx__chip:hover {
+    border-color: var(--border-strong);
+    color: var(--text-strong);
+  }
+  .dx__chip.is-on {
+    background: var(--forge-royal);
+    border-color: transparent;
+    color: #fff;
+  }
+  .dx__count,
+  .fq__count {
+    font-size: var(--step--2);
+    color: var(--text-faint);
+    margin-block-end: var(--space-4);
+  }
+
+  .dx__list {
+    display: grid;
+    border-block-start: 1px solid var(--rule);
+  }
+  .dx__item[hidden] {
+    display: none;
+  }
+  .dx__item details {
+    border-block-end: 1px solid var(--rule);
+  }
+  .dx__item summary {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: var(--space-4);
+    align-items: center;
+    padding-block: var(--space-4);
+    cursor: pointer;
+    list-style: none;
+  }
+  .dx__item summary::-webkit-details-marker {
+    display: none;
+  }
+  .dx__sym {
+    font-size: var(--step-1);
+    color: var(--text-strong);
+    line-height: 1.35;
+    text-wrap: pretty;
+  }
+  .dx__ch {
+    font-size: var(--step--2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-ink);
+    white-space: nowrap;
+  }
+  .dx__chev {
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    border-inline-end: 1.6px solid var(--text-faint);
+    border-block-end: 1.6px solid var(--text-faint);
+    transform: rotate(45deg);
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .dx__item details[open] .dx__chev {
+    transform: rotate(-135deg);
+  }
+  .dx__fix {
+    display: grid;
+    gap: var(--space-4);
+    justify-items: start;
+    padding-block-end: var(--space-5);
+    animation: acc-in var(--dur-base) var(--ease-out) both;
+  }
+  .dx__fix p {
+    font-size: var(--step-0);
+    color: var(--text-muted);
+    line-height: var(--leading-loose);
+    max-inline-size: var(--width-text);
+    text-wrap: pretty;
+  }
+  .dx__more {
+    font-size: var(--step--2);
+    font-weight: 700;
+    color: var(--accent-ink);
+  }
+  @media (max-width: 40rem) {
+    .dx__item summary {
+      grid-template-columns: 1fr auto;
+    }
+    .dx__ch {
+      grid-column: 1;
+      grid-row: 2;
+    }
+    .dx__chev {
+      grid-row: 1 / span 2;
+    }
+  }
+  .dx__empty,
+  .fq__empty {
+    margin-block-start: var(--space-5);
+    padding: var(--space-5);
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-md);
+    font-size: var(--step--1);
+    color: var(--text-muted);
+    line-height: var(--leading-loose);
+  }
+
+  .ss {
+    margin-block-start: var(--space-8);
+    padding: var(--space-6);
+    background: var(--surface-inset);
+    border-radius: var(--radius-md);
+    display: grid;
+    gap: var(--space-3);
+    max-inline-size: 46rem;
+  }
+  .ss__t {
+    color: var(--text-strong);
+  }
+  .ss__b {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+    line-height: var(--leading-loose);
+  }
+  .ss__bring {
+    font-size: var(--step--1);
+    color: var(--text-strong);
+    font-weight: 600;
+    margin-block: var(--space-2);
+  }
+  .ss__c {
+    font-size: var(--step-0);
+    color: var(--text-muted);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════ flea */
+  .flea {
+    position: relative;
+    overflow: hidden;
+    padding-block: var(--section-y);
+  }
+  /* Forge moment 2 of 2 — the closing gesture. */
+  .flea__comma {
+    position: absolute;
+    inset-block-end: -22%;
+    inset-inline-start: -14%;
+    inline-size: min(38rem, 54vw);
+    rotate: 196deg;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .flea > .u-container {
+    position: relative;
+    z-index: 1;
+  }
+  .prep__ico {
+    display: block;
+    --ico-line: var(--forge-orchid);
+    --ico-fill: color-mix(in srgb, var(--forge-orchid) 20%, transparent);
+  }
+  .flea__open {
+    display: grid;
+    gap: var(--space-4);
+    justify-items: center;
+    text-align: center;
+    padding-block-end: var(--space-8);
+  }
+  .flea__seq {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    line-height: 1.35;
+    color: var(--text-muted);
+    max-inline-size: 24ch;
+    text-wrap: balance;
+  }
+  .flea__arrow {
+    color: var(--forge-orchid);
+    opacity: 0.6;
+    font-size: var(--step-1);
+  }
+  .flea__name {
+    color: var(--forge-white);
+  }
+  .flea__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    justify-content: center;
+  }
+
+  .flea__story {
+    max-inline-size: var(--width-narrow);
+    margin-inline: auto;
+    padding-block: var(--space-7);
+  }
+  .flea__story p {
+    font-size: var(--step-0);
+    line-height: var(--leading-loose);
+    color: var(--text-muted);
+  }
+  .flea__first {
+    font-family: var(--font-display);
+    font-size: var(--step-2) !important;
+    line-height: 1.45 !important;
+    color: var(--text-strong) !important;
+  }
+
+  .flea__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: var(--space-8);
+    align-items: start;
+    padding-block: var(--space-7);
+  }
+  @media (max-width: 56rem) {
+    .flea__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .flea__h {
+    font-size: var(--step--2);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-kicker);
+    color: var(--text-faint);
+    font-weight: 700;
+    margin-block-end: var(--space-5);
+  }
+  .flea__why-list {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .flea__why-list h4 {
+    font-size: var(--step-0);
+    color: var(--text-strong);
+    margin-block-end: var(--space-2);
+  }
+  .flea__why-list p {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+    line-height: var(--leading-loose);
+    text-wrap: pretty;
+  }
+
+  .proof {
+    display: grid;
+    gap: var(--space-4);
+    justify-items: start;
+  }
+  .proof__n {
+    color: var(--text-strong);
+  }
+  .proof__b {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+    line-height: var(--leading-loose);
+    text-wrap: pretty;
+  }
+  .proof__l {
+    inline-size: 100%;
+  }
+
+  .flea__prep {
+    padding-block: var(--space-7);
+    border-block-start: 1px solid var(--rule);
+  }
+  .prep {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+    gap: var(--space-4);
+  }
+  .prep__c {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    justify-items: start;
+    padding: var(--space-5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+  }
+  .prep__c h4 {
+    font-size: var(--step-0);
+    color: var(--text-strong);
+  }
+  .prep__c h4 .mono {
+    color: var(--accent-ink);
+  }
+  .prep__c p {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+    line-height: var(--leading-loose);
+  }
+  .prep__b {
+    margin-block-start: auto;
+    font-size: var(--step--2);
+    font-weight: 700;
+    color: var(--accent-ink);
+    text-decoration: none;
+  }
+
+  .flea__watch {
+    padding-block-start: var(--space-7);
+    border-block-start: 1px solid var(--rule);
+  }
+  .flea__watch-i {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+    max-inline-size: 60ch;
+    margin-block-end: var(--space-6);
+  }
+  .flea__wl {
+    margin-block: var(--space-6) var(--space-4);
+  }
+  .flea__vids {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+    gap: var(--space-5);
+  }
+  .flea__pn {
+    margin-block-start: var(--space-4);
+  }
+
+  /* ════════════════════════════════════════════════════════════════ faq */
+  .fq {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .fq__list {
+    border-block-start: 1px solid var(--rule);
+  }
+  .fq__i[hidden] {
+    display: none;
+  }
+  .fq__i summary {
+    font-size: var(--step-0);
+  }
+
+  .wip {
+    margin-block-start: var(--space-9);
+    padding-block-start: var(--space-7);
+    border-block-start: 1px solid var(--rule);
+  }
+  .wip__l {
+    margin-block-end: var(--space-5);
+  }
+  .wip__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
+    gap: var(--space-4);
+  }
+  .wip__c {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: start;
+    align-content: start;
+    padding: var(--space-5);
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-md);
+  }
+  .wip__badge {
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-pill);
+  }
+  .wip__c h3 {
+    font-size: var(--step-0);
+    color: var(--text-strong);
+  }
+  .wip__c p {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+    line-height: var(--leading-loose);
+  }
+  .wip__p {
+    font-style: italic;
+    color: var(--text-faint) !important;
+  }
+</style>
+
+<script>
+  /**
+   * Light stemming so a student typing "replies" finds "aren't replying", and
+   * "creator" finds "creators". Cheap suffix variants, not a real stemmer.
+   */
+  function variants(term: string) {
+    const v = new Set([term]);
+    if (term.endsWith('ies')) v.add(term.slice(0, -3) + 'y');
+    if (term.endsWith('es')) v.add(term.slice(0, -2));
+    if (term.endsWith('s')) v.add(term.slice(0, -1));
+    if (term.length > 4) v.add(term.replace(/(ing|ed)$/, ''));
+    return [...v].filter((x) => x.length > 2);
+  }
+
+  function matches(haystack: string, term: string) {
+    return variants(term).some((v) => haystack.includes(v));
+  }
+
+  /* ---------------------------------------------------------- diagnostic */
+  function filterList(opts: {
+    input: string;
+    chips: string;
+    items: string;
+    count: string;
+    empty: string;
+    attr: 'channel' | 'tags';
+    noun: string;
+  }) {
+    const input = document.querySelector<HTMLInputElement>(opts.input);
+    const chips = [...document.querySelectorAll<HTMLButtonElement>(opts.chips)];
+    const items = [...document.querySelectorAll<HTMLElement>(opts.items)];
+    const count = document.querySelector<HTMLElement>(opts.count);
+    const empty = document.querySelector<HTMLElement>(opts.empty);
+    if (!input || !count || !empty || !items.length) return;
+
+    let filter = 'all';
+
+    const apply = () => {
+      const terms = input.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+      let shown = 0;
+
+      for (const item of items) {
+        const hay = item.dataset.text ?? '';
+        const field = item.dataset[opts.attr] ?? '';
+        const matchesFilter =
+          filter === 'all' ||
+          (opts.attr === 'tags' ? field.includes(filter) : field === filter);
+        const visible = matchesFilter && terms.every((t) => matches(hay, t));
+
+        item.hidden = !visible;
+        if (visible) {
+          shown++;
+          /* Filtering can pull in an item that was never scroll-revealed. */
+          item.classList.add('is-revealed');
+        } else {
+          item.querySelector('details')?.removeAttribute('open');
+          if (item instanceof HTMLDetailsElement) item.open = false;
+        }
+      }
+
+      empty.hidden = shown > 0;
+      count.textContent =
+        shown === items.length
+          ? `${items.length} ${opts.noun}`
+          : `${shown} of ${items.length} ${opts.noun}`;
+    };
+
+    input.addEventListener('input', apply);
+    chips.forEach((chip) =>
+      chip.addEventListener('click', () => {
+        filter = chip.dataset.filter ?? chip.dataset.tag ?? 'all';
+        chips.forEach((c) => {
+          const on = c === chip;
+          c.classList.toggle('is-on', on);
+          c.setAttribute('aria-pressed', String(on));
+        });
+        apply();
+      })
+    );
+  }
+
+  filterList({
+    input: '#dx-search',
+    chips: '.dx__filters .dx__chip',
+    items: '.dx__item',
+    count: '.dx__count',
+    empty: '.dx__empty',
+    attr: 'channel',
+    noun: 'symptoms',
+  });
+
+  filterList({
+    input: '#fq-search',
+    chips: '.fq__tags .dx__chip',
+    items: '.fq__i',
+    count: '.fq__count',
+    empty: '.fq__empty',
+    attr: 'tags',
+    noun: 'questions',
+  });
+
+  /* A deep link like #faq-repay opens that question. */
+  const target = location.hash ? document.querySelector(location.hash) : null;
+  if (target instanceof HTMLDetailsElement) target.open = true;
+</script>

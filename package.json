@@ -1,0 +1,22 @@
+{
+  "name": "mesa-forge-byob",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The BYOB Challenge \u2014 an interactive starter experience for Mesa School of Business (PGP Forge).",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "verify": "astro build && for p in dist/index.html dist/v2/index.html; do echo \"--- $p ---\"; python3 scripts/verify_content.py $p && python3 scripts/verify_mapping.py $p && python3 scripts/verify_structure.py $p; done"
+  },
+  "dependencies": {
+    "astro": "^7.2.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^6.0.3"
+  }
+}

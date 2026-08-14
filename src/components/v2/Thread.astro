@@ -1,0 +1,50 @@
+---
+/**
+ * The thread. One drawn line running the height of a section, in the left
+ * margin. Sections stack flush, so the segments join into a single continuous
+ * line down the whole page — the layout's spine.
+ *
+ * Printed twice, a couple of millimetres apart: key ink and coral, out of
+ * register, like a real riso pull.
+ */
+interface Props {
+  /** Stops the line short at the end of the page. */
+  end?: boolean;
+  /** Fade the start (first stop) or the finish (last stop) of the run. */
+  fade?: 'in' | 'out' | 'both';
+}
+const { end = false, fade } = Astro.props;
+const fadeClass =
+  fade === 'both'
+    ? 'thread--fade-in thread--fade-out'
+    : fade
+      ? `thread--fade-${fade}`
+      : '';
+---
+
+<div class:list={['thread', fadeClass]} aria-hidden="true">
+  <svg
+    class="thread__line"
+    viewBox="0 0 10 1000"
+    preserveAspectRatio="none"
+    focusable="false"
+  >
+    {/* A hand can't draw a straight metre — it drifts. */}
+    <path d="M5,0 C3.6,120 6.4,240 5,360 C3.6,480 6.4,600 5,720 C3.6,840 6.4,930 5,1000"></path>
+    <path d="M5,0 C3.6,120 6.4,240 5,360 C3.6,480 6.4,600 5,720 C3.6,840 6.4,930 5,1000"></path>
+  </svg>
+  {end && <span class="thread__stop"></span>}
+</div>
+
+<style>
+  .thread__stop {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-start: 50%;
+    translate: -50% 0;
+    inline-size: 13px;
+    block-size: 13px;
+    border-radius: 50%;
+    background: var(--coral);
+  }
+</style>

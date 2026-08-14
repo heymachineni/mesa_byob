@@ -1,0 +1,122 @@
+---
+import { getProgram } from '../../lib/content';
+const program = await getProgram();
+
+const cols = [
+  {
+    h: 'The kit',
+    items: [
+      { href: '#weeks', label: 'Eight weeks' },
+      { href: '#selling', label: 'Five ways to sell' },
+      { href: '#sessions', label: 'Thirteen sessions' },
+      { href: '#money', label: 'The money' },
+    ],
+  },
+  {
+    h: 'When you need it',
+    items: [
+      { href: '#breaks', label: 'When it breaks' },
+      { href: '#flea', label: 'The last day' },
+      { href: '#asked', label: 'Questions' },
+      { href: '#brief', label: 'Start over' },
+    ],
+  },
+];
+---
+
+<footer class="foot">
+  <div class="page foot__in">
+    <div class="foot__sign">
+      <p class="disp disp--sm foot__go">Now go build.</p>
+      <p class="foot__note">
+        Eight weeks is not long. Pick something people actually want, get it in front of them
+        early, and let the numbers tell you the truth.
+      </p>
+    </div>
+
+    {
+      cols.map((c) => (
+        <nav class="foot__col" aria-label={c.h}>
+          <h2 class="kicker">{c.h}</h2>
+          <ul>{c.items.map((i) => <li><a href={i.href}>{i.label}</a></li>)}</ul>
+        </nav>
+      ))
+    }
+
+    <div class="foot__id">
+      <span class="foot__m" aria-hidden="true">m</span>
+      <p class="foot__name">Mesa</p>
+      <p class="kicker foot__school">School of Business</p>
+      <p class="foot__prog">{program.title} · {program.programme}</p>
+      <p class="foot__dates mono">{program.startLabel} — {program.endLabel}</p>
+    </div>
+  </div>
+
+  <div class="page foot__base">
+    <p>
+      Content from the BYOB Starter Pack. Figures marked <span class="foot__ast">*</span> are
+      still being finalised by the program team; anything marked “coming soon” is genuinely
+      still being written.
+    </p>
+    <a href="#top" class="foot__top">Top <span class="arrow">↑</span></a>
+  </div>
+</footer>
+
+<style>
+  .foot {
+    background: var(--paper-2);
+    padding-block: var(--sp-8) var(--sp-5);
+    border-block-start: 1px solid var(--line-soft);
+  }
+  .foot__in {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1.1fr;
+    gap: var(--sp-7) var(--sp-6);
+    padding-block-end: var(--sp-8);
+  }
+  @media (max-width: 62rem) {
+    .foot__in { grid-template-columns: 1fr 1fr; }
+    .foot__sign, .foot__id { grid-column: 1 / -1; }
+  }
+  @media (max-width: 34rem) { .foot__in { grid-template-columns: 1fr; } }
+
+  .foot__sign { display: grid; gap: var(--sp-3); align-content: start; }
+  .foot__go { color: var(--ink-2); }
+  .foot__note {
+    font-size: var(--s--1);
+    line-height: 1.7;
+    color: var(--text-soft);
+    max-inline-size: 34ch;
+  }
+
+  .foot__col { display: grid; gap: var(--sp-4); align-content: start; }
+  .foot__col ul { display: grid; gap: var(--sp-3); }
+  .foot__col a {
+    font-size: var(--s--1);
+    color: var(--text-soft);
+    text-decoration: none;
+  }
+  .foot__col a:hover { color: var(--coral); }
+
+  .foot__id { display: grid; gap: 0.15rem; justify-items: start; align-content: start; }
+  .foot__m {
+    display: grid; place-items: center;
+    inline-size: 1.8rem; block-size: 1.8rem; margin-block-end: var(--sp-3);
+    background: var(--ink); color: var(--paper);
+    font-weight: 800; font-size: 1rem; line-height: 1; padding-block-end: 0.06em;
+  }
+  .foot__name { font-family: var(--font-display); font-size: 1.4rem; color: var(--ink-2); line-height: 1; }
+  .foot__school { font-size: 0.58rem; }
+  .foot__prog { margin-block-start: var(--sp-3); font-size: var(--s--2); color: var(--text-soft); }
+  .foot__dates { font-size: var(--s--2); color: var(--text-faint); }
+
+  .foot__base {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: var(--sp-4); padding-block-start: var(--sp-5);
+    border-block-start: 1px solid var(--line-soft);
+    font-size: var(--s--2); color: var(--text-faint);
+  }
+  .foot__base p { max-inline-size: 64ch; line-height: 1.6; }
+  .foot__ast { color: var(--coral); font-weight: 700; }
+  .foot__top { color: var(--ink-2); font-weight: 700; text-decoration: none; white-space: nowrap; }
+</style>

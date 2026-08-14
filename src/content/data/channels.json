@@ -1,0 +1,526 @@
+[
+  {
+    "id": "offline",
+    "code": "01",
+    "name": "Offline",
+    "oneLine": "Stalls, pop-ups, and door-to-door — the fastest way to your first real sale",
+    "tagline": "Stalls, pop-ups, and door-to-door — the fastest way to your first real sale",
+    "why": "Offline is usually the fastest channel to first revenue because it removes every friction point of an online sale — no waiting for a click, no trust to build from scratch with a stranger on the internet. You're in front of a real person, with a real product, and a UPI QR code. It's also your best source of unfiltered feedback: you'll know within 30 seconds if your pitch, price, or product isn't landing.",
+    "how": "Set up a small, visual stall (table, banner, product display) or go door-to-door with a sample kit. Lead with a physical demo, not a pitch — let people touch or try the product, use a short hook line, and close with a bundle or urgency offer. Accept payment via a UPI QR code tested beforehand, or cash.",
+    "when": "High-footfall windows, not just any free time — hostel entrances at meal times, the 10 minutes between lecture blocks, weekend campus events, and any college fest or society event. Door-to-door works best early evening on weekdays, once people are back from class.",
+    "where": "Anywhere your target customer already gathers in numbers — hostel common areas, the walkway outside popular lecture halls, campus food courts, society or club events, local weekend markets open to outside vendors, apartments, etc.",
+    "whatYouNeed": "A UPI QR code tested with a real transaction, price signage, 15–20 units of visible (unboxed) stock, a table or stand if available, a rehearsed hook line, inventory & lots of energy!",
+    "gettingStarted": [
+      "A UPI QR code that works, tested with a real ₹10 transaction",
+      "Visible price signage — people should know what they're looking at from 6 feet away (depending on your product)",
+      "15–20 units of stock, displayed, not boxed",
+      "One clear hook line you can say in under 10 seconds",
+      "A shortlist of 3 locations, ranked by expected footfall"
+    ],
+    "playbook": [
+      {
+        "title": "Pick your spot like it's the only decision that matters",
+        "body": "Because it is. High-footfall plus a captive, relevant audience beats a “nice” location every time."
+      },
+      {
+        "title": "Set up in under 10 minutes",
+        "body": "A banner, a price list, and product displayed so people can touch it. Nothing stays in boxes."
+      },
+      {
+        "title": "Open with a hook, not a pitch",
+        "body": "“Try this for free” or “This is the softest sock you'll ever wear — 10 seconds” beats “Hi, we're a D2C brand…” every time."
+      },
+      {
+        "title": "Let them touch, smell, try",
+        "body": "Physical products sell themselves once someone's holding them — your job is just to get the product into their hands."
+      },
+      {
+        "title": "Handle the price objection before they raise it",
+        "body": "If you're not the cheapest, say why in one line: “₹50 more, but it lasts three times as long.”"
+      },
+      {
+        "title": "Always be closing with a bundle",
+        "body": "“Buy 2, get 10% off” converts more browsers than a flat single-unit price."
+      },
+      {
+        "title": "Capture the contact",
+        "body": "Every buyer, and every serious browser, should leave a WhatsApp number or Instagram follow behind — this is how you retarget them for round two."
+      }
+    ],
+    "faqs": [],
+    "stuck": [
+      {
+        "symptom": "Nobody's stopping at my stall",
+        "fix": "Move your best-seller to the very front, add a “FREE TRY” sign, or hand samples to people walking past instead of waiting for them to approach."
+      },
+      {
+        "symptom": "People stop, look, and walk away",
+        "fix": "Your hook line is probably too generic. Say the one specific thing that makes your product different, out loud, in the first 5 seconds."
+      },
+      {
+        "symptom": "They love it but don't buy",
+        "fix": "Add urgency (“only here today”) or a bundle discount — indecision usually means the price-to-value gap isn't closed yet, not that they don't want it."
+      },
+      {
+        "symptom": "Sales are one-offs, no repeats",
+        "fix": "You're not capturing contacts. Start a simple “spin the wheel for 10% off” in exchange for a phone number."
+      }
+    ],
+    "goodLooksLike": "1 in every 5–8 people who stop at your stall should convert. If you're below that, it's a pitch or price problem, not a footfall problem.",
+    "avoid": [
+      "Setting up somewhere “nice” instead of somewhere busy",
+      "Standing behind the stall instead of in front of it, waving people down",
+      "Quoting price before demonstrating value",
+      "Packing up early because “it's slow” — the last hour of any event is often the best"
+    ],
+    "videos": [
+      {
+        "title": "7 Tips to Increase Sales at Vendor Markets",
+        "url": "https://www.youtube.com/watch?v=PKTsWF0EdkU",
+        "source": "YouTube",
+        "kind": "youtube",
+        "placeholder": false
+      },
+      {
+        "title": "How to Run a Successful Market Stall (Even When the Weather Is Bad)",
+        "url": "https://www.youtube.com/watch?v=BCjiK5MYlYY",
+        "source": "YouTube",
+        "kind": "youtube",
+        "placeholder": false
+      }
+    ],
+    "target": "direct-offline"
+  },
+
+  {
+    "id": "online-organic",
+    "code": "02",
+    "name": "Online Organic",
+    "oneLine": "Instagram, website, and content — your cheapest, most compounding channel, if you're consistent",
+    "tagline": "Instagram, website, and content — your cheapest, most compounding channel, if you're consistent",
+    "why": "Every post, reel, and story is a free, permanent asset that keeps working after you've moved on. Unlike a stall, online organic scales without you being physically present — but it rewards consistency and punishes half-effort content far more visibly than offline does.",
+    "how": "Post consistently across four content buckets (product-in-use, behind-the-scenes, social proof, value/entertainment), lead with Reels, use Stories to sell directly to your warmest audience, and respond to every DM and comment fast. Your website should convert whatever your content brings in.",
+    "when": "Post daily if you can manage it, every other day at minimum — both the algorithm and your audience punish long gaps. Test early morning (before class) and evening (post-dinner scrolling) to see what your specific audience responds to.",
+    "where": "Instagram is your primary platform for a campus-and-family D2C audience. Your website is where the purchase happens. WhatsApp Status and Broadcast is a strong secondary channel for a smaller, warmer audience — classmates, family, existing customers.",
+    "whatYouNeed": "A content calendar at least 2 weeks out, a phone camera and a basic editing app, a few consistent props or backgrounds, a working store link in your bio, and a habit of checking DMs multiple times a day.",
+    "gettingStarted": [
+      "Instagram bio: one line on what you sell, a link to your store, and your best product photo pinned",
+      "9–12 grid posts before you start posting daily — never launch with an empty grid",
+      "A content calendar for the next 2 weeks, planned in one sitting",
+      "Your website's “Buy Now” button tested end-to-end, including payment"
+    ],
+    "playbook": [
+      {
+        "title": "Post in four buckets, on rotation",
+        "body": "Product-in-use, behind-the-scenes, social proof (a customer's reaction or review), and value/entertainment (a tip or trend related to your category)."
+      },
+      {
+        "title": "Reels first, always",
+        "body": "On a new account, Reels reach far beyond your followers; static posts mostly don't. Aim for 3–4 Reels a week minimum."
+      },
+      {
+        "title": "Use Stories to sell directly",
+        "body": "Polls (“which colour next?”), countdowns to a drop, and a direct “swipe up to buy” — Stories convert your warmest audience, the people who already follow you."
+      },
+      {
+        "title": "Answer every DM and comment within the hour",
+        "body": "Early-stage accounts live or die on responsiveness — a fast reply to “is this available in blue?” is often the entire sales conversation."
+      },
+      {
+        "title": "Make your website do the convincing your salesperson can't",
+        "body": "Multiple product photos, a clear price, 2–3 real reviews, and a checkout under 60 seconds."
+      },
+      {
+        "title": "Track what's actually working",
+        "body": "Which single post drove the most profile visits or DMs? Do more of exactly that, not more of “content” in general."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "How many followers do I actually need before this works?",
+        "a": "Fewer than you think — you need relevant reach, not scale. 200 highly relevant followers (classmates, hostel mates) can outsell 2,000 random ones."
+      },
+      {
+        "q": "Should the account feel personal or more corporate?",
+        "a": "Lean personal, especially early. People buy from people at this stage — show your face and process, not just product shots."
+      },
+      {
+        "q": "I'm getting views but the wrong audience. What's wrong?",
+        "a": "Check your hashtags and topics — you may be reaching a broad, unrelated audience. Narrow your hashtags to your specific niche and location."
+      },
+      {
+        "q": "Is it worth boosting a post before I have ad budget?",
+        "a": "Not usually. Save any small budget for a proper Performance Marketing test instead — a one-off boosted post rarely builds anything lasting."
+      },
+      {
+        "q": "How do I know if it's my content or my website that's the problem?",
+        "a": "Compare Instagram profile visits to actual website visits and sales. A gap between profile visits and site clicks means your bio/CTA is the issue; a gap between site visits and sales means your website is."
+      }
+    ],
+    "stuck": [
+      {
+        "symptom": "Posts get views but no engagement",
+        "fix": "Your caption probably has no question or CTA. End every post with something that invites a reply."
+      },
+      {
+        "symptom": "Followers growing, but no sales",
+        "fix": "Check your bio link actually goes to a working store, and that your Stories are asking people to buy — followers don't convert on their own."
+      },
+      {
+        "symptom": "Website traffic but no checkout completions",
+        "fix": "Get a friend to buy something right now and time it. Over 90 seconds, or asking for information it doesn't need, is your leak."
+      },
+      {
+        "symptom": "I don't know what to post",
+        "fix": "Film 5 things today — you unboxing your own product, a customer using it, your workspace, a before/after, and you answering a common question. That's a week of content."
+      }
+    ],
+    "goodLooksLike": "Aim for at least 1 DM inquiry per 3 Reels once you're past your first 15–20 posts, and a website conversion rate of 1–2% is a reasonable early target.",
+    "avoid": [
+      "Posting only product photos with no faces or story",
+      "Going quiet for more than 2–3 days once you've started",
+      "A bio link that goes to Instagram itself instead of your store",
+      "Deleting posts that “didn't do well” instead of learning why"
+    ],
+    "videos": [
+      {
+        "title": "How to Start and Grow on Instagram as a Small Business Organically",
+        "url": "https://www.youtube.com/watch?v=Ho_Qc-mXmBQ",
+        "source": "YouTube",
+        "kind": "youtube",
+        "placeholder": false
+      },
+      {
+        "title": "Build Your Brand Organically on Social Media — No Ads Needed",
+        "url": "https://www.youtube.com/watch?v=LFbzPqGPKKA",
+        "source": "YouTube",
+        "kind": "youtube",
+        "placeholder": false
+      }
+    ],
+    "target": "social-media"
+  },
+
+  {
+    "id": "influencer",
+    "code": "03",
+    "name": "Influencer Marketing",
+    "oneLine": "Borrowed trust, borrowed audience — if you pick the right partner",
+    "tagline": "Borrowed trust, borrowed audience — if you pick the right partner",
+    "why": "A stranger trusts a creator they already follow more than they trust your brand-new account. Influencer marketing is really just renting that trust for a short campaign — and at the nano/micro level (1K–20K followers), it's cheap or free, and often more effective per rupee than paid ads.",
+    "how": "Shortlist relevant creators, send a short and specific ask (barter or paid), give a loose creative brief, attach a trackable code or link, and follow up once if you don't hear back.",
+    "when": "Reach out at least 1–2 weeks before you need content live — creators need time to film, edit, and post, and content performs best timed around a specific moment: a launch, a discount window, or an event.",
+    "where": "Instagram first, but also consider YouTube Shorts creators and fellow students with a strong personal following — campus micro-influencers often convert better than generic lifestyle accounts.",
+    "whatYouNeed": "A shortlist of 15–20 names, a one-line pitch message, product to send for barter, a trackable discount code per creator, and a simple tracker logging who you've contacted, their response, and what they posted.",
+    "gettingStarted": [
+      "A shortlist of 15–20 nano/micro creators in your category or campus network",
+      "A simple, specific outreach message template",
+      "A unique discount code or trackable link per creator, so you know what's actually working",
+      "Clarity on barter vs. paid before you reach out"
+    ],
+    "playbook": [
+      {
+        "title": "Prioritize relevance over reach",
+        "body": "A 3,000-follower creator whose entire audience is your target customer beats a 30,000-follower generalist every time."
+      },
+      {
+        "title": "Start with campus and hyperlocal creators",
+        "body": "They're easier to reach, cheaper (often barter-only), and their audience overlaps almost exactly with your early buyers."
+      },
+      {
+        "title": "Send a specific, short ask",
+        "body": "Not “we'd love to collaborate” — instead: “We'll send you [product] to keep, and we'd love one Reel/Story showing how you use it. Interested?”"
+      },
+      {
+        "title": "Give a loose brief, not a script",
+        "body": "Creators know their audience better than you do — tell them the 1–2 things that must come across, and let them make it their own."
+      },
+      {
+        "title": "Always attach a trackable code or link",
+        "body": "Without this, you can't tell a campaign that worked from one that didn't — and you'll repeat the wrong ones."
+      },
+      {
+        "title": "Follow up once, politely, after 3–4 days of silence",
+        "body": "Most non-responses are just a full inbox, not a no."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Barter or pay — which should I choose first?",
+        "a": "Start with barter for nano/campus creators — most will say yes for a free product plus visibility. Save paid deals for creators who specifically ask, or who clearly deliver strong results."
+      },
+      {
+        "q": "A creator wants a large payment upfront — what do I do?",
+        "a": "Politely decline and offer a smaller barter test first to prove fit before any paid commitment. Don't pay a large amount for an unproven relationship."
+      },
+      {
+        "q": "How do I know if their content actually worked?",
+        "a": "Look at three things: their unique code's redemptions, click-throughs on their link (if trackable), and any comment/DM spike right after they posted."
+      },
+      {
+        "q": "Should I ask for exclusivity from a creator?",
+        "a": "Not at this stage — you're not paying enough to reasonably ask for it. Focus on getting one good collaboration done well instead."
+      },
+      {
+        "q": "Their content doesn't feel “on brand” — is that a problem?",
+        "a": "Not necessarily. Their authentic voice is often exactly what makes it work — a tight brief helps, but don't over-correct into something generic."
+      }
+    ],
+    "stuck": [
+      {
+        "symptom": "Creators aren't replying",
+        "fix": "Go smaller and more local — a 500-follower classmate with an engaged niche account will often say yes when a 20K-follower stranger won't."
+      },
+      {
+        "symptom": "They posted, but no one used the code",
+        "fix": "The CTA in their post was probably vague. Ask them to say the code out loud in the video and pin it in the caption."
+      },
+      {
+        "symptom": "Good engagement, but no sales",
+        "fix": "Check if the discount is actually compelling enough to move someone from “interested” to “buying today” — 10% often isn't enough for a first-time buyer."
+      },
+      {
+        "symptom": "I don't know who to approach",
+        "fix": "Search hashtags and locations relevant to your product on Instagram, and look at who's already engaging with brands like yours."
+      }
+    ],
+    "goodLooksLike": "For nano/micro creators, a 2–5% conversion rate on their unique code is a healthy benchmark for a first campaign.",
+    "avoid": [
+      "Chasing follower count instead of engagement or relevance",
+      "No written brief at all — leads to off-brand content",
+      "Paying full rate before testing with a barter deal first",
+      "Forgetting to repost their content to your own page"
+    ],
+    "videos": [
+      {
+        "title": "Influencer Marketing Tutorial: Beginner to Pro in 20 Minutes",
+        "url": "https://www.youtube.com/watch?v=qLsiF8qep9s",
+        "source": "YouTube",
+        "kind": "youtube",
+        "placeholder": false
+      },
+      {
+        "title": "How to Do Influencer Marketing to Grow Your Business",
+        "url": "https://www.youtube.com/watch?v=zEgOI1rNlyc",
+        "source": "YouTube",
+        "kind": "youtube",
+        "placeholder": false
+      }
+    ],
+    "target": "influencer-affiliate"
+  },
+
+  {
+    "id": "performance",
+    "code": "04",
+    "name": "Performance Marketing",
+    "oneLine": "Paid ads — the fastest way to burn ₹5,000 and learn nothing, unless you do this in order",
+    "tagline": "Paid ads — the fastest way to burn ₹5,000 and learn nothing, unless you do this in order",
+    "why": "Paid ads are the only channel where you can buy attention on demand, targeted precisely to people who look like your best customers — but they're also the channel most likely to waste your capital if you skip the fundamentals. Tracking and a working funnel have to exist before a single rupee of spend.",
+    "how": "Install tracking first, build a specific landing page, test 3 creatives on a small budget, read your funnel numbers in order (CTR, then landing page conversion, then ROAS), then kill or scale based on what the data says.",
+    "when": "Start testing once you have a working store and at least a few organic sales or reviews as social proof. Give any test 2–3 days minimum before judging it — the algorithm needs time to learn.",
+    "where": "Meta (Instagram + Facebook) is usually the first stop for a visual D2C product — cheaper to start and easier to test creative on. Google is better once you have clear search demand for your specific product category.",
+    "whatYouNeed": "Meta Pixel installed and confirmed firing, a dedicated landing page, 3 ad creatives, a small daily test budget (₹500–1,000/day), and a habit of checking performance daily, not hourly.",
+    "gettingStarted": [
+      "Meta Pixel and/or Google Analytics installed and confirmed firing on your website",
+      "A landing page, not just your homepage, that matches exactly what the ad promises",
+      "3 different ad creatives ready to test against each other",
+      "A small test budget agreed in advance — ₹500–1,000/day is enough to learn"
+    ],
+    "playbook": [
+      {
+        "title": "Test before you scale",
+        "body": "Run all 3 creatives to a small, broad-ish audience for 2–3 days before touching the budget slider."
+      },
+      {
+        "title": "Read three numbers, in this order",
+        "body": "CTR (are people interested enough to click?), then landing page conversion rate (does the page deliver?), then ROAS (does the math work?). A failure at any stage tells you exactly where to fix."
+      },
+      {
+        "title": "Kill fast, scale slower",
+        "body": "Cut a creative that's clearly underperforming after ~₹300–500 of spend. When something works, scale the budget by 20–30% at a time, not by doubling overnight."
+      },
+      {
+        "title": "Match your ad's promise to your landing page's headline",
+        "body": "If the ad says “40% off,” the landing page should say that in the first line the visitor sees."
+      },
+      {
+        "title": "Watch for ad fatigue",
+        "body": "If a winning ad's performance drops after a week or two, it's been seen too many times by the same people — refresh the creative, don't kill the audience."
+      },
+      {
+        "title": "Retarget people who almost bought",
+        "body": "Anyone who visited your product page but didn't purchase is your cheapest, highest-intent audience for a second ad."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "How much should I spend to get useful data?",
+        "a": "Budget at least ₹1,500–2,000 total per creative before making a real call — spending ₹200 and giving up tells you almost nothing."
+      },
+      {
+        "q": "What's a realistic first-week ROAS?",
+        "a": "Don't expect 3+ in week one. Anything above 1.5–2 is worth building on; below 1 across a real test budget usually means targeting, creative, or the page needs to change."
+      },
+      {
+        "q": "Can I run this myself, or do I need a mentor to manage it?",
+        "a": "You can run this yourself — that's the point of the program. Use WS11 (Performance Marketing workshop) and this guide as your baseline, then practice."
+      },
+      {
+        "q": "What if I don't have ₹500/day to spend?",
+        "a": "Start smaller — even ₹200–300/day is enough to learn directional signals, like which creative gets more clicks, even without full conversion volume yet."
+      },
+      {
+        "q": "My ROAS looks great but I'm still short on cash — why?",
+        "a": "ROAS measures revenue against ad spend only, not your total costs. Check the Revenue & Expenses section — a “great” ROAS can still hide a thin overall margin."
+      }
+    ],
+    "stuck": [
+      {
+        "symptom": "High CTR, but nobody buys",
+        "fix": "The problem is your landing page or price, not your ad. Check load speed, and make sure the price and value are obvious in the first 5 seconds."
+      },
+      {
+        "symptom": "Nobody's clicking at all",
+        "fix": "Your creative isn't stopping the scroll — try a UGC-style video over a polished product shot; it usually outperforms for cold audiences."
+      },
+      {
+        "symptom": "Spend is going up, ROAS is going down",
+        "fix": "You're probably seeing ad fatigue or audience saturation — refresh the creative or widen the audience slightly."
+      },
+      {
+        "symptom": "I don't know if I'm ready to spend more",
+        "fix": "You're ready to scale only once one creative has a proven ROAS above 2 across at least ₹1,500–2,000 of spend — not before."
+      }
+    ],
+    "goodLooksLike": "Aim for a ROAS of 3+ before scaling meaningfully; anything above 2 in week one is a promising early signal, not yet a scale signal.",
+    "avoid": [
+      "Spending before the Pixel/tracking is confirmed working",
+      "Sending ad traffic to your homepage instead of a specific product page",
+      "Scaling budget on day one because “it seemed to work”",
+      "Judging a campaign on likes or reach instead of ROAS"
+    ],
+    "videos": [
+      {
+        "title": "Meta Ads Full Tutorial for Beginners 2026",
+        "url": "https://www.youtube.com/watch?v=9SAqt5NzSPY",
+        "source": "YouTube",
+        "kind": "youtube",
+        "placeholder": false
+      },
+      {
+        "title": "Ultimate Facebook Ads Guide — Beginner Full Walkthrough",
+        "url": "https://www.youtube.com/watch?v=TtJbgsG8yB0",
+        "source": "YouTube",
+        "kind": "youtube",
+        "placeholder": false
+      }
+    ],
+    "target": "performance-marketing"
+  },
+
+  {
+    "id": "b2b",
+    "code": "05",
+    "name": "B2B",
+    "oneLine": "Bulk and institutional sales — fewer conversations, bigger tickets",
+    "tagline": "Bulk and institutional sales — fewer conversations, bigger tickets",
+    "why": "One good B2B deal can be worth 50–100 individual D2C sales in a single conversation. For a time-constrained challenge, a handful of well-run B2B relationships can move your revenue number more than weeks of one-at-a-time selling — and hostels, cafes, gyms, and offices are constantly buying things in bulk anyway.",
+    "how": "Build a warm path wherever possible, lead with their problem, bring a sample, propose a small pilot order rather than a big first ask, follow up relentlessly, and turn every pilot into a bigger repeat order conversation.",
+    "when": "Start by Phase 2 at the latest — B2B sales cycles take longer than a week even for a small deal. Don't wait until you're behind on revenue to start; by then you won't have time for the follow-up this channel needs.",
+    "where": "Gyms near campus, corporate HR/admin teams via warm intros, boutique local retailers, and your own or classmates' family businesses — the best first targets are places you already have some kind of “in.”",
+    "whatYouNeed": "A shortlist of 15–20 targets, a 1–2 page pitch deck, a small sample kit, clear bulk pricing tiers decided in advance, and a simple tracker for who you've contacted and your last follow-up date.",
+    "gettingStarted": [
+      "A shortlist of 15–20 targets: Corporate HR/admin teams, boutique retailers, any businesses.",
+      "A 1–2 page pitch deck: what you sell, why it's good for them, pricing at volume",
+      "A small sample kit ready to hand over or send",
+      "Clarity on your bulk pricing tiers before anyone asks"
+    ],
+    "playbook": [
+      {
+        "title": "Build a warm path wherever possible",
+        "body": "A cold LinkedIn message works, but an introduction from a friend, family member, or professor gets you a meeting 3x faster."
+      },
+      {
+        "title": "Lead with their problem, not your product",
+        "body": "A gym doesn't want “premium socks” — it wants “a member gift that doesn't cost staff time to source.” Frame around what they need."
+      },
+      {
+        "title": "Bring, or send, a physical sample",
+        "body": "B2B buyers, like anyone else, decide faster once they can hold the product."
+      },
+      {
+        "title": "Propose a small pilot, not a huge first order",
+        "body": "“Let's start with 25 units and see how they move” is a much easier yes than asking for a 200-unit commitment upfront."
+      },
+      {
+        "title": "Make the follow-up your job, not theirs",
+        "body": "Most B2B deals die from silence, not rejection — follow up every 3–4 days until you get a real yes or no."
+      },
+      {
+        "title": "Turn every pilot into a repeat order conversation",
+        "body": "The moment a pilot sells through, go back and ask for the next, bigger order — don't wait for them to come back to you."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "How much should I discount for bulk orders?",
+        "a": "Set 2–3 clear pricing tiers in advance (e.g. 10% off at 25+ units, 15% off at 50+) so you're never negotiating on the spot — know your floor margin before you walk in."
+      },
+      {
+        "q": "What if they ask for a much bigger order than I can fulfill?",
+        "a": "Be honest about your production capacity and propose a phased delivery — a smaller first batch now, the rest to follow — rather than overpromising."
+      },
+      {
+        "q": "I got a verbal yes but no payment yet — does that count?",
+        "a": "Not until there's a confirmed order and at least a partial payment or advance. Verbal interest isn't revenue, and treating it as such will throw off your milestone tracking."
+      },
+      {
+        "q": "How many “no”s should I expect before a “yes”?",
+        "a": "Plan for it — a realistic funnel is roughly 15–20 outreaches to 2–3 closed pilots. A string of no's early on is normal, not a signal to stop."
+      }
+    ],
+    "stuck": [
+      {
+        "symptom": "No one's replying to outreach",
+        "fix": "Switch from cold email/LinkedIn to WhatsApp or an in-person drop-in with a sample — B2B here is often won in person, not in an inbox."
+      },
+      {
+        "symptom": "I get meetings, but no one commits",
+        "fix": "You're probably asking for too big a first order. Shrink the ask to a small pilot with no long-term commitment."
+      },
+      {
+        "symptom": "They say yes but go quiet on payment/logistics",
+        "fix": "Get a UPI advance or confirmed order in writing at the meeting itself, not “let's finalize later.”"
+      },
+      {
+        "symptom": "I don't know who to approach",
+        "fix": "Start with places you already have a natural way in — your own hostel, your professor's department, a friend's family business."
+      }
+    ],
+    "goodLooksLike": "A realistic B2B funnel here is roughly 15–20 outreaches → 5–8 meetings → 2–3 closed pilots. If you're far below that, the issue is usually the ask size or follow-up discipline, not the product.",
+    "avoid": [
+      "Cold-emailing 50 places and following up with none of them",
+      "Asking for a large order before you've proven a small one",
+      "Undercutting your own margin just to close a first deal",
+      "Treating a single “yes” as the finish line instead of the start of a repeat relationship"
+    ],
+    "videos": [
+      {
+        "title": "Best Cold Outreach Strategies for Early-Stage Startups and B2B",
+        "url": "https://www.youtube.com/watch?v=MNvHgrPV02s",
+        "source": "YouTube",
+        "kind": "youtube",
+        "placeholder": false
+      },
+      {
+        "title": "How I Find and Pitch Retailers for Wholesale",
+        "url": "https://www.youtube.com/watch?v=1ciz9aoaltI",
+        "source": "YouTube",
+        "kind": "youtube",
+        "placeholder": false
+      }
+    ],
+    "target": "b2b-sales"
+  }
+]

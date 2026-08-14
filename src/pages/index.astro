@@ -1,0 +1,1077 @@
+---
+import V2 from '../layouts/V2.astro';
+import Thread from '../components/v2/Thread.astro';
+import Clip from '../components/v2/Clip.astro';
+import Drawer from '../components/v2/Drawer.astro';
+import MilestoneSheet from '../components/v2/MilestoneSheet.astro';
+import ChannelSheet from '../components/v2/ChannelSheet.astro';
+import WorkshopSheet from '../components/v2/WorkshopSheet.astro';
+import {
+  getProgram, getPhases, getMilestones, getWorkshops, getChannels,
+  getChannelTargets, getTargetBreakdown, getRevenueLadder, getMoney,
+  getFlea, getFaqs, getWip, getAllSymptoms, getStillStuck,
+} from '../lib/content';
+import { rupeesCompact } from '../lib/format';
+
+const program = await getProgram();
+const phases = await getPhases();
+const milestones = await getMilestones();
+const workshops = await getWorkshops();
+const channels = await getChannels();
+const targets = await getChannelTargets();
+const breakdown = await getTargetBreakdown();
+const ladder = await getRevenueLadder();
+const money = await getMoney();
+const flea = await getFlea();
+const faqs = await getFaqs();
+const wip = await getWip();
+const symptoms = await getAllSymptoms();
+const stillStuck = await getStillStuck();
+
+const { inventory, revenue } = money;
+const m8 = milestones.find((m) => m.id === 'm8')!;
+const ws13 = workshops.find((w) => w.id === 'ws13');
+const fleaTarget = targets.find((t) => t.id === 'flea-market');
+const gated = milestones.filter((m) => m.gate);
+const sums = breakdown.total === program.revenueTarget;
+
+/* The Starter Pack's Channel Playbook numbers the channels 01–05; the Channel
+   Targets graphic lists the same channels in a different order (02, 03, 05, 04,
+   01). Reading the table top to bottom and then opening a row therefore jumped
+   around the numbering. Same rows, same labels, same figures — ordered so the
+   table and the sheet it opens agree. */
+const codeOf = (channelId: string | null) =>
+  channels.find((c) => c.id === channelId)?.code ?? null;
+/** Playbook order (01…05); anything with no playbook channel sorts last. */
+function byCode<T extends { channel: string | null }>(list: T[]): T[] {
+  return [...list].sort((a, b) => (codeOf(a.channel) ?? '99').localeCompare(codeOf(b.channel) ?? '99'));
+}
+const splitRows = byCode(breakdown.rows);
+const tableRows = byCode([...breakdown.rows, ...breakdown.nonRevenue]);
+const frac = (v: number) => (program.revenueTarget > 0 ? v / program.revenueTarget : 0);
+
+/* The cover statement is set from content, with the last two words carrying
+   the coral pass. */
+const hw = program.heroStatement.replace(/\.$/, '').split(' ');
+const hLead = hw.slice(0, -2).join(' ');
+const hTail = hw.slice(-2).join(' ');
+---
+
+<V2 title="BYOB Starter Kit — Mesa Forge" description={program.heroSupport}>
+  <!-- ═════════════════════════════════════════════════════════════ COVER -->
+  <section class="cover">
+    <div class="page cover__in">
+      <p class="num-mark cover__mark">{program.heroKicker}</p>
+
+      <h1 class="disp disp--xl cover__t">
+        {hLead} <span class="overprint">{hTail}.</span>
+      </h1>
+
+      <div class="cover__foot">
+        <p class="lede cover__l">{program.heroSupport}</p>
+        <div class="cover__acts">
+          <a class="btn cover__go" href="#brief">Start reading <span class="arrow">↓</span></a>
+          <a class="cover__jump" href="#weeks">or jump to week 1 <span class="arrow">→</span></a>
+        </div>
+      </div>
+
+      <ul class="cover__facts">
+        <li>{program.weeks} weeks</li>
+        <li>{program.milestoneCount} milestones</li>
+        <li>{program.revenueTargetLabel} minimum</li>
+        <li>{program.teamSizeLabel}</li>
+      </ul>
+
+      <p class="hand cover__note">nothing here is a test — poke around</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ 01 BRIEF -->
+  <section class="run" id="brief">
+    <Thread fade="in" />
+    <p class="run__mark num-mark">01 / Brief</p>
+    <div class="run__main">
+      <h2 class="disp disp--md sec__t">What you're actually doing.</h2>
+      <p class="lede sec__l">
+        Find a customer need, build a D2C product, and sell it to real people. Everything
+        else follows from that.
+      </p>
+
+      <ol class="brief" data-in-group>
+        {program.structure.map((it) => (
+          <li class="brief__i" data-in>
+            <span class="brief__n mono">{it.n}</span>
+            <h3 class="brief__h">{it.title}</h3>
+            <p class="brief__b">{it.body}</p>
+          </li>
+        ))}
+      </ol>
+
+      <div class="brief__notes">
+        <p class="aside" data-in><strong>Key outcome.</strong> {program.keyOutcome}</p>
+        <p class="aside aside--violet" data-in><strong>How capital works.</strong> {program.capitalNote}</p>
+      </div>
+
+      <details class="fold" data-in>
+        <summary>Six things you'll gain from it</summary>
+        <div class="fold__body">
+          <p class="gain__i">{program.gainsIntro}</p>
+          <ol class="gain__l">
+            {program.gains.map((g, i) => (
+              <li>
+                <span class="gain__n mono">{String(i + 1).padStart(2, '0')}</span>
+                <div><h4>{g.title}</h4><p>{g.body}</p></div>
+              </li>
+            ))}
+          </ol>
+          <p class="say gain__c">{program.closingNote}</p>
+          <div class="gain__v">{program.watch.map((v) => <Clip video={v} />)}</div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ 02 CLIMB -->
+  <section class="run" id="climb">
+    <Thread />
+    <p class="run__mark num-mark">02 / Climb</p>
+    <div class="run__main">
+      <h2 class="disp disp--md sec__t">₹7 lakhs, in seven steps.</h2>
+      <p class="lede sec__l">
+        Each step is a bar your venture clears before the next unlocks. This is the path
+        ahead — not what you've earned.
+      </p>
+
+      <ol class="climb" data-in-group>
+        {ladder.map((r, i) => (
+          <li class="climb__s" style={`--h:${(10 + Math.pow(r.fraction, 0.55) * 90).toFixed(1)}%`} data-in>
+            <span class="climb__bar" data-top={r.isTarget ? '' : undefined}></span>
+            <span class="climb__v">{r.label}</span>
+            <span class="climb__m mono">{r.milestone.code}{i === 0 ? '–M2' : ''}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ 03 WEEKS -->
+  <section class="run" id="weeks">
+    <Thread />
+    <p class="run__mark num-mark">03 / Weeks</p>
+    <div class="run__main run__main--flush">
+      <h2 class="disp disp--md sec__t">Eight weeks. Eight milestones.</h2>
+      <p class="lede sec__l">
+        Each is mandatory and dated — you can hit them early, but missing a deadline affects
+        your grade, your next capital tranche, and gets escalated to your mentor and the
+        Investment Committee.
+      </p>
+    </div>
+
+    <!-- The milestones hang directly off the thread. -->
+    <ol class="weeks" data-in-group>
+      {phases.map((ph) => (
+        <>
+          <li class="weeks__ph" data-in>
+            <span class="weeks__phm"></span>
+            <div class="weeks__phb">
+              <h3 class="disp disp--xs">{ph.name}</h3>
+              <p class="weeks__phw">{ph.weeks}</p>
+              <p class="weeks__phs">{ph.summary}</p>
+              <ul class="weeks__beats">
+                {ph.beats.map((b) => <li class="say">{b}</li>)}
+              </ul>
+            </div>
+          </li>
+          {milestones.filter((m) => m.phase === ph.id).map((m) => (
+            <li class="weeks__m" data-in>
+              <span class="weeks__dot" data-gate={m.gate ? '' : undefined}></span>
+              <button class="weeks__row reg reg--live" type="button" data-open={m.id}>
+                <span class="weeks__code mono">{m.code}</span>
+                <span class="weeks__h">{m.headline}</span>
+                <span class="weeks__rev num">{m.revenueLabel}</span>
+                <span class="weeks__meta">
+                  <span class="weeks__date">{m.date}</span>
+                  {m.gate && <span class="tag tag--violet">{m.gate.name}</span>}
+                </span>
+                <span class="weeks__go arrow" aria-hidden="true">→</span>
+              </button>
+            </li>
+          ))}
+        </>
+      ))}
+    </ol>
+
+    <div class="run__main">
+      <div class="gates" id="gates" data-in>
+        <h3 class="gates__h">How the money unlocks</h3>
+        <p class="gates__l">
+          Mesa's capital is interest-free debt, released in tranches. The Investment
+          Committee checks that milestone's deliverables against its targets — hit the bar
+          and the next tranche unlocks.
+        </p>
+        <ol class="gates__g" data-in-group>
+          {gated.map((m) => (
+            <li class="gate" data-in>
+              <div class="gate__t">
+                <span class="tag tag--violet">{m.gate!.name}</span>
+                <button class="gate__at mono" type="button" data-open={m.id}>{m.code} <span class="arrow">→</span></button>
+              </div>
+              <p class="gate__r">
+                {m.gateConfirming
+                  ? <span class="confirming" title={m.gateConfirming.note}>{m.gate!.rule}<span class="sr-only"> (being confirmed: {m.gateConfirming.note})</span></span>
+                  : m.gate!.rule}
+              </p>
+              {m.gate!.spendOn.length > 0 && <p class="gate__s">{m.gate!.spendOn.join(' · ')}</p>}
+            </li>
+          ))}
+        </ol>
+        <p class="aside aside--violet gates__cap" data-in>
+          <strong>The cap.</strong> Interest-free debt of up to{' '}
+          <span class="confirming" title={program.capitalConfirming!.note}>{program.capitalMaxLabel}<span class="sr-only"> (being confirmed: {program.capitalConfirming!.note})</span></span>{' '}
+          from Mesa, in tranches of {program.trancheLabel}. All of it repaid by {program.repaymentLabel}.
+        </p>
+        <p class="fineprint">
+          * The total capital amount hasn't been finalised by the program team yet. Confirm
+          with your mentor before planning around it.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════ 04 SELLING -->
+  <section class="run" id="selling">
+    <Thread />
+    <p class="run__mark num-mark">04 / Selling</p>
+    <div class="run__main">
+      <h2 class="disp disp--md sec__t">Five ways to sell.</h2>
+      <p class="lede sec__l">
+        Every team's path to ₹7L runs through some mix of all five. Open one for the whole
+        playbook — how, when, where, and what to do when it stops working.
+      </p>
+
+      <ol class="ways" data-in-group>
+        {channels.map((c) => {
+          const t = targets.find((x) => x.id === c.target);
+          return (
+            <li data-in>
+              <button class="way reg reg--coral reg--live" type="button" data-open={c.id}>
+                <span class="way__n mono">{c.code}</span>
+                <span class="way__b">
+                  <span class="way__t disp disp--sm">{c.name}</span>
+                  <span class="way__l">{c.oneLine}</span>
+                </span>
+                <span class="way__r">
+                  {t?.winRevenue != null && <span class="way__tg num">{rupeesCompact(t.winRevenue)}</span>}
+                  <span class="arrow" aria-hidden="true">→</span>
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+
+      <div class="split" id="targets" data-in>
+        <h3 class="split__h">{sums ? 'How ₹7 lakhs adds up' : 'Targets by channel'}</h3>
+        <p class="split__l">
+          {sums
+            ? `Each channel carries its own win target — together they come to exactly ${program.revenueTargetLabel}.`
+            : 'The win target set for each channel.'}
+        </p>
+        <div class="split__bar">
+          {splitRows.map((r, i) => (
+            <span class="split__seg" style={`--share:${(r.share * 100).toFixed(2)}%;--i:${i}`} title={`${r.name}: ${rupeesCompact(r.winRevenue)}`} />
+          ))}
+        </div>
+        <ul class="split__k">
+          {splitRows.map((r, i) => (
+            <li><span class="split__d" style={`--i:${i}`} aria-hidden="true"></span><span>{r.name}</span><span class="num">{rupeesCompact(r.winRevenue)}</span></li>
+          ))}
+          <li class="split__tot"><span class="split__d split__d--n" aria-hidden="true"></span><span>Total</span><span class="num">{rupeesCompact(breakdown.total)}</span></li>
+        </ul>
+
+        <details class="fold">
+          <summary>Full target table — minimums, wins, budgets</summary>
+          <div class="fold__body">
+            <div class="tbl__scroll">
+              <table class="tbl">
+                <caption class="sr-only">Minimum and win targets per channel</caption>
+                <thead><tr><th scope="col">Channel</th><th scope="col">Minimum</th><th scope="col">Win</th><th scope="col">Budget</th></tr></thead>
+                <tbody>
+                  {tableRows.map((t) => (
+                    <tr>
+                      <th scope="row">
+                        {codeOf(t.channel) && <span class="tbl__code" aria-hidden="true">{codeOf(t.channel)}</span>}
+                        {t.channel ? <button class="tbl__link" type="button" data-open={t.channel}>{t.name}</button> : t.name}
+                        {t.tof && <span class="tbl__sub">Top of funnel: {t.tof}</span>}
+                      </th>
+                      <td>{t.min.length ? <ul class="bullets">{t.min.map((x) => <li>{x}</li>)}</ul> : '—'}</td>
+                      <td><ul class="bullets">{t.win.map((x) => <li>{x}</li>)}</ul>{t.note && <span class="tbl__sub">{t.note}</span>}</td>
+                      <td class="num">{t.budget ?? '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p class="fineprint">
+              Budget figures appear in the Starter Pack without a stated unit or period, and
+              are reproduced exactly as written. Check with your mentor before planning spend.
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════ 05 SESSIONS -->
+  <section class="run" id="sessions">
+    <Thread />
+    <p class="run__mark num-mark">05 / Sessions</p>
+    <div class="run__main">
+      <h2 class="disp disp--md sec__t">Thirteen sessions, timed to the work.</h2>
+      <p class="lede sec__l">
+        Mesa runs workshops with functional experts and startup leaders throughout the
+        challenge. Each one lands where a milestone needs it.
+      </p>
+
+      <ol class="ses" data-in-group>
+        {workshops.map((w) => {
+          const ms = milestones.find((m) => m.id === w.milestone);
+          return (
+            <li data-in>
+              <button class="ses__r" type="button" data-open={w.id}>
+                <span class="ses__c mono">{w.code}</span>
+                <span class="ses__t">{w.title}</span>
+                <span class="ses__f">{ms ? ms.code : ''}</span>
+                <span class="ses__a arrow" aria-hidden="true">→</span>
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+      <p class="fineprint ses__n">
+        Pairings show when each session is most useful — check the program schedule for
+        confirmed dates. You also get a mentor check-in every week; each milestone carries
+        the question yours will open with.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ 06 MONEY -->
+  <section class="run" id="money">
+    <Thread />
+    <p class="run__mark num-mark">06 / Money</p>
+    <div class="run__main">
+      <h2 class="disp disp--md sec__t">₹7L in sales isn't ₹7L in your pocket.</h2>
+      <p class="lede sec__l">{revenue.intro}</p>
+
+      <!-- The equation is the section's one visual: a top line, three things
+           taken out of it, and what survives. Ruled boxes made five equal rows
+           of it and hid the arithmetic — the shape carries it instead. -->
+      <div class="eq" data-in>
+        <p class="eq__c kicker">Five numbers, every week</p>
+        <ol class="eq__list" data-in-group>
+          {revenue.numbers.map((n, i) => {
+            const last = i === revenue.numbers.length - 1;
+            const op = i === 0 ? '' : last ? '=' : '−';
+            const said = i === 0 ? '' : last ? 'equals' : 'minus';
+            return (
+              <li data-in class:list={['eq__r', i === 0 && 'eq__r--top', !last && i > 0 && 'eq__r--take', last && 'eq__r--out reg reg--coral']}>
+                <span class="eq__o mono" aria-hidden="true">{op}</span>
+                {said && <span class="sr-only">{said}</span>}
+                <span class="eq__n">{n.name}</span>
+                <span class="eq__d">{n.body}</span>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+
+      <div class="money__folds">
+        <details class="fold" data-in>
+          <summary>Inventory — don't let cash sit on a shelf</summary>
+          <div class="fold__body">
+            <p class="money__i">{inventory.intro}</p>
+            <dl class="terms">
+              {inventory.terms.map((t) => (<div class="term"><dt>{t.term}</dt><dd>{t.body}</dd></div>))}
+            </dl>
+            <h3 class="money__h">Phase by phase</h3>
+            <ol class="money__ph">
+              {inventory.phases.map((p) => (<li><h4>{p.label}</h4><p>{p.body}</p></li>))}
+            </ol>
+            <p class="aside money__sys"><strong>A simple system.</strong> {inventory.system}</p>
+            <h3 class="money__h">Avoid</h3>
+            <ul class="nope">{inventory.avoid.map((a) => <li>{a}</li>)}</ul>
+            <h3 class="money__h">Watch</h3>
+            <div class="money__v">{inventory.videos.map((v) => <Clip video={v} />)}</div>
+          </div>
+        </details>
+
+        <details class="fold" data-in>
+          <summary>The financial lens at each milestone</summary>
+          <div class="fold__body">
+            <div class="lens">
+              {revenue.lens.map((l) => (
+                <div class="lens__i">
+                  <div class="lens__t"><h3>{l.milestone}</h3><span class="lens__g num">{l.revGoal}</span></div>
+                  <p><span class="kicker">Focus</span>{l.focus}</p>
+                  <p><span class="kicker lens__w">Watch for</span>{l.watchFor}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <blockquote class="ask" data-in>
+        <p class="ask__q disp disp--sm">{revenue.question}</p>
+        <footer class="ask__f">{revenue.questionBody}</footer>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ 07 BREAKS -->
+  <section class="run" id="breaks">
+    <Thread fade="out" />
+    <p class="run__mark num-mark">07 / Stuck</p>
+    <div class="run__main">
+      <h2 class="disp disp--md sec__t">When it breaks.</h2>
+      <p class="lede sec__l">
+        Twenty things that commonly go wrong, and what to do about each. Find what's actually
+        happening — not the channel you think is at fault.
+      </p>
+
+      <div class="dx" data-in>
+        <div class="dx__ctl">
+          <label class="sr-only" for="dxq">Describe what's happening</label>
+          <input id="dxq" type="text" autocomplete="off" spellcheck="false"
+            placeholder="nobody buys · no replies · low ROAS…" />
+          <div class="dx__chips" role="group" aria-label="Filter by channel">
+            <button type="button" class="dx__chip is-on" data-filter="all" aria-pressed="true">all</button>
+            {channels.map((c) => (
+              <button type="button" class="dx__chip" data-filter={c.id} aria-pressed="false">{c.name}</button>
+            ))}
+          </div>
+        </div>
+        <p class="dx__count mono" role="status" aria-live="polite">{symptoms.length} things</p>
+
+        <ul class="dx__l">
+          {symptoms.map((s) => (
+            <li class="dx__i" data-channel={s.channelId} data-text={`${s.symptom} ${s.fix} ${s.channelName}`.toLowerCase()}>
+              <details name="dx">
+                <summary>
+                  <span class="dx__s">{s.symptom}</span>
+                  <span class="dx__ch">{s.channelName}</span>
+                  <span class="dx__p" aria-hidden="true">+</span>
+                </summary>
+                <div class="dx__f">
+                  <p>{s.fix}</p>
+                  <button class="dx__more" type="button" data-open={s.channelId}>
+                    {s.channelName} playbook <span class="arrow">→</span>
+                  </button>
+                </div>
+              </details>
+            </li>
+          ))}
+        </ul>
+        <p class="dx__none" hidden>
+          Nothing matches that. Try a shorter phrase, clear the filter, or take it straight
+          to your Wednesday 1:1.
+        </p>
+      </div>
+
+      <aside class="ss reg" data-in>
+        <h3 class="ss__t disp disp--xs">{stillStuck.title}</h3>
+        <p class="ss__b">{stillStuck.body}</p>
+        <ul class="bullets ss__l">{stillStuck.bring.map((b) => <li>{b}</li>)}</ul>
+        <p class="say ss__c">{stillStuck.closing}</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════ 08 FLEA -->
+  <section class="flea run" id="flea" data-ink="flood">
+    <div class="page flea__page">
+      <div class="flea__top" data-in>
+        <p class="num-mark">08 / The last day</p>
+        <p class="kicker flea__k">{flea.kicker}</p>
+        <p class="say flea__seq">{flea.lede}</p>
+        <h2 class="disp disp--lg flea__n">Mesa Flea</h2>
+        <div class="flea__tags">
+          <span class="tag tag--quiet">
+            {m8.dateConfirming
+              ? <span class="confirming" title={m8.dateConfirming.note}>{m8.date}<span class="sr-only"> (being confirmed: {m8.dateConfirming.note})</span></span>
+              : m8.date}
+          </span>
+          <span class="tag tag--quiet">{m8.deadlineLabel}</span>
+          {fleaTarget?.winRevenue && <span class="tag tag--coral">{rupeesCompact(fleaTarget.winRevenue)} on the day</span>}
+        </div>
+      </div>
+
+      <div class="flea__story" data-in-group>
+        {flea.paragraphs.map((p, i) => (
+          <p class:list={['flea__p', i === 0 && 'flea__p--lead']} data-in>{p}</p>
+        ))}
+      </div>
+
+      <div class="flea__cols">
+        <section data-in>
+          <h3 class="flea__h">{flea.whyBestTitle}</h3>
+          <ol class="flea__why">{flea.whyBest.map((w) => (<li><h4>{w.title}</h4><p>{w.body}</p></li>))}</ol>
+        </section>
+
+        <aside class="proof reg reg--coral" data-in>
+          <p class="num-mark">Proof</p>
+          <h3 class="disp disp--xs">{flea.proof.title}</h3>
+          <p class="proof__b">{flea.proof.body}</p>
+          <div class="proof__l"><Clip video={flea.proof.link} /></div>
+        </aside>
+      </div>
+
+      <div class="prep" data-in-group>
+        <h3 class="flea__h">Getting ready</h3>
+        <ol class="prep__l">
+          <li class="prep__i" data-in>
+            <h4><span class="mono">{m8.code}</span> deliverables</h4>
+            <ul class="ticks">{m8.deliverables.map((d) => <li>{d}</li>)}</ul>
+            <button class="btn btn--quiet btn--sm" type="button" data-open="m8">Open M8 <span class="arrow">→</span></button>
+          </li>
+          {ws13 && (
+            <li class="prep__i" data-in>
+              <h4><span class="mono">{ws13.code}</span> {ws13.title}</h4>
+              <p>{ws13.expect}</p>
+              <button class="btn btn--quiet btn--sm" type="button" data-open={ws13.id}>Open session <span class="arrow">→</span></button>
+            </li>
+          )}
+          <li class="prep__i" data-in>
+            <h4>Stock & float</h4>
+            <p>Order specifically for the Flea — a single-day, high-footfall event. Running out by noon means leaving revenue you can't get back. Plan inventory and float (change, backup UPI) for one big day.</p>
+            <a class="btn btn--quiet btn--sm" href="#money">Inventory <span class="arrow">→</span></a>
+          </li>
+          <li class="prep__i" data-in>
+            <h4>Working the stall</h4>
+            <p>The Offline playbook is the Flea playbook: pick your spot, lead with a hook, let people hold the product, close with a bundle, capture every contact.</p>
+            <button class="btn btn--quiet btn--sm" type="button" data-open="offline">Offline <span class="arrow">→</span></button>
+          </li>
+        </ol>
+      </div>
+
+      <div class="flea__watch" id="watch" data-in>
+        <h3 class="flea__h">Watch</h3>
+        <p class="flea__wi">{flea.watchIntro}</p>
+        <p class="kicker flea__wl">From past Flea Days</p>
+        <div class="flea__v">{flea.pastReels.map((v) => <Clip video={v} />)}</div>
+        <p class="fineprint flea__fp">{flea.placeholderNote}</p>
+        <p class="kicker flea__wl">Real Mesa content</p>
+        <div class="flea__v">{flea.realContent.map((v) => <Clip video={v} />)}</div>
+        <p class="fineprint flea__fp">{stillStuck.videoNote}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ 09 ASKED -->
+  <section class="run" id="asked">
+    <Thread end fade="in" />
+    <p class="run__mark num-mark">09 / Asked</p>
+    <div class="run__main">
+      <h2 class="disp disp--md sec__t">Things people ask.</h2>
+      <p class="lede sec__l">{faqs.length} questions, answered by the program team.</p>
+
+      <div class="q__ctl" data-in>
+        <label class="sr-only" for="qq">Search questions</label>
+        <input id="qq" type="text" placeholder="search…" autocomplete="off" spellcheck="false" />
+        <p class="q__count mono" role="status" aria-live="polite">{faqs.length} questions</p>
+      </div>
+
+      <div class="q__l" data-in>
+        {faqs.map((f) => (
+          <details class="fold q__i" id={`q-${f.id}`} data-text={`${f.q} ${f.a}`.toLowerCase()}>
+            <summary>{f.q}</summary>
+            <div class="fold__body"><p>{f.a}</p></div>
+          </details>
+        ))}
+      </div>
+      <p class="q__none" hidden>No question matches that. Try fewer words — or ask your mentor at the Wednesday 1:1.</p>
+
+      <div class="wip" data-in-group>
+        <p class="kicker wip__l">Still being written</p>
+        <ol class="wip__g">
+          {wip.map((w) => (
+            <li class="wip__i" data-in>
+              <span class="tag tag--coral">Coming soon</span>
+              <h3>{w.title}</h3>
+              <p>{w.body}</p>
+              {w.pointer && <p class="wip__p say">{w.pointer}</p>}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ THE SHEETS -->
+  <Drawer>
+    {milestones.map((m, i) => (
+      <MilestoneSheet
+        m={m}
+        phase={phases.find((p) => p.id === m.phase)!}
+        workshops={m.workshops.map((id) => workshops.find((w) => w.id === id)).filter((w): w is NonNullable<typeof w> => Boolean(w))}
+        channels={m.channels.map((id) => channels.find((c) => c.id === id)).filter((c): c is NonNullable<typeof c> => Boolean(c))}
+        seq={i}
+        fraction={frac(m.revenueGoal)}
+      />
+    ))}
+    {channels.map((c, i) => (
+      <ChannelSheet c={c} target={targets.find((t) => t.id === c.target) ?? null}
+        milestones={milestones.filter((m) => m.channels.includes(c.id))} seq={i} />
+    ))}
+    {workshops.map((w, i) => (
+      <WorkshopSheet w={w} phase={phases.find((p) => p.id === w.phase)}
+        milestone={milestones.find((m) => m.id === w.milestone)} seq={i} />
+    ))}
+  </Drawer>
+</V2>
+
+<style>
+  /* ───────────────────────────────────────────────────────────── cover */
+  .cover {
+    padding-block: clamp(3rem, 9vw, 8rem) clamp(3rem, 8vw, 7rem);
+    border-block-end: 1px solid var(--line-soft);
+  }
+  .cover__in { display: grid; gap: var(--sp-6); }
+  .cover__mark { color: var(--text-faint); letter-spacing: 0.2em; }
+  .cover__t { max-inline-size: 17ch; }
+  .cover__foot {
+    display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between;
+    gap: var(--sp-5); padding-block-start: var(--sp-4);
+  }
+  .cover__l { flex: 1 1 24rem; }
+  .cover__acts { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-4); flex: 0 0 auto; }
+  .cover__go { flex: 0 0 auto; }
+  .cover__jump {
+    font-size: var(--s--1); font-weight: 700; color: var(--text-soft);
+    text-decoration: none; white-space: nowrap;
+  }
+  .cover__jump:hover { color: var(--coral); }
+  .cover__note { font-size: var(--s-1); color: var(--text-faint); }
+  /* The scale of the thing, as one quiet line — not four boxes. */
+  .cover__facts {
+    display: flex; flex-wrap: wrap; gap: var(--sp-3) var(--sp-5);
+    padding-block-start: var(--sp-5); border-block-start: 1px solid var(--line-soft);
+    font-size: var(--s--1); color: var(--text-soft);
+  }
+  /* The separator travels with the item it follows, so a wrapped line never
+     starts with an orphaned dot. */
+  .cover__facts li { display: inline-flex; align-items: center; gap: var(--sp-5); }
+  .cover__facts li:not(:last-child)::after {
+    content: ''; inline-size: 4px; block-size: 4px; background: var(--coral);
+  }
+
+  /* ─────────────────────────────────────────────────────── section heads */
+  .sec__t { margin-block-end: var(--sp-4); max-inline-size: 20ch; }
+  .sec__l { margin-block-end: var(--sp-7); }
+  .run__main--flush { padding-block-end: 0; }
+
+  /* A hairline tick bridging the gap from each mark to the line, so the two
+     read as one object. The travelling dot supplies the emphasis; these just
+     mark the stops. */
+  .run__mark::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 100%;
+    inline-size: calc(var(--sp-6) / 2);
+    block-size: 2px;
+    translate: 0 -1px;
+    background: color-mix(in srgb, var(--ink) 30%, transparent);
+  }
+  @media (max-width: 54rem) {
+    .run__mark::before { display: none; }
+  }
+
+  /* ───────────────────────────────────────────────────────────── brief */
+  .brief {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
+    gap: var(--sp-6) var(--sp-7);
+  }
+  /* The four things you're building were a bare text run and read as one
+     wall. A card edge separates them; no offset ghost, four times over. */
+  .brief__i {
+    display: grid; grid-template-columns: auto 1fr; gap: 0.35rem var(--sp-4);
+    align-content: start;
+    padding: var(--sp-5);
+    background: var(--card);
+    box-shadow: inset 0 0 0 1.4px var(--card-line);
+  }
+  .brief__n { grid-row: 1 / span 2; font-size: var(--s--2); font-weight: 700; color: var(--coral); padding-block-start: 0.42em; }
+  .brief__h { font-size: var(--s-1); font-family: var(--font-display); color: var(--ink-2); }
+  .brief__b { font-size: var(--s--1); line-height: 1.7; color: var(--text-soft); text-wrap: pretty; }
+  .brief__notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr)); gap: var(--sp-5); margin-block: var(--sp-7); }
+
+  .gain__i { margin-block-end: var(--sp-5); }
+  .gain__l { display: grid; gap: var(--sp-5); }
+  .gain__l li { display: grid; grid-template-columns: 2rem 1fr; gap: var(--sp-3); }
+  .gain__n { font-size: var(--s--2); color: var(--coral); font-weight: 700; padding-block-start: 0.35em; }
+  .gain__l h4 { font-size: var(--s-0); font-family: var(--font-display); color: var(--ink-2); margin-block-end: 0.2rem; }
+  .gain__l p { font-size: var(--s--1); line-height: 1.7; }
+  .gain__c { font-size: var(--s-1); margin-block: var(--sp-6) var(--sp-5); max-inline-size: 46ch; }
+  .gain__v { max-inline-size: 26rem; }
+
+  /* ───────────────────────────────────────────────────────────── climb */
+  .climb {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: clamp(0.35rem, 1.3vw, 1rem);
+    align-items: end; block-size: clamp(10rem, 22vw, 15rem);
+  }
+  .climb__s { display: grid; grid-template-rows: 1fr auto auto; gap: 0.4rem; block-size: 100%; align-items: end; min-inline-size: 0; }
+  .climb__bar {
+    display: block; inline-size: 100%; block-size: var(--h);
+    background: color-mix(in srgb, var(--violet) 26%, var(--paper));
+    box-shadow: inset 0 0 0 1.4px var(--ink);
+    /* Each bar waits its turn, so the ladder builds left to right the way
+       you'd climb it. The delay is the one the reveal already computed. */
+    transition: block-size 720ms var(--ease);
+    transition-delay: var(--in-delay, 0ms);
+  }
+  .climb__bar[data-top] { background: var(--coral); }
+  :global(html.js) .climb__s:not(.is-in) .climb__bar { block-size: 0; }
+  .climb__v { font-family: var(--font-display); font-size: clamp(0.85rem, 1.9vw, 1.2rem); color: var(--ink-2); text-align: center; line-height: 1; }
+  .climb__m { font-size: var(--s--2); color: var(--text-faint); text-align: center; }
+
+  /* ───────────────────────────────────────────────────────────── weeks */
+  /* The list is a direct child of the section grid, so it must span both
+     tracks — otherwise it auto-places into the narrow mark column. */
+  .weeks { display: grid; grid-column: 1 / -1; }
+  /* Rows inherit the section's own track sizes, so they line up with the thread. */
+  .weeks__ph, .weeks__m {
+    display: grid; grid-template-columns: [mark] var(--mark-w) [main] minmax(0, 1fr);
+    gap: 0 var(--sp-6); position: relative;
+  }
+  @media (max-width: 54rem) {
+    .weeks__ph, .weeks__m { display: block; }
+    .weeks__ph { padding-block: var(--sp-5) var(--sp-2); }
+  }
+
+  .weeks__ph { padding-block: var(--sp-6) var(--sp-3); }
+  .weeks__phb { grid-column: main; }
+  .weeks__phb h3 { color: var(--ink-2); }
+  .weeks__phw { font-size: var(--s--2); color: var(--coral); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-block-start: 0.2rem; }
+  .weeks__phs { font-size: var(--s--1); color: var(--text-soft); line-height: 1.6; max-inline-size: 52ch; margin-block-start: 0.3rem; }
+  .weeks__beats { display: flex; flex-wrap: wrap; gap: 0 var(--sp-4); margin-block-start: 0.4rem; }
+  .weeks__beats li { font-size: var(--s-0); color: var(--coral); }
+  .weeks__phm {
+    position: absolute; inset-block-start: 2.35rem; inset-inline-start: calc(var(--rail-in) - 9px);
+    inline-size: 18px; block-size: 2px; background: var(--coral);
+  }
+  @media (max-width: 54rem) { .weeks__phm, .weeks__dot { display: none; } }
+  
+  .weeks__m { padding-block: 0.3rem; }
+  /* Milestones are ticks on the line, not dots — the travelling marker is the
+     only circle on the page, so it never has to compete for attention. */
+  .weeks__dot {
+    position: absolute; inset-block-start: 1.85rem; inset-inline-start: calc(var(--rail-in) - 5px);
+    inline-size: 10px; block-size: 2px; background: color-mix(in srgb, var(--ink) 38%, transparent);
+  }
+  .weeks__dot[data-gate] { background: var(--coral); block-size: 3px; }
+
+
+  .weeks__row {
+    grid-column: main;
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr) auto auto auto;
+    gap: var(--sp-4);
+    align-items: baseline;
+    padding: var(--sp-4);
+    --shift: 4px;
+  }
+  .weeks__code { font-size: var(--s--2); font-weight: 700; color: var(--coral); }
+  .weeks__h { font-family: var(--font-display); font-size: var(--s-1); color: var(--ink-2); }
+  .weeks__rev { font-family: var(--font-display); font-size: var(--s-0); color: var(--text-soft); }
+  .weeks__meta { display: flex; align-items: center; flex-wrap: wrap; gap: var(--sp-2) var(--sp-3); font-size: var(--s--2); color: var(--text-faint); min-inline-size: 0; }
+  .weeks__go { color: var(--coral); }
+  @media (max-width: 46rem) {
+    .weeks__row { grid-template-columns: 2.6rem minmax(0, 1fr) auto; row-gap: var(--sp-2); }
+    .weeks__rev { grid-column: 2; }
+    .weeks__meta { grid-column: 2 / -1; }
+    .weeks__go { grid-row: 1; grid-column: 3; }
+  }
+
+  .gates { margin-block-start: var(--sp-8); }
+  .gates__h { font-family: var(--font-display); font-size: var(--s-2); color: var(--ink-2); margin-block-end: var(--sp-3); }
+  .gates__l { font-size: var(--s--1); color: var(--text-soft); max-inline-size: 56ch; line-height: 1.72; margin-block-end: var(--sp-5); }
+  .gates__g { display: grid; gap: var(--sp-4); }
+  .gate { display: grid; gap: var(--sp-2); padding-block: var(--sp-4); border-block-start: 1px solid var(--line-soft); }
+  .gate__t { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
+  .gate__at { font-size: var(--s--2); font-weight: 700; color: var(--coral); }
+  .gate__r { font-size: var(--s--1); line-height: 1.65; color: var(--text-soft); }
+  .gate__s { font-size: var(--s--2); color: var(--text-faint); }
+  .gates__cap { margin-block: var(--sp-5) var(--sp-3); }
+
+  /* ───────────────────────────────────────────────────────────── ways */
+  .ways { display: grid; gap: var(--sp-4); }
+  .way {
+    display: grid; grid-template-columns: 2.6rem minmax(0, 1fr) auto; gap: var(--sp-4);
+    align-items: center; padding: var(--sp-5); --shift: 6px;
+  }
+  .way__n { font-size: var(--s--2); font-weight: 700; color: var(--coral); align-self: start; padding-block-start: 0.5em; }
+  .way__b { display: grid; gap: 0.3rem; min-inline-size: 0; }
+  .way__t { color: var(--ink-2); }
+  .way__l { font-size: var(--s--1); line-height: 1.6; color: var(--text-soft); text-wrap: pretty; }
+  .way__r { display: flex; align-items: center; gap: var(--sp-4); flex: 0 0 auto; }
+  .way__tg { font-family: var(--font-display); font-size: var(--s-1); color: var(--ink-2); }
+  .way .arrow { color: var(--coral); }
+  @media (max-width: 40rem) {
+    .way { grid-template-columns: 2.2rem 1fr; }
+    .way__r { grid-column: 2; justify-content: space-between; }
+  }
+
+  .split { margin-block-start: var(--sp-8); }
+  .split__h { font-family: var(--font-display); font-size: var(--s-2); color: var(--ink-2); margin-block-end: var(--sp-3); }
+  .split__l { font-size: var(--s--1); color: var(--text-soft); max-inline-size: 56ch; margin-block-end: var(--sp-5); }
+  .split__bar { display: flex; block-size: 2rem; box-shadow: inset 0 0 0 1.4px var(--ink); }
+  .split__seg {
+    inline-size: var(--share);
+    background: color-mix(in srgb, var(--violet) calc(18% + var(--i) * 16%), var(--paper));
+    transform-origin: left center;
+    transition: scale 620ms var(--ease);
+    transition-delay: calc(var(--i) * 90ms);
+  }
+  /* The bar draws itself once, in channel order. */
+  :global(html.js) .split:not(.is-in) .split__seg { scale: 0 1; }
+  .split__k { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(13rem, 100%), 1fr)); gap: 0 var(--sp-6); margin-block: var(--sp-4) var(--sp-6); }
+  .split__k li { display: grid; grid-template-columns: 0.55rem 1fr auto; gap: var(--sp-3); align-items: center; font-size: var(--s--1); padding-block: var(--sp-2); border-block-end: 1px solid var(--line-soft); color: var(--text-soft); }
+  .split__d { inline-size: 0.55rem; block-size: 0.55rem; background: color-mix(in srgb, var(--violet) calc(18% + var(--i) * 16%), var(--paper)); box-shadow: inset 0 0 0 1px var(--ink); }
+  .split__d--n { background: none; box-shadow: none; }
+  .split__tot { color: var(--ink-2); font-weight: 700; }
+
+  .tbl__scroll { overflow-x: auto; }
+  .tbl { border-collapse: collapse; inline-size: 100%; min-inline-size: 32rem; font-size: var(--s--1); }
+  .tbl th, .tbl td { text-align: start; padding: var(--sp-4) var(--sp-4) var(--sp-4) 0; border-block-end: 1px solid var(--line-soft); vertical-align: top; }
+  .tbl thead th { font-size: var(--s--2); text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); font-weight: 700; }
+  .tbl th[scope='row'] { min-inline-size: 9rem; color: var(--ink-2); font-weight: 700; }
+  /* The playbook number, so which sheet a row opens is never a surprise. */
+  .tbl__code { display: inline-block; margin-inline-end: 0.45rem; font-family: var(--font-mono); font-size: 0.66rem; font-weight: 700; color: var(--coral); }
+  .tbl__link { font-weight: 700; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--coral); text-underline-offset: 0.2em; }
+  .tbl__sub { display: block; margin-block-start: var(--sp-2); font-size: var(--s--2); font-weight: 400; color: var(--text-faint); }
+
+  /* ──────────────────────────────────────────────────────────── sessions */
+  .ses { display: grid; }
+  .ses__r {
+    display: grid; grid-template-columns: 3.2rem minmax(0, 1fr) 2.6rem auto; gap: var(--sp-4);
+    align-items: baseline; inline-size: 100%; padding-block: var(--sp-4);
+    border-block-end: 1px solid var(--line-soft);
+    transition: background var(--fast) var(--ease), padding-inline var(--base) var(--ease);
+  }
+  .ses__r:hover { background: color-mix(in srgb, var(--coral) 8%, transparent); padding-inline: var(--sp-3); }
+  .ses__c { font-size: var(--s--2); font-weight: 700; color: var(--coral); }
+  .ses__t { font-family: var(--font-display); font-size: var(--s-1); color: var(--ink-2); text-align: start; }
+  .ses__f { font-family: var(--font-mono); font-size: var(--s--2); color: var(--text-faint); }
+  .ses__a { color: var(--coral); }
+  .ses__n { margin-block-start: var(--sp-5); }
+  @media (max-width: 40rem) { .ses__r { grid-template-columns: 2.8rem 1fr auto; } .ses__f { display: none; } }
+
+  /* ───────────────────────────────────────────────────────────── money */
+  .eq { margin-block-end: var(--sp-7); }
+  .eq__c { color: var(--coral); margin-block-end: var(--sp-5); }
+  .eq__list { display: grid; gap: var(--sp-5); max-inline-size: 44rem; }
+  .eq__r { display: grid; grid-template-columns: 1.5rem minmax(0, 1fr); column-gap: var(--sp-3); align-items: baseline; }
+  .eq__o { font-size: var(--s-1); color: var(--coral); text-align: center; }
+  .eq__n { font-family: var(--font-display); font-size: var(--s-1); color: var(--ink-2); }
+  .eq__d { grid-column: 2; margin-block-start: 0.25rem; font-size: var(--s--2); line-height: 1.65; color: var(--text-soft); }
+  /* The top line is the biggest number on the page; the three deductions are
+     indented because they come out of it. */
+  .eq__r--top .eq__n { font-size: var(--s-2); }
+  .eq__r--take { margin-inline-start: var(--sp-5); }
+  /* What survives gets the only block of ink in the section. */
+  .eq__r--out { margin-block-start: var(--sp-2); padding: var(--sp-4) var(--sp-5) var(--sp-4) var(--sp-4); }
+  .eq__r--out .eq__n { font-size: var(--s-2); }
+  @media (max-width: 34rem) { .eq__r--take { margin-inline-start: var(--sp-4); } }
+
+  .money__i { margin-block-end: var(--sp-5); }
+  .money__h { font-family: var(--font-display); font-size: var(--s-1); color: var(--ink-2); margin-block: var(--sp-6) var(--sp-3); }
+  .terms { display: grid; gap: var(--sp-4); }
+  .term { display: grid; grid-template-columns: minmax(6rem, auto) 1fr; gap: var(--sp-4); align-items: baseline; padding-block-end: var(--sp-3); border-block-end: 1px solid var(--line-soft); }
+  .term dt { font-family: var(--font-display); font-size: var(--s-1); color: var(--ink-2); }
+  .term dd { font-size: var(--s--1); line-height: 1.65; }
+  @media (max-width: 34rem) { .term { grid-template-columns: 1fr; gap: var(--sp-2); } }
+  .money__ph { display: grid; gap: var(--sp-4); }
+  .money__ph h4 { font-size: var(--s--1); font-weight: 700; color: var(--ink-2); margin-block-end: 0.2rem; }
+  .money__sys { margin-block-start: var(--sp-5); }
+  .money__v { display: grid; gap: var(--sp-5); }
+  .money__folds { margin-block-end: var(--sp-7); }
+
+  .lens { display: grid; gap: var(--sp-4); }
+  .lens__i { padding: var(--sp-5); background: var(--card); box-shadow: inset 0 0 0 1.4px var(--card-line); }
+  .lens__t { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-3); flex-wrap: wrap; padding-block-end: var(--sp-2); border-block-end: 1px solid var(--line-soft); margin-block-end: var(--sp-3); }
+  .lens__t h3 { font-size: var(--s--1); color: var(--ink-2); }
+  .lens__g { font-family: var(--font-display); font-size: var(--s-1); color: var(--coral); }
+  .lens__i p { font-size: var(--s--1); line-height: 1.72; margin-block-end: var(--sp-3); }
+  .lens__i :global(.kicker) { display: block; margin-block-end: 0.15rem; }
+  .lens__w { color: var(--coral); }
+
+  .ask { display: grid; gap: var(--sp-4); padding-block-start: var(--sp-7); border-block-start: 1px solid var(--line-soft); }
+  .ask__q { color: var(--coral); max-inline-size: 20ch; font-style: italic; }
+  .ask__f { font-size: var(--s--1); color: var(--text-soft); max-inline-size: 52ch; line-height: 1.75; }
+
+  /* ───────────────────────────────────────────────────────────── stuck */
+  .dx__ctl { display: grid; grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); gap: var(--sp-4); align-items: center; }
+  @media (max-width: 48rem) { .dx__ctl { grid-template-columns: 1fr; } }
+  .dx__ctl input, .q__ctl input {
+    inline-size: 100%; min-block-size: 2.8rem; padding: 0.6rem 0.9rem;
+    background: var(--paper); color: var(--text);
+    box-shadow: inset 0 0 0 1.4px var(--ink); font-size: var(--s--1);
+  }
+  .dx__ctl input::placeholder, .q__ctl input::placeholder { color: var(--text-faint); }
+  .dx__chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+  .dx__chip {
+    padding: 0.3rem 0.7rem; min-block-size: 2.1rem; font-size: var(--s--2); font-weight: 700;
+    color: var(--text-soft); box-shadow: inset 0 0 0 1px var(--line);
+    transition: background var(--fast) var(--ease), color var(--fast) var(--ease);
+  }
+  .dx__chip:hover { box-shadow: inset 0 0 0 1px var(--ink); color: var(--ink-2); }
+  .dx__chip.is-on { background: var(--ink); color: var(--paper); box-shadow: none; }
+  .dx__count, .q__count { font-size: var(--s--2); color: var(--text-faint); margin-block: var(--sp-4) var(--sp-2); }
+
+  .dx__l { display: grid; border-block-start: 1px solid var(--line-soft); }
+  .dx__i[hidden] { display: none; }
+  .dx__i details { border-block-end: 1px solid var(--line-soft); }
+  .dx__i summary { display: grid; grid-template-columns: 1fr auto auto; gap: var(--sp-4); align-items: baseline; padding-block: var(--sp-4); cursor: pointer; list-style: none; }
+  .dx__i summary::-webkit-details-marker { display: none; }
+  .dx__s { font-family: var(--font-display); font-size: var(--s-1); color: var(--ink-2); line-height: 1.3; }
+  .dx__ch { font-size: var(--s--2); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-faint); white-space: nowrap; }
+  .dx__p { font-family: var(--font-mono); color: var(--coral); }
+  .dx__i details[open] .dx__p::before { content: '–'; }
+  .dx__i details[open] .dx__p { font-size: 0; }
+  .dx__i details[open] .dx__p::before { font-size: 1rem; }
+  .dx__f { display: grid; gap: var(--sp-4); justify-items: start; padding-block-end: var(--sp-5); animation: rise var(--base) var(--ease) both; }
+  .dx__f p { font-size: var(--s-0); line-height: 1.78; color: var(--text-soft); max-inline-size: var(--w-read); }
+  .dx__more { font-size: var(--s--2); font-weight: 700; color: var(--coral); }
+  @media (max-width: 40rem) { .dx__i summary { grid-template-columns: 1fr auto; } .dx__ch { grid-column: 1; grid-row: 2; } .dx__p { grid-row: 1 / span 2; } }
+  .dx__none, .q__none { margin-block-start: var(--sp-4); padding: var(--sp-5); box-shadow: inset 0 0 0 1px var(--line); font-size: var(--s--1); color: var(--text-soft); }
+
+  .ss { margin-block-start: var(--sp-7); padding: var(--sp-6); display: grid; gap: var(--sp-3); max-inline-size: 42rem; --shift: 6px; }
+  .ss__t { color: var(--ink-2); }
+  .ss__b { font-size: var(--s--1); line-height: 1.75; color: var(--text-soft); }
+  .ss__l { font-size: var(--s--1); color: var(--ink-2); margin-block: var(--sp-2); }
+  .ss__c { font-size: var(--s-1); }
+
+  /* ────────────────────────────────────────────────────────────── flea */
+  /* The last day gets the whole width. `.run` would have centred the sheet in
+     the page container, leaving paper down both sides of a full-stop moment;
+     the ink goes edge to edge and the container moves inside it. */
+  .flea {
+    display: block;
+    max-inline-size: none;
+    margin-inline: 0;
+    padding-inline: 0;
+    padding-block: var(--sp-9);
+    background: var(--paper);
+  }
+  .flea__top { display: grid; gap: var(--sp-4); justify-items: start; padding-block-end: var(--sp-7); }
+  .flea__k { color: var(--coral); }
+  .flea__seq { font-size: var(--s-2); max-inline-size: 26ch; }
+  .flea__n { color: var(--paper); }
+  [data-ink='flood'] .flea__n { color: #fbf7f0; }
+  .flea__tags { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+
+  .flea__story { max-inline-size: 46rem; padding-block: var(--sp-5); }
+  .flea__p { font-size: var(--s--1); line-height: 1.8; color: var(--text-soft); margin-block-end: var(--sp-4); }
+  .flea__p--lead { font-family: var(--font-display); font-size: var(--s-2); line-height: 1.4; color: var(--text); }
+
+  .flea__cols { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: var(--sp-7); align-items: start; padding-block: var(--sp-6); }
+  @media (max-width: 56rem) { .flea__cols { grid-template-columns: 1fr; } }
+  .flea__h { font-family: var(--font-display); font-size: var(--s-2); color: var(--text); margin-block-end: var(--sp-4); }
+  .flea__why { display: grid; gap: var(--sp-5); }
+  .flea__why h4 { font-size: var(--s-0); font-family: var(--font-display); margin-block-end: 0.25rem; }
+  .flea__why p { font-size: var(--s--1); line-height: 1.75; color: var(--text-soft); }
+
+  .proof { padding: var(--sp-5); display: grid; gap: var(--sp-3); justify-items: start; --shift: 6px; }
+  .proof__b { font-size: var(--s--1); line-height: 1.75; color: var(--text-soft); }
+  .proof__l { inline-size: 100%; }
+
+  .prep { padding-block: var(--sp-6); border-block-start: 1px solid var(--line-soft); }
+  .prep__l { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr)); gap: var(--sp-6); }
+  /* Flex column + auto margin puts every button on the same baseline no
+     matter how much copy sits above it. */
+  .prep__i {
+    display: flex; flex-direction: column; align-items: start;
+    gap: var(--sp-3); block-size: 100%;
+  }
+  .prep__i h4 { font-family: var(--font-display); font-size: var(--s-1); }
+  .prep__i h4 .mono { color: var(--coral); font-size: 0.7em; }
+  .prep__i p { font-size: var(--s--1); line-height: 1.72; color: var(--text-soft); }
+  .prep__i .btn { margin-block-start: auto; }
+
+  .flea__watch { padding-block-start: var(--sp-6); border-block-start: 1px solid var(--line-soft); }
+  .flea__wi { font-size: var(--s--1); color: var(--text-soft); max-inline-size: 56ch; margin-block-end: var(--sp-5); }
+  .flea__wl { margin-block: var(--sp-5) var(--sp-4); }
+  .flea__v { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr)); gap: var(--sp-5); }
+  .flea__fp { margin-block-start: var(--sp-4); }
+
+  /* ───────────────────────────────────────────────────────────── asked */
+  .q__ctl { display: grid; gap: var(--sp-2); max-inline-size: 26rem; }
+  .q__l { border-block-start: 1px solid var(--line-soft); }
+  .q__i[hidden] { display: none; }
+  .q__i > summary { font-size: var(--s-0); }
+
+  .wip { margin-block-start: var(--sp-8); padding-block-start: var(--sp-6); border-block-start: 1px solid var(--line-soft); }
+  .wip__l { margin-block-end: var(--sp-4); }
+  .wip__g { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr)); gap: var(--sp-6); }
+  .wip__i { display: grid; gap: var(--sp-3); justify-items: start; align-content: start; }
+  .wip__i h3 { font-family: var(--font-display); font-size: var(--s-1); color: var(--ink-2); }
+  .wip__i p { font-size: var(--s--1); line-height: 1.7; color: var(--text-soft); }
+  .wip__p { font-size: var(--s-0); color: var(--text-faint); }
+</style>
+
+<script>
+  const variants = (t: string) => {
+    const v = new Set([t]);
+    if (t.endsWith('ies')) v.add(t.slice(0, -3) + 'y');
+    if (t.endsWith('es')) v.add(t.slice(0, -2));
+    if (t.endsWith('s')) v.add(t.slice(0, -1));
+    if (t.length > 4) v.add(t.replace(/(ing|ed)$/, ''));
+    return [...v].filter((x) => x.length > 2);
+  };
+  const hit = (hay: string, t: string) => variants(t).some((v) => hay.includes(v));
+
+  function filter(o: { input: string; chips?: string; items: string; count: string; empty: string; noun: string }) {
+    const input = document.querySelector<HTMLInputElement>(o.input);
+    const chips = o.chips ? [...document.querySelectorAll<HTMLButtonElement>(o.chips)] : [];
+    const items = [...document.querySelectorAll<HTMLElement>(o.items)];
+    const count = document.querySelector<HTMLElement>(o.count);
+    const empty = document.querySelector<HTMLElement>(o.empty);
+    if (!input || !count || !empty || !items.length) return;
+
+    let only = 'all';
+    const apply = () => {
+      const terms = input.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+      let shown = 0;
+      for (const it of items) {
+        const hay = it.dataset.text ?? '';
+        const ok = (only === 'all' || it.dataset.channel === only) && terms.every((t) => hit(hay, t));
+        it.hidden = !ok;
+        if (ok) shown++;
+        else {
+          it.querySelector('details')?.removeAttribute('open');
+          if (it instanceof HTMLDetailsElement) it.open = false;
+        }
+      }
+      empty.hidden = shown > 0;
+      count.textContent = shown === items.length ? `${items.length} ${o.noun}` : `${shown} of ${items.length} ${o.noun}`;
+    };
+
+    input.addEventListener('input', apply);
+    chips.forEach((c) =>
+      c.addEventListener('click', () => {
+        only = c.dataset.filter ?? 'all';
+        chips.forEach((x) => {
+          const on = x === c;
+          x.classList.toggle('is-on', on);
+          x.setAttribute('aria-pressed', String(on));
+        });
+        apply();
+      })
+    );
+  }
+
+  filter({ input: '#dxq', chips: '.dx__chips .dx__chip', items: '.dx__i', count: '.dx__count', empty: '.dx__none', noun: 'things' });
+  filter({ input: '#qq', items: '.q__i', count: '.q__count', empty: '.q__none', noun: 'questions' });
+</script>

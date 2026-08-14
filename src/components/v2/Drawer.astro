@@ -1,0 +1,397 @@
+---
+/**
+ * A sheet pulled out of the kit. Same interaction contract as v1 — one native
+ * <dialog> holding every panel, state in the URL, deterministic close — but
+ * printed like the rest of v2: a coral pass sitting out of register down its
+ * left edge, and a bottom sheet on phones.
+ */
+---
+
+<dialog class="dw" id="dw" aria-labelledby="dw-where">
+  <div class="dw__bar">
+    <p class="dw__where" id="dw-where" data-where></p>
+
+    <div class="dw__seq">
+      <button class="dw__step" type="button" data-prev>
+        <span aria-hidden="true">←</span><span class="sr-only">Previous</span>
+      </button>
+      <span class="dw__count mono" data-count aria-live="polite"></span>
+      <button class="dw__step" type="button" data-next>
+        <span aria-hidden="true">→</span><span class="sr-only">Next</span>
+      </button>
+    </div>
+
+    <button class="dw__x" type="button" data-close aria-label="Close">
+      <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+        <path
+          d="M5 5 C9 9 11 11 15 15 M15 5 C11 9 9 11 5 15"
+          stroke="currentColor"
+          stroke-width="2.1"
+          stroke-linecap="round"
+          fill="none"></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="dw__scroll" data-scroll tabindex="-1">
+    <slot />
+  </div>
+</dialog>
+
+<style>
+  .dw {
+    margin: 0 0 0 auto;
+    inline-size: min(var(--dw-w, 40rem), 100%);
+    max-inline-size: 100%;
+    block-size: 100dvh;
+    max-block-size: 100dvh;
+    padding: 0;
+    border: 0;
+    background: var(--paper);
+    color: var(--text);
+    grid-template-rows: auto minmax(0, 1fr);
+    overflow: visible;
+
+    opacity: 0;
+    translate: 2rem 0;
+    transition:
+      opacity var(--base) var(--ease),
+      translate var(--base) var(--ease),
+      overlay var(--base) allow-discrete,
+      display var(--base) allow-discrete;
+  }
+  /* `display` only when open — otherwise a closed panel is laid out off-canvas
+     and drags the page into horizontal overflow. */
+  .dw[open] {
+    display: grid;
+    opacity: 1;
+    translate: 0 0;
+  }
+  @starting-style {
+    .dw[open] {
+      opacity: 0;
+      translate: 2rem 0;
+    }
+  }
+
+  .dw[data-size='sm'] {
+    --dw-w: 29rem;
+  }
+  .dw[data-size='md'] {
+    --dw-w: 40rem;
+  }
+  .dw[data-size='lg'] {
+    --dw-w: 52rem;
+  }
+
+  .dw::backdrop {
+    background: color-mix(in srgb, #2a1849 62%, transparent);
+    opacity: 0;
+    transition:
+      opacity var(--base) var(--ease),
+      overlay var(--base) allow-discrete,
+      display var(--base) allow-discrete;
+  }
+  .dw[open]::backdrop {
+    opacity: 1;
+  }
+  @starting-style {
+    .dw[open]::backdrop {
+      opacity: 0;
+    }
+  }
+
+  /* The coral pass, printed out of register down the left edge. */
+  .dw::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: -6px;
+    inline-size: 6px;
+    background: var(--coral);
+    opacity: 0.5;
+  }
+
+
+  .dw__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-4);
+    padding: var(--sp-4) var(--sp-5);
+    border-block-end: 1px solid var(--line-soft);
+    background: var(--paper);
+  }
+
+  .dw__where {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    font-size: var(--s--2);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dw__seq {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    flex: 0 0 auto;
+  }
+  .dw__step {
+    display: grid;
+    place-items: center;
+    inline-size: 2.2rem;
+    block-size: 2.2rem;
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1.4px var(--ink);
+    transition:
+      background var(--fast) var(--ease),
+      opacity var(--fast) var(--ease);
+  }
+  .dw__step:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--coral) 26%, var(--paper));
+  }
+  .dw__step:disabled {
+    opacity: 0.28;
+    cursor: default;
+  }
+  .dw__count {
+    font-size: var(--s--2);
+    color: var(--text-faint);
+    min-inline-size: 2.6rem;
+    text-align: center;
+  }
+
+  .dw__x {
+    display: grid;
+    place-items: center;
+    inline-size: 2.3rem;
+    block-size: 2.3rem;
+    flex: 0 0 auto;
+    color: var(--ink);
+    border-radius: 50%;
+    transition: background var(--fast) var(--ease);
+  }
+  .dw__x svg {
+    inline-size: 1.1rem;
+  }
+  .dw__x:hover {
+    background: color-mix(in srgb, var(--coral) 26%, var(--paper));
+  }
+
+  .dw__scroll {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .dw__scroll:focus {
+    outline: none;
+  }
+
+  /* Bottom sheet on phones. */
+  @media (max-width: 40rem) {
+    .dw {
+      margin: auto 0 0;
+      inline-size: 100%;
+      block-size: 92dvh;
+      max-block-size: 92dvh;
+      
+      translate: 0 2rem;
+    }
+    @starting-style {
+      .dw[open] {
+        translate: 0 2rem;
+      }
+    }
+    .dw[data-size='sm'] {
+      block-size: auto;
+      max-block-size: 74dvh;
+    }
+    /* The register edge is a left-hand device; a bottom sheet has no left edge. */
+    .dw::before {
+      display: none;
+    }
+    .dw__bar {
+      position: relative;
+      padding-block-start: var(--sp-5);
+    }
+    .dw__bar::before {
+      content: '';
+      position: absolute;
+      inset-block-start: 0.5rem;
+      inset-inline-start: 50%;
+      translate: -50% 0;
+      inline-size: 2.4rem;
+      block-size: 3px;
+      background: var(--line);
+    }
+    .dw__scroll {
+      padding-block-end: env(safe-area-inset-bottom, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dw,
+    .dw::backdrop {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const dlg = document.querySelector<HTMLDialogElement>('#dw');
+
+  if (dlg) {
+    const scroll = dlg.querySelector<HTMLElement>('[data-scroll]')!;
+    const where = dlg.querySelector<HTMLElement>('[data-where]')!;
+    const count = dlg.querySelector<HTMLElement>('[data-count]')!;
+    const prev = dlg.querySelector<HTMLButtonElement>('[data-prev]')!;
+    const next = dlg.querySelector<HTMLButtonElement>('[data-next]')!;
+    const panels = [...dlg.querySelectorAll<HTMLElement>('[data-panel]')];
+
+    const PARAM: Record<string, string> = {
+      milestone: 'm',
+      channel: 'c',
+      workshop: 'w',
+    };
+    const SIZE: Record<string, string> = {
+      workshop: 'sm',
+      milestone: 'md',
+      channel: 'lg',
+    };
+
+    const groupOf = (id: string) =>
+      panels.find((p) => p.dataset.panel === id)?.dataset.group ?? '';
+    const family = (g: string) =>
+      panels
+        .filter((p) => p.dataset.group === g)
+        .sort((a, b) => Number(a.dataset.seq) - Number(b.dataset.seq));
+
+    let pushed = false;
+
+    function show(id: string) {
+      const panel = panels.find((p) => p.dataset.panel === id);
+      if (!panel) return false;
+      panels.forEach((p) => {
+        p.hidden = p !== panel;
+      });
+
+      const g = panel.dataset.group!;
+      const kin = family(g);
+      const i = kin.indexOf(panel);
+
+      dlg!.dataset.size = SIZE[g] ?? 'md';
+      where.textContent = panel.dataset.where ?? '';
+      count.textContent = `${i + 1}/${kin.length}`;
+      prev.disabled = i <= 0;
+      next.disabled = i >= kin.length - 1;
+      prev.dataset.to = kin[i - 1]?.dataset.panel ?? '';
+      next.dataset.to = kin[i + 1]?.dataset.panel ?? '';
+      scroll.scrollTop = 0;
+      return true;
+    }
+
+    const urlFor = (id: string | null) => {
+      const u = new URL(location.href);
+      Object.values(PARAM).forEach((k) => u.searchParams.delete(k));
+      if (id) {
+        const k = PARAM[groupOf(id)];
+        if (k) u.searchParams.set(k, id);
+      }
+      return u.pathname + u.search + u.hash;
+    };
+
+    function open(id: string, mode: 'push' | 'replace' | 'none' = 'push') {
+      if (!show(id)) return;
+      if (!dlg!.open) {
+        dlg!.showModal();
+        document.body.classList.add('is-locked');
+      }
+      scroll.focus({ preventScroll: true });
+      if (mode === 'push') {
+        history.pushState({ dw: id }, '', urlFor(id));
+        pushed = true;
+      } else if (mode === 'replace') {
+        history.replaceState({ dw: id }, '', urlFor(id));
+      }
+    }
+
+    /* Teardown is done inline rather than in a `close` listener. The close
+       event is not reliably delivered here, and depending on it once left the
+       page permanently scroll-locked — so every dismissal path calls this. */
+    function teardown() {
+      panels.forEach((p) => {
+        p.hidden = true;
+      });
+      if (!document.querySelector('dialog[open]')) {
+        document.body.classList.remove('is-locked');
+      }
+      if (location.search) history.replaceState({ dw: null }, '', urlFor(null));
+    }
+
+    function dismiss() {
+      if (dlg!.open) dlg!.close();
+      teardown();
+    }
+
+    /* Close first, unwind history after — never depend on popstate arriving. */
+    function requestClose() {
+      const owned = pushed;
+      pushed = false;
+      dismiss();
+      if (owned) history.back();
+    }
+
+    /* Backstop for any native dismissal we didn't route through requestClose. */
+    dlg.addEventListener('close', teardown);
+
+    dlg.addEventListener('cancel', (e) => {
+      e.preventDefault();
+      requestClose();
+    });
+    dlg.addEventListener('click', (e) => {
+      if (e.target === dlg) requestClose();
+    });
+    dlg.querySelector('[data-close]')!.addEventListener('click', requestClose);
+
+    [prev, next].forEach((b) =>
+      b.addEventListener('click', () => {
+        if (b.dataset.to) open(b.dataset.to, 'replace');
+      })
+    );
+
+    dlg.addEventListener('keydown', (e) => {
+      if (e.target instanceof HTMLInputElement) return;
+      if (e.key === 'ArrowLeft' && !prev.disabled) prev.click();
+      if (e.key === 'ArrowRight' && !next.disabled) next.click();
+    });
+
+    document.addEventListener('click', (e) => {
+      const t = (e.target as HTMLElement | null)?.closest<HTMLElement>('[data-open]');
+      if (!t) return;
+      e.preventDefault();
+      open(t.dataset.open!, dlg!.open ? 'replace' : 'push');
+    });
+
+    addEventListener('popstate', () => {
+      const p = new URLSearchParams(location.search);
+      const id = Object.values(PARAM)
+        .map((k) => p.get(k))
+        .find(Boolean);
+      pushed = false;
+      if (id) open(id, 'none');
+      else dismiss();
+    });
+
+    const start = new URLSearchParams(location.search);
+    const first = Object.values(PARAM)
+      .map((k) => start.get(k))
+      .find(Boolean);
+    if (first) open(first, 'none');
+  }
+</script>
