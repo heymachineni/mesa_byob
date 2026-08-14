@@ -9,7 +9,7 @@
 
 <dialog class="dw" id="dw" aria-labelledby="dw-where">
   <div class="dw__bar">
-    <p class="dw__where" id="dw-where" data-where></p>
+    <p class="dw__where sr-only" id="dw-where" data-where></p>
 
     <div class="dw__seq">
       <button class="dw__step" type="button" data-prev>
@@ -40,6 +40,9 @@
 
 <style>
   .dw {
+    /* Declared on the dialog, not on the row: `.dw__scroll` is the row's
+       sibling, and a custom property only inherits downward. */
+    --seq-h: 4.25rem;
     margin: 0 0 0 auto;
     inline-size: min(var(--dw-w, 40rem), 100%);
     max-inline-size: 100%;
@@ -116,24 +119,13 @@
   .dw__bar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    /* The context label is screen-reader-only, so the controls close up to the
+       right rather than sitting either side of an empty gap. */
+    justify-content: flex-end;
     gap: var(--sp-4);
     padding: var(--sp-4) var(--sp-5);
     border-block-end: 1px solid var(--line-soft);
     background: var(--paper);
-  }
-
-  .dw__where {
-    flex: 1 1 auto;
-    min-inline-size: 0;
-    font-size: var(--s--2);
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--text-faint);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   .dw__seq {
@@ -193,6 +185,40 @@
     outline: none;
   }
 
+  /* Phones and tablets: stepping moves to the foot of the sheet.
+     On a handheld the top corners are the furthest thing from your thumb, and
+     these are the controls you reach for most — prev/next is how you read M1
+     through M8. The row is lifted out of the bar and pinned to the bottom
+     edge; the dialog is already a containing block (its coral edge is
+     positioned against it), so nothing in the markup or the script moves. */
+  @media (max-width: 64rem) {
+    .dw__seq {
+      position: absolute;
+      inset-inline: 0;
+      inset-block-end: 0;
+      z-index: 2;
+      justify-content: space-between;
+      gap: var(--sp-3);
+      min-block-size: var(--seq-h);
+      padding-inline: var(--sp-5);
+      padding-block-end: env(safe-area-inset-bottom, 0px);
+      background: var(--paper);
+      border-block-start: 1px solid var(--line-soft);
+    }
+    .dw__step {
+      inline-size: 2.75rem;
+      block-size: 2.75rem;
+    }
+    .dw__count {
+      flex: 1 1 auto;
+      text-align: center;
+    }
+    /* Room for the row, so the last line of a panel is never sitting under it. */
+    .dw__scroll {
+      padding-block-end: calc(var(--seq-h) + env(safe-area-inset-bottom, 0px));
+    }
+  }
+
   /* Bottom sheet on phones. */
   @media (max-width: 40rem) {
     .dw {
@@ -217,7 +243,6 @@
       display: none;
     }
     .dw__bar {
-      position: relative;
       padding-block-start: var(--sp-5);
     }
     .dw__bar::before {
@@ -231,7 +256,7 @@
       background: var(--line);
     }
     .dw__scroll {
-      padding-block-end: env(safe-area-inset-bottom, 0);
+      padding-block-end: calc(var(--seq-h) + env(safe-area-inset-bottom, 0px));
     }
   }
 

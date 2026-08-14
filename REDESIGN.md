@@ -251,14 +251,9 @@ background (4.5:1 normal, 3:1 large): **0 failures**, measured element by elemen
 
 ## The phone bar
 
-Replaced the single label-plus-chevron with a three-part control: **step back · where you
-are · step forward**. The middle states position as `3/9` alongside the section name and
-still opens the nine-stop sheet; the arrows walk one stop at a time and disable at each
-end. Above the first section the middle reads `9 stops / Contents` and back is disabled.
-
-Verified: 50px tap targets on all three controls, sheet spans the full bar width and
-stays in the viewport, no overflow at 320–430px, 9 stops in document order with numbers
-01–09 and counts 1/9…9/9, arrow bounds correct at both ends.
+The home page keeps **one** control: where you are, and a chevron opening the nine-stop
+sheet. Stepping arrows belong to the panels, not the page — a page has no "next", and two
+extra controls competing with the sheet made the bar busier without making it faster.
 
 ## Note on browser testing
 
@@ -267,3 +262,45 @@ window is behind another application, every IO-driven behaviour — the reveal a
 the travelling dot, the section spy — reads as broken. This produced several false
 "the scroll spy is dead" findings across this session before `document.visibilityState`
 was checked. Any future QA run should assert `visibilityState === 'visible'` first.
+
+
+---
+
+# Pass 7 — panel stepping moves to the foot
+
+On a handheld the top corners are the furthest thing from your thumb, and prev/next is
+the control you reach for most: reading M1 through M8 is eight taps. At **≤64rem** (phones
+and both tablet orientations) the stepping row lifts out of the drawer's top bar and pins
+to the bottom edge of the sheet — back on the left, `4/8` centred, forward on the right.
+
+Done in CSS alone. The dialog is already a containing block (its coral register edge is
+positioned against it), so the row is simply absolutely positioned; **nothing in the
+markup or the script moves**, which means the disabled states, the arrow keys and the
+history handling all keep working untouched. Above 64rem the row stays in the bar —
+verified by stripping every `@media` block from the built CSS and confirming no
+unconditional `position: absolute` rule survives.
+
+**The duplicated heading is gone.** Every panel already printed its own identity twice:
+the bar said `Discover · week 1` above a header reading `M1 · Week 1`, `channel 03 ·
+Influencer Marketing` above the channel's own name, and — worst — `workshop 11 of 13`
+directly beside a counter reading `11/13`. The bar label is now `sr-only`: it still names
+the dialog through `aria-labelledby`, so the accessible name is unchanged, but it is no
+longer a second heading on screen.
+
+## Bugs found and fixed
+
+| # | Bug | Root cause |
+|---|---|---|
+| 13 | The row pinned to the bottom of the *top bar* instead of the sheet. | `.dw__bar` is `position: relative` on phones to hang the grab handle, so it captured the absolute positioning. The bar is the first row, flush with the dialog's top edge, so the handle lands identically measured against the dialog — the bar no longer needs to be positioned. |
+| 14 | The scroll area reserved no room for the row, so the last line of a panel sat under it. | `--seq-h` was declared on `.dw__seq` and read by its **sibling** `.dw__scroll`; a custom property only inherits downward, so the `calc()` was invalid and the padding computed to nothing. Declared on `.dw` instead. **Third instance of this trap in this build.** |
+
+Verified at the touch breakpoint: row at the sheet foot for milestone, channel and
+workshop panels; 44px tap targets; 68px of scroll padding reserved; counter centred
+between the arrows; bar label measured at 1×1px yet still the dialog's accessible name.
+
+## A caution about the test browser
+
+The connected browser reported `screen.width: 413` and would not resize, so every width
+passed to an iframe harness was silently clamped to 413 — an early run "at 1180px and
+1440px" was really six measurements of the same phone viewport. Widths must be read back
+from `contentWindow.innerWidth`, never assumed from what was requested.
