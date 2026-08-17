@@ -44,39 +44,49 @@
 
 :root {
   /* ---------------------------------------------------------- the stock */
-  --paper: #fbf7f0; /* bone */
-  --paper-2: #f3ece0; /* a second pass, slightly warmer */
-  --paper-3: #ebe2d3;
+  /* Forge's own ground: #0d0e21 is what its stylesheet sets on html and body,
+     #161738 the navy its panels sit on. */
+  --paper: #0d0e21;
+  --paper-2: #161738;
+  --paper-3: #080913;
   /* The surface a card sits on: one press darker than the page, so a block
      reads as a block without introducing a new colour. */
   --card: var(--paper-2);
-  --card-line: color-mix(in srgb, var(--ink) 16%, transparent);
+  --card-line: color-mix(in srgb, var(--ink) 18%, transparent);
 
   /* -------------------------------------------------------- the three inks */
   /* Mesa Forge, straight from the design system. The second ink was a warm
      coral that belonged to no palette; it is now Vivid Violet, with Orchid
      carrying the out-of-register pass so the two passes stay distinguishable
      by hue and not just by depth. */
-  --ink: #2a1849; /* Deep Aubergine — key */
-  --ink-2: #452a74; /* Royal Purple — headings */
-  --violet: #5a3a8e; /* Amethyst — the deeper ink */
-  --orchid: #e4a7f3; /* Orchid — the register pass */
-  --coral: #7c4dcc; /* Vivid Violet — the accent. Name kept for now: 75 call
-                       sites, and renaming mid-trial would bury the colour
-                       change in unrelated churn. */
+  /* The written design system and the live Forge site agree — Deep Aubergine
+     sits within a shade of Forge's own #1e0f51, and Orchid of its #cdc8e8. Where
+     Forge ships an exact value for the same job, that value is used. */
+  /* `--ink` is the colour you print *with*, so on dark stock it is the light
+     one. Every derived token — text, rules, card edges, the halftone — is a mix
+     of ink and paper, so flipping these two flips the whole system. */
+  --ink: #fbf7f0; /* the printing colour */
+  --ink-2: #fbf7f0; /* headings, brightest */
+  --violet: #444aa5; /* Forge indigo */
+  --orchid: #cdc8e8; /* Forge pale lavender — the register pass */
+  --coral: #b1a6f6; /* Forge periwinkle — its signature accent, and one that
+                       only works on this ground: 8.76 here, 2.04 on paper. */
 
   /* ------------------------------------------------------------ semantics */
-  --text: color-mix(in srgb, var(--ink) 92%, var(--paper));
-  --text-soft: color-mix(in srgb, var(--ink) 62%, var(--paper));
-  --text-faint: color-mix(in srgb, var(--ink) 40%, var(--paper));
-  --line: color-mix(in srgb, var(--ink) 22%, transparent);
-  --line-soft: color-mix(in srgb, var(--ink) 11%, transparent);
+  /* Headings brightest, body a step down, and the faintest tone still has to
+     clear AA — the hierarchy runs the other way on a dark ground. */
+  --text: color-mix(in srgb, var(--ink) 90%, var(--paper));
+  --text-soft: color-mix(in srgb, var(--ink) 70%, var(--paper));
+  --text-faint: color-mix(in srgb, var(--ink) 54%, var(--paper));
+  --line: color-mix(in srgb, var(--ink) 26%, transparent);
+  --line-soft: color-mix(in srgb, var(--ink) 13%, transparent);
+  color-scheme: dark;
 
   /* How far the second ink sits out of register. The whole look. */
   --shift: 5px;
-  --reg-violet: color-mix(in srgb, var(--violet) 16%, var(--paper));
-  --reg-coral: color-mix(in srgb, var(--orchid) 58%, var(--paper));
-  --reg-key: color-mix(in srgb, var(--ink) 14%, var(--paper));
+  --reg-violet: color-mix(in srgb, var(--violet) 62%, var(--paper));
+  --reg-coral: color-mix(in srgb, var(--orchid) 34%, var(--paper));
+  --reg-key: color-mix(in srgb, var(--ink) 22%, var(--paper));
 
   /* ------------------------------------------------------------ typography */
   /* Instrument Serif is high-contrast and a little theatrical — it does the
@@ -127,23 +137,27 @@
    near-black on a near-black sheet. */
 [data-ink='flood'] {
   color: var(--text);
-  --paper: #1b1226;
-  --paper-2: #251838;
-  --paper-3: #150e1e;
+  /* Literally Forge's page: #0d0e21 is the background its own stylesheet sets
+     on html and body, and #161738 the navy its panels sit on. */
+  /* The finale still needs to read as a different sheet. On a dark site the
+     shift is hue, not lightness: Forge's deep indigo against its navy. */
+  --paper: #1e0f51;
+  --paper-2: #2b1d63;
+  --paper-3: #150a3a;
   --text: #fbf7f0;
   --text-soft: color-mix(in srgb, #fbf7f0 70%, var(--ink));
   --text-faint: color-mix(in srgb, #fbf7f0 58%, var(--ink));
   --line: color-mix(in srgb, #fbf7f0 26%, transparent);
   --line-soft: color-mix(in srgb, #fbf7f0 13%, transparent);
   --ink-2: #fbf7f0;
-  /* Vivid Violet is too dark to carry an accent on the flood; Orchid is the
-     Forge tint made for it. Every dark-on-accent rule in this scope already
-     assumes a light plate, so the polarity is unchanged. */
-  --coral: #e4a7f3;
+  /* Periwinkle is Forge's signature accent and only works on this ground —
+     8.76 against it, 2.04 against paper. Every dark-on-accent rule in this
+     scope already assumes a light plate, so the polarity is unchanged. */
+  --coral: #b1a6f6;
   /* Re-stated, not inherited. A custom property whose value is `var(--paper-2)`
      is substituted where it is *declared* — on :root — so the dark sheet would
      inherit the light cream and print near-white text on it. */
-  --card: #251838;
+  --card: #2b1d63;
   --card-line: color-mix(in srgb, #fbf7f0 18%, transparent);
   /* On the dark sheet the ghost prints lighter than the paper, not darker. */
   --reg-violet: color-mix(in srgb, var(--violet) 55%, var(--paper));
@@ -159,7 +173,7 @@
 }
 [data-ink='flood'] .btn {
   background: var(--coral);
-  color: #1b1226;
+  color: var(--paper-3);
   box-shadow: 4px 4px 0 color-mix(in srgb, #fbf7f0 30%, transparent);
 }
 [data-ink='flood'] .btn--quiet {
@@ -172,7 +186,7 @@
 [data-ink='flood'] .btn--quiet:hover,
 [data-ink='flood'] .btn--quiet:focus-visible {
   background: var(--coral);
-  color: #1b1226;
+  color: var(--paper-3);
   box-shadow: inset 0 0 0 1.5px transparent, 0 0 0 transparent;
 }
 
@@ -319,7 +333,7 @@ summary {
   z-index: 300;
   transform: translateY(-160%);
   background: var(--violet);
-  color: var(--paper);
+  color: var(--ink);
   padding: 0.7rem 1.2rem;
   font-weight: 700;
   text-decoration: none;
@@ -698,9 +712,9 @@ a:hover { text-decoration-color: var(--coral); }
 .tag--coral { background: color-mix(in srgb, var(--coral) 30%, var(--paper)); }
 [data-ink='flood'] .tag--coral {
   background: var(--coral);
-  color: #1b1226;
+  color: var(--paper-3);
 }
-.tag--violet { background: var(--violet); color: var(--paper); }
+.tag--violet { background: var(--violet); color: var(--ink); }
 .tag--quiet { background: none; box-shadow: inset 0 0 0 1px var(--line); color: var(--text-soft); }
 
 .arrow { display: inline-block; transition: translate var(--base) var(--ease); }

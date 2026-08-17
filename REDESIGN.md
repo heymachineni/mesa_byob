@@ -719,3 +719,65 @@ does: **sheet to the edges, cards aligned with the logo above them.**
 
 Worth remembering: `position: relative` on a layout container is invisible until
 something inside it tries to escape.
+
+
+---
+
+# Pass 17 — onto the Forge ground
+
+## First, a correction
+
+I scraped mesaschool.co and reported that Forge runs on greens — mint `#6ed190`,
+lime `#d9e38a`, near-black green `#0b1818` — and that this contradicted the
+written design system. **That was wrong, and it was caught by being asked
+whether I was sure.** Those tokens belong to the parent theme, the same family as
+the green logo. I had pulled every custom property on the page and picked the
+wrong subset, never checking the one thing that would have settled it:
+
+    html, body { background-color: #0d0e21; }
+    .header-button a { border: 1px solid #B1A6F6; color: #B1A6F6; }
+
+**Forge is near-black navy with periwinkle.** Which is what the screenshots
+showed all along, and what the written design system said: Deep Aubergine sits
+within a shade of `#1e0f51`, Vivid Violet between `#444aa5` and `#b1a6f6`, Orchid
+of `#cdc8e8`. There was never a conflict to resolve — I manufactured one.
+
+## The flip
+
+Forge is a dark site; this one was bone paper. It now runs on Forge's own ground:
+
+| | |
+|---|---|
+| ground | `#0d0e21` |
+| panels, cards | `#161738` |
+| accent | `#b1a6f6` periwinkle |
+| deeper ink | `#444aa5` indigo |
+| register ghost | `#cdc8e8` pale lavender |
+| the Flea | `#1e0f51` deep indigo |
+
+The inversion turned on one idea: **`--ink` is the colour you print *with***, so
+on dark stock it is the light one. Text, rules, card edges and the halftone tooth
+are all mixes of ink and paper, so swapping those two swaps the system. The
+misregistration survives intact — the ghosts simply print lighter than the paper
+instead of darker.
+
+The Flea keeps its tonal shift as **hue rather than lightness**: 1.13 apart in
+luminance, so it reads as a different cast rather than a different brightness.
+
+The mark had to change with it — dark green on navy would have disappeared — so
+the header and footer now carry the white-plate tile, which is what `PG white.png`
+was built for and what Forge's own nav uses. Theme colour and favicon follow.
+
+## What the dark ground fixed for free
+
+**Twelve contrast checks, zero failures — including `--text-faint` at 5.73.**
+That token has failed AA since the first pass on light stock (2.42 across roughly
+270 small labels), and the honest fix always collapsed the type hierarchy. On a
+dark ground it is simply correct.
+
+Two real inversions turned up and were fixed: the skip link and `.tag--violet`
+were putting near-black text on indigo at 2.51. The button and the selected
+diagnostic chip were already right, because they invert deliberately.
+
+`public/mesa-mark.png` — the plate-free green mark for light stock — is kept, so
+reverting the ground is a stylesheet change rather than an asset hunt.
