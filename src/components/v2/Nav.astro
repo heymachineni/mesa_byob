@@ -63,7 +63,7 @@ const menu = await getMenu();
 
               {item.groups && (
                 <div class="nav__panel" id={`np-${item.id}`} hidden>
-                  <div class:list={['page', 'nav__in', item.split && 'nav__in--split']}>
+                  <div class="nav__in">
                     {item.groups.map((g) => (
                       <div class="nav__g">
                         {g.head && <p class="nav__h">{g.head}</p>}
@@ -276,7 +276,7 @@ const menu = await getMenu();
   .nav__in {
     display: grid;
     gap: var(--sp-5);
-    padding-block: var(--sp-5) var(--sp-6);
+    padding: var(--sp-5) var(--gutter) var(--sp-6);
     max-block-size: min(74vh, 42rem);
     overflow-y: auto;
     overscroll-behavior: contain;

@@ -683,3 +683,22 @@ is `auto-fill` and flows to whatever the width allows.
 this is build-verified only: 38 cards each with a note, header order brand → menu
 → tools, all 45 menu rows and 100 search results still resolving. Nobody has
 watched the panel open.
+
+
+---
+
+# Pass 16 — the panel runs to the edges
+
+The sheet was already full width; its *contents* weren't. `.nav__in` carried the
+`page` class, so the cards sat in the 78rem page column — at a 1680px viewport
+that left roughly 216px of empty sheet down each side, with the cards floating
+in the middle of it.
+
+The panel's inner grid now takes the gutter directly instead of the page
+container, so the sheet and what's on it run to the same edges. On wide screens
+that also buys the card grid two more columns before it wraps, which matters
+most for the thirteen workshops.
+
+Removed with it: the `split` flag and the `nav__in--split` two-column rule. Both
+stopped doing anything when the workshops panel became a card grid — `auto-fill`
+handles the column count on its own now.

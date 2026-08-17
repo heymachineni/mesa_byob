@@ -49,8 +49,6 @@ export type NavTop = {
   href: string;
   /** Absent means the item navigates instead of expanding. */
   groups?: NavGroup[];
-  /** Lay the panel out in two columns — only Workshops needs it. */
-  split?: boolean;
 };
 
 export async function getMenu(): Promise<NavTop[]> {
