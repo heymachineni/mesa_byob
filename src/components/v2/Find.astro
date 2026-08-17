@@ -67,6 +67,7 @@ const index = localise(await getSearchIndex());
   .find__open {
     display: grid;
     place-items: center;
+    border-radius: var(--r-sm);
     inline-size: 2.6rem;
     block-size: 2.6rem;
     color: var(--ink);
@@ -80,6 +81,7 @@ const index = localise(await getSearchIndex());
   .find__bar {
     display: flex;
     align-items: center;
+    border-radius: var(--r-card) var(--r-card) 0 0;
     gap: 0.45rem;
     padding-inline: 0.6rem;
     background: var(--paper-2);
@@ -125,6 +127,8 @@ const index = localise(await getSearchIndex());
     inline-size: min(30rem, 92vw);
     display: none;
     z-index: 95;
+    border-radius: var(--r-card);
+    overflow: hidden;
     background: var(--paper);
     box-shadow:
       inset 0 0 0 1.4px var(--ink),
@@ -191,6 +195,7 @@ const index = localise(await getSearchIndex());
   .find__hit {
     display: block;
     inline-size: 100%;
+    border-radius: var(--r-sm);
     padding: 0.55rem var(--sp-4) 0.6rem;
     text-align: start;
     cursor: pointer;
@@ -238,6 +243,7 @@ const index = localise(await getSearchIndex());
   }
   .find__hint {
     padding: 0.3rem 0.6rem;
+    border-radius: var(--r-sm);
     font-size: var(--s--2);
     color: var(--ink-2);
     box-shadow: inset 0 0 0 1px var(--line);

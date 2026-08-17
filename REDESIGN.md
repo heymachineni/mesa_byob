@@ -830,3 +830,47 @@ light or dark — the same reason the brand has it — and it is the one place t
 lockup is used at its intended size.
 
 `/` and `/v2` now share it. One site, one icon.
+
+
+---
+
+# Pass 20 — corners, from Mesa's numbers
+
+Their mega-menu card is inline-styled in the markup, so the recipe is verbatim
+rather than measured off a screenshot:
+
+    padding: 0.875rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    background-color: #0d0e21;
+
+and `.header-button a { border-radius: 1rem }` for the CTA. Across their whole
+stylesheet those two are the only authored radii of any weight — everything else
+is Bootstrap and Tailwind defaults they never call.
+
+| token | value | on |
+|---|---|---|
+| `--r-card` | **0.75rem** | mega-menu cards, every `.reg` block, brief and money-lens cards, the search panel, the bottom sheet's top corners |
+| `--r-btn` | **1rem** | buttons, the phone dock |
+| `--r-sm` | **0.5rem** | tags, rail pills, chips, search results, icon buttons, ladder bars, the split bar |
+
+22 surfaces. `--r-sm` is half the card value — Mesa publishes no small radius, so
+it is derived rather than an unrelated number invented alongside theirs.
+
+**The mega-menu sheet stays square.** It runs edge to edge, and a radius there
+would detach it from the viewport edges. Mesa's is full-width and behaves the
+same way.
+
+**The misregistration survived.** `.reg` draws its offset ghost with a
+`box-shadow`, and a box-shadow follows `border-radius` automatically, so the
+ghost rounded with the block instead of poking out at the corners. That was the
+one thing capable of breaking.
+
+## Where this leaves the design
+
+The original premise was *no borders, no shadows, no rounded corners* —
+misregistration instead of all three. Between the dark ground, the card-based
+mega menu and now radius, this is a good deal more Mesa and a good deal less
+riso. That is a defensible destination for a Mesa property, but it arrived one
+request at a time, and it is worth saying plainly that it was a change of
+direction rather than a refinement of the original one.

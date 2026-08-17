@@ -82,6 +82,13 @@
   --line-soft: color-mix(in srgb, var(--ink) 13%, transparent);
   color-scheme: dark;
 
+  /* Corner radius, from Mesa's own numbers: 0.75rem is what their mega-menu
+     cards use (`border-radius: 0.75rem; border: 1px solid rgba(255,255,255,.1)`)
+     and 1rem what their header CTA uses. Small controls take half the card. */
+  --r-sm: 0.5rem;
+  --r-card: 0.75rem;
+  --r-btn: 1rem;
+
   /* How far the second ink sits out of register. The whole look. */
   --shift: 5px;
   --reg-violet: color-mix(in srgb, var(--violet) 62%, var(--paper));
@@ -459,6 +466,7 @@ a:hover { text-decoration-color: var(--coral); }
   text-transform: uppercase;
   color: var(--ink);
   background: color-mix(in srgb, var(--coral) 22%, var(--paper));
+  border-radius: var(--r-sm);
   white-space: nowrap;
   inline-size: fit-content;
 }
@@ -606,6 +614,7 @@ a:hover { text-decoration-color: var(--coral); }
   /* Held in a variable so the hover state keeps the edge while dropping the
      ghost. */
   --ring: inset 0 0 0 1.4px var(--card-line);
+  border-radius: var(--r-card);
   background: var(--card);
   /* The second ink, offset. A box-shadow is painted behind the box and stays
      locked to its edges — a negative-z pseudo-element does neither. */
@@ -652,6 +661,7 @@ a:hover { text-decoration-color: var(--coral); }
   font-size: var(--s--1);
   font-weight: 700;
   text-decoration: none;
+  border-radius: var(--r-btn);
   color: var(--paper);
   background: var(--coral);
   /* Key-ink ghost behind the coral plate, locked to its edges. */
@@ -682,6 +692,7 @@ a:hover { text-decoration-color: var(--coral); }
 .tag {
   display: inline-flex;
   align-items: center;
+  border-radius: var(--r-sm);
   gap: 0.3rem;
   padding: 0.18rem 0.5rem;
   font-size: var(--s--2);
