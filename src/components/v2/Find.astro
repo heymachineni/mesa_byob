@@ -59,12 +59,13 @@ const index = localise(await getSearchIndex());
 
 <style>
   .find {
+    position: relative;
     display: flex;
     align-items: center;
   }
 
   .find__open {
-    display: none;
+    display: grid;
     place-items: center;
     inline-size: 2.6rem;
     block-size: 2.6rem;
@@ -116,35 +117,48 @@ const index = localise(await getSearchIndex());
     cursor: pointer;
   }
 
-  /* Wide screens: results drop under the field. */
+  /* Wide screens: the icon drops a panel holding the field and the results. */
   .find__sheet {
-    position: relative;
-  }
-  .find__out {
     position: absolute;
     inset-inline-end: 0;
-    inset-block-start: calc(100% + 0.5rem);
+    inset-block-start: calc(100% - 0.35rem);
     inline-size: min(30rem, 92vw);
-    max-block-size: min(70vh, 34rem);
-    overflow-y: auto;
-    overscroll-behavior: contain;
+    display: none;
+    z-index: 95;
     background: var(--paper);
     box-shadow:
       inset 0 0 0 1.4px var(--ink),
       6px 6px 0 var(--reg-coral);
-    z-index: 95;
+  }
+  .find[data-open] .find__sheet {
+    display: block;
+  }
+  .find__bar {
+    border-block-end: 1px solid var(--line-soft);
+    box-shadow: none;
+    background: none;
+  }
+  .find__q {
+    inline-size: 100%;
+    min-block-size: 2.9rem;
+  }
+  .find__close {
+    display: block;
+  }
+  .find__out {
+    max-block-size: min(64vh, 30rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   /* ─────────────────────────────── narrow screens: a full-screen search view */
   @media (max-width: 62rem) {
-    .find__open {
-      display: grid;
-    }
     .find__sheet {
-      position: fixed;
       inset: 0;
+      inline-size: auto;
+      box-shadow: none;
+      position: fixed;
       z-index: 99;
-      display: none;
       background: var(--paper);
       padding: var(--sp-4);
       padding-block-start: calc(var(--sp-4) + env(safe-area-inset-top, 0px));
@@ -154,18 +168,8 @@ const index = localise(await getSearchIndex());
       grid-template-rows: auto minmax(0, 1fr);
       gap: var(--sp-4);
     }
-    .find__q {
-      inline-size: 100%;
-      min-block-size: 2.9rem;
-    }
-    .find__close {
-      display: block;
-    }
     .find__out {
-      position: static;
-      inline-size: auto;
       max-block-size: none;
-      box-shadow: none;
       border-block-start: 1px solid var(--line-soft);
     }
   }

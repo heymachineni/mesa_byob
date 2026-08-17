@@ -642,3 +642,44 @@ one-line change if Mesa's counsel says so.
 
 The 6.3 MB of source TTFs and the logo artwork stay out of the repo; what ships
 is derived and committed.
+
+
+---
+
+# Pass 15 — the masthead, after Mesa's own
+
+Taken from mesaschool.co: **logo left, everything else right**, and a mega menu
+that is a small uppercase group label above **cards with a title and one line
+each** — not a list of bare names you have to already know.
+
+Adopted the structure, not the skin. Mesa's site is dark navy with rounded
+cards; this one is bone stock and hard-edged, so a card here is the cream
+surface with a 1.4px hairline that the rest of the page already uses, square
+corners, and **the mono code in the slot where Mesa puts an icon** — M1, 01, 07.
+That mapping is why the pattern transfers: the numbering was already doing an
+icon's job.
+
+**Every one of the 38 cards now carries a line of description**, and most come
+from content that already existed rather than being written:
+
+| | source |
+|---|---|
+| Milestones | `Week 5 · ₹1,50,000 · due 9 Oct` — week, target and deadline |
+| Channels | the channel's own one-liner |
+| Workshops | what to expect, clamped to two lines |
+| Overview · Revenue · Help | written here — these are navigation copy |
+
+Group labels follow: *Start here*, *The five channels*, *All thirteen*, *The
+numbers*, *When you need it*, and the four phase names over the milestones.
+
+**Search is an icon now**, at every width. The field moved into the panel the
+icon opens, so the bar carries a logo, seven words and two glyphs and nothing
+else. On a phone that panel is still full-screen.
+
+The workshops panel no longer needs its two-column special case — the card grid
+is `auto-fill` and flows to whatever the width allows.
+
+**Not yet looked at.** The extension has been disconnected through this pass, so
+this is build-verified only: 38 cards each with a note, header order brand → menu
+→ tools, all 45 menu rows and 100 search results still resolving. Nobody has
+watched the panel open.

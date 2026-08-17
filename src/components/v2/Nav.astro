@@ -71,12 +71,13 @@ const menu = await getMenu();
                           {g.items.map((leaf) => (
                             <li>
                               <a
-                                class="nav__row"
+                                class="nav__card"
                                 href={leaf.target.startsWith('#') ? leaf.target : '#'}
                                 data-go={leaf.target}
                               >
                                 {leaf.num && <span class="nav__n mono">{leaf.num}</span>}
                                 <span class="nav__label">{leaf.label}</span>
+                                {leaf.note && <span class="nav__note">{leaf.note}</span>}
                               </a>
                             </li>
                           ))}
@@ -131,10 +132,9 @@ const menu = await getMenu();
     gap: var(--sp-5);
     min-block-size: var(--hdr-h);
   }
-  /* Auto margins float the menu into the space between the brand and the
-     search field rather than letting it huddle against the logo. */
+  /* Brand on the left, everything else pushed to the right. */
   .nav {
-    margin-inline: auto;
+    margin-inline-start: auto;
   }
 
   .bar__brand {
@@ -162,7 +162,6 @@ const menu = await getMenu();
     display: flex;
     align-items: center;
     gap: var(--sp-2);
-    margin-inline-start: auto;
     flex: 0 0 auto;
   }
 
@@ -276,19 +275,11 @@ const menu = await getMenu();
   }
   .nav__in {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
-    gap: var(--sp-5) var(--sp-7);
-    padding-block: var(--sp-6);
-    align-items: start;
-  }
-  /* Thirteen workshops in one column is a scroll; two halves the height.
-     Column-flow grid rather than CSS multi-column, which a grid container
-     ignores outright. */
-  .nav__in--split .nav__rows {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: repeat(7, auto);
-    grid-auto-flow: column;
-    column-gap: var(--sp-7);
+    gap: var(--sp-5);
+    padding-block: var(--sp-5) var(--sp-6);
+    max-block-size: min(74vh, 42rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   .nav__h {
@@ -302,38 +293,58 @@ const menu = await getMenu();
   }
   .nav__rows {
     display: grid;
-    gap: 0.1rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr));
+    gap: var(--sp-3);
   }
-  .nav__row {
+  /* A card, in this page's language: cream stock, a hairline, hard corners.
+     The mono code takes the slot an icon would occupy. */
+  .nav__card {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto auto;
     align-items: baseline;
-    gap: 0.55rem;
-    padding: 0.42rem 0.5rem;
-    margin-inline: -0.5rem;
-    font-size: var(--s--1);
-    color: var(--text-soft);
+    column-gap: 0.6rem;
+    padding: var(--sp-4);
+    background: var(--card);
+    box-shadow: inset 0 0 0 1.4px var(--card-line);
     text-decoration: none;
     transition:
       background var(--fast) var(--ease),
-      color var(--fast) var(--ease);
+      box-shadow var(--fast) var(--ease);
   }
-  .nav__row:hover,
-  .nav__row:focus-visible {
-    background: color-mix(in srgb, var(--coral) 12%, transparent);
-    color: var(--ink);
+  .nav__card:hover,
+  .nav__card:focus-visible {
+    background: color-mix(in srgb, var(--coral) 10%, var(--card));
+    box-shadow: inset 0 0 0 1.4px var(--coral);
   }
+
   .nav__n {
+    grid-row: 1 / span 2;
     font-size: 0.66rem;
     font-weight: 700;
     color: var(--coral);
+    padding-block-start: 0.25em;
   }
-  /* Long titles are Mesa's names, not copy I chose — so they truncate rather
-     than getting a second, shorter name invented for them. */
   .nav__label {
+    grid-column: 2;
+    font-size: var(--s--1);
+    font-weight: 700;
+    color: var(--ink);
+    /* Long titles are Mesa's names, not copy I chose — so they wrap rather
+       than getting a second, shorter name invented for them. */
+    text-wrap: balance;
+  }
+  .nav__note {
+    grid-column: 2;
+    margin-block-start: 0.25rem;
+    font-size: var(--s--2);
+    line-height: 1.5;
+    color: var(--text-soft);
+    /* Two lines, whatever the source sentence does. */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   /* ══════════════════════════════════ narrow screens: one tree, full height */
@@ -397,15 +408,12 @@ const menu = await getMenu();
       background: none;
     }
     .nav__in {
-      display: block;
-      max-inline-size: none;
-      margin-inline: 0;
+      max-block-size: none;
+      overflow: visible;
       padding: 0 0 var(--sp-5);
     }
-    .nav__in--split .nav__rows {
+    .nav__rows {
       grid-template-columns: minmax(0, 1fr);
-      grid-template-rows: none;
-      grid-auto-flow: row;
     }
     .nav__g + .nav__g {
       margin-block-start: var(--sp-4);
@@ -413,11 +421,8 @@ const menu = await getMenu();
     .nav__h {
       margin-block: var(--sp-3) var(--sp-2);
     }
-    .nav__row {
-      min-block-size: 2.9rem;
-      align-items: center;
-      padding-inline: 0.6rem;
-      margin-inline: -0.6rem;
+    .nav__card {
+      padding: var(--sp-3) var(--sp-4);
     }
   }
 

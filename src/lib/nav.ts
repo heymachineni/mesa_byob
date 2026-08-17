@@ -25,9 +25,14 @@ import {
 export type NavTarget = string;
 
 export type NavLeaf = {
-  /** Small mono prefix — a milestone code, a channel or workshop number. */
+  /** Small mono prefix — a milestone code, a channel or workshop number. It
+      takes the slot an icon would occupy on Mesa's own menu. */
   num?: string;
   label: string;
+  /** One line saying what's there, so the menu is readable rather than a
+      list of names you have to already know. Drawn from the content where the
+      content has it; written here where it doesn't. */
+  note?: string;
   target: NavTarget;
 };
 
@@ -62,7 +67,12 @@ export async function getMenu(): Promise<NavTop[]> {
     head: `${p.name} · ${p.weeks}`,
     items: milestones
       .filter((m) => m.phase === p.id)
-      .map((m) => ({ num: m.code, label: m.headline, target: `panel:${m.id}` })),
+      .map((m) => ({
+        num: m.code,
+        label: m.headline,
+        note: `Week ${m.week} · ${m.revenueLabel} · due ${m.date}`,
+        target: `panel:${m.id}`,
+      })),
   }));
 
   return [
@@ -72,11 +82,12 @@ export async function getMenu(): Promise<NavTop[]> {
       href: '#brief',
       groups: [
         {
+          head: 'Start here',
           items: [
-            { label: 'The brief', target: '#brief' },
-            { label: 'What you get', target: '#brief' },
-            { label: 'The climb', target: '#climb' },
-            { label: 'Capital and gates', target: '#gates' },
+            { label: 'The brief', note: 'Goal, team, milestones, investment, time', target: '#brief' },
+            { label: 'What you get', note: 'Six things the challenge leaves you with', target: '#brief' },
+            { label: 'The climb', note: '₹0 to ₹7 lakhs, in seven steps', target: '#climb' },
+            { label: 'Capital and gates', note: 'How each tranche unlocks', target: '#gates' },
           ],
         },
       ],
@@ -93,25 +104,37 @@ export async function getMenu(): Promise<NavTop[]> {
       href: '#selling',
       groups: [
         {
+          head: 'The five channels',
           items: channels.map((c) => ({
             num: c.code,
             label: c.name,
+            note: c.oneLine,
             target: `panel:${c.id}`,
           })),
         },
-        { items: [{ label: 'Targets by channel', target: '#targets' }] },
+        {
+          head: 'Reference',
+          items: [
+            {
+              label: 'Targets by channel',
+              note: 'Minimums, wins and budgets',
+              target: '#targets',
+            },
+          ],
+        },
       ],
     },
     {
       id: 'workshops',
       label: 'Workshops',
       href: '#workshops',
-      split: true,
       groups: [
         {
+          head: 'All thirteen',
           items: workshops.map((w) => ({
             num: String(w.n).padStart(2, '0'),
             label: w.title,
+            note: w.expect,
             target: `panel:${w.id}`,
           })),
         },
@@ -123,10 +146,11 @@ export async function getMenu(): Promise<NavTop[]> {
       href: '#money',
       groups: [
         {
+          head: 'The numbers',
           items: [
-            { label: 'Margin', target: '#money' },
-            { label: 'Money by milestone', target: '#money' },
-            { label: 'Inventory', target: '#money' },
+            { label: 'Margin', note: 'Revenue minus COGS, marketing and costs', target: '#money' },
+            { label: 'Money by milestone', note: 'What to watch at each stage', target: '#money' },
+            { label: 'Inventory', note: 'MOQ, safety stock, reorder point, dead stock', target: '#money' },
           ],
         },
       ],
@@ -139,11 +163,12 @@ export async function getMenu(): Promise<NavTop[]> {
       href: '#breaks',
       groups: [
         {
+          head: 'When you need it',
           items: [
-            { label: 'Find your symptom', target: '#breaks' },
-            { label: 'FAQ', target: '#faq' },
-            { label: 'Still stuck?', target: '#still-stuck' },
-            { label: 'Coming soon', target: '#faq' },
+            { label: 'Find your symptom', note: 'Twenty things that go wrong, and the fix', target: '#breaks' },
+            { label: 'FAQ', note: 'Thirteen questions, answered', target: '#faq' },
+            { label: 'Still stuck?', note: 'What to bring to your 1:1', target: '#still-stuck' },
+            { label: 'Coming soon', note: 'Grading and incentives, still being written', target: '#faq' },
           ],
         },
       ],
