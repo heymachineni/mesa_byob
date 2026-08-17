@@ -702,3 +702,20 @@ most for the thirteen workshops.
 Removed with it: the `split` flag and the `nav__in--split` two-column rule. Both
 stopped doing anything when the workshops panel became a card grid — `auto-fill`
 handles the column count on its own now.
+
+**That diagnosis was wrong, and a screenshot caught it.** The sheet was never
+full width. `.bar__in` carries the `page` class, and `.page` sets
+`position: relative` — so the header's own container was the containing block,
+and `inset-inline: 0` could only ever reach the edges of a 78rem column. Widening
+the contents just filled a sheet that was still short on both sides.
+
+The fix is one line on the other element: `.bar__in { position: static }`, which
+hands the job to `.bar` — sticky, and spanning the viewport. Verified by tracing
+the chain in the built CSS rather than assuming it: `.nav`, `.nav__list` and
+`.nav__item` are all static, so the panel now resolves against `.bar`.
+
+And the contents went back into the page column, which is what Mesa's own menu
+does: **sheet to the edges, cards aligned with the logo above them.**
+
+Worth remembering: `position: relative` on a layout container is invisible until
+something inside it tries to escape.

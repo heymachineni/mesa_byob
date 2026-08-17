@@ -131,6 +131,9 @@ const menu = await getMenu();
     align-items: center;
     gap: var(--sp-5);
     min-block-size: var(--hdr-h);
+    /* Not a containing block: the drop panel positions against `.bar` so it can
+       reach the viewport edges. */
+    position: static;
   }
   /* Brand on the left, everything else pushed to the right. */
   .nav {
@@ -276,6 +279,8 @@ const menu = await getMenu();
   .nav__in {
     display: grid;
     gap: var(--sp-5);
+    max-inline-size: var(--w-page);
+    margin-inline: auto;
     padding: var(--sp-5) var(--gutter) var(--sp-6);
     max-block-size: min(74vh, 42rem);
     overflow-y: auto;
@@ -409,6 +414,8 @@ const menu = await getMenu();
     }
     .nav__in {
       max-block-size: none;
+      max-inline-size: none;
+      margin-inline: 0;
       overflow: visible;
       padding: 0 0 var(--sp-5);
     }
