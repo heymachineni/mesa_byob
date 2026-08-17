@@ -14,7 +14,7 @@ import re
 import sys
 from collections import Counter
 
-EXPECTED_TOP = ["Overview", "Milestones", "Channels", "Workshops", "Money", "Flea", "Help"]
+EXPECTED_TOP = ["Overview", "Milestones", "Channels", "Workshops", "Revenue", "Flea", "Help"]
 EXPECTED_COUNTS = {"milestone": 8, "channel": 5, "workshop": 13}
 
 

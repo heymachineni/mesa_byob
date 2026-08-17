@@ -89,7 +89,7 @@ const hTail = hw.slice(-2).join(' ');
   <!-- ═══════════════════════════════════════════════════════════ 01 BRIEF -->
   <section class="run" id="brief">
     <Thread fade="in" />
-    <p class="run__mark num-mark">01 / Brief</p>
+    <p class="run__mark num-mark">01 / Overview</p>
     <div class="run__main">
       <h2 class="disp disp--md sec__t">What you're actually doing.</h2>
       <p class="lede sec__l">
@@ -134,7 +134,7 @@ const hTail = hw.slice(-2).join(' ');
   <!-- ═══════════════════════════════════════════════════════════ 02 CLIMB -->
   <section class="run" id="climb">
     <Thread />
-    <p class="run__mark num-mark">02 / Climb</p>
+    <p class="run__mark num-mark">02 / The climb</p>
     <div class="run__main">
       <h2 class="disp disp--md sec__t">₹7 lakhs, in seven steps.</h2>
       <p class="lede sec__l">
@@ -157,7 +157,7 @@ const hTail = hw.slice(-2).join(' ');
   <!-- ═══════════════════════════════════════════════════════════ 03 WEEKS -->
   <section class="run" id="weeks">
     <Thread />
-    <p class="run__mark num-mark">03 / Weeks</p>
+    <p class="run__mark num-mark">03 / Milestones</p>
     <div class="run__main run__main--flush">
       <h2 class="disp disp--md sec__t">Eight weeks. Eight milestones.</h2>
       <p class="lede sec__l">
@@ -241,7 +241,7 @@ const hTail = hw.slice(-2).join(' ');
   <!-- ═════════════════════════════════════════════════════════ 04 SELLING -->
   <section class="run" id="selling">
     <Thread />
-    <p class="run__mark num-mark">04 / Selling</p>
+    <p class="run__mark num-mark">04 / Channels</p>
     <div class="run__main">
       <h2 class="disp disp--md sec__t">Five ways to sell.</h2>
       <p class="lede sec__l">
@@ -323,11 +323,11 @@ const hTail = hw.slice(-2).join(' ');
   </section>
 
   <!-- ════════════════════════════════════════════════════════ 05 SESSIONS -->
-  <section class="run" id="sessions">
+  <section class="run" id="workshops">
     <Thread />
-    <p class="run__mark num-mark">05 / Sessions</p>
+    <p class="run__mark num-mark">05 / Workshops</p>
     <div class="run__main">
-      <h2 class="disp disp--md sec__t">Thirteen sessions, timed to the work.</h2>
+      <h2 class="disp disp--md sec__t">Thirteen workshops, timed to the work.</h2>
       <p class="lede sec__l">
         Mesa runs workshops with functional experts and startup leaders throughout the
         challenge. Each one lands where a milestone needs it.
@@ -359,7 +359,7 @@ const hTail = hw.slice(-2).join(' ');
   <!-- ═══════════════════════════════════════════════════════════ 06 MONEY -->
   <section class="run" id="money">
     <Thread />
-    <p class="run__mark num-mark">06 / Money</p>
+    <p class="run__mark num-mark">06 / Revenue</p>
     <div class="run__main">
       <h2 class="disp disp--md sec__t">₹7L in sales isn't ₹7L in your pocket.</h2>
       <p class="lede sec__l">{revenue.intro}</p>
@@ -432,7 +432,7 @@ const hTail = hw.slice(-2).join(' ');
   <!-- ══════════════════════════════════════════════════════════ 07 BREAKS -->
   <section class="run" id="breaks">
     <Thread fade="out" />
-    <p class="run__mark num-mark">07 / Stuck</p>
+    <p class="run__mark num-mark">07 / Help</p>
     <div class="run__main">
       <h2 class="disp disp--md sec__t">When it breaks.</h2>
       <p class="lede sec__l">
@@ -479,7 +479,7 @@ const hTail = hw.slice(-2).join(' ');
         </p>
       </div>
 
-      <aside class="ss reg" data-in>
+      <aside class="ss reg" id="still-stuck" data-in>
         <h3 class="ss__t disp disp--xs">{stillStuck.title}</h3>
         <p class="ss__b">{stillStuck.body}</p>
         <ul class="bullets ss__l">{stillStuck.bring.map((b) => <li>{b}</li>)}</ul>
@@ -492,7 +492,7 @@ const hTail = hw.slice(-2).join(' ');
   <section class="flea run" id="flea" data-ink="flood">
     <div class="page flea__page">
       <div class="flea__top" data-in>
-        <p class="num-mark">08 / The last day</p>
+        <p class="num-mark">08 / Flea</p>
         <p class="kicker flea__k">{flea.kicker}</p>
         <p class="say flea__seq">{flea.lede}</p>
         <h2 class="disp disp--lg flea__n">Mesa Flea</h2>
@@ -569,9 +569,9 @@ const hTail = hw.slice(-2).join(' ');
   </section>
 
   <!-- ══════════════════════════════════════════════════════════ 09 ASKED -->
-  <section class="run" id="asked">
+  <section class="run" id="faq">
     <Thread end fade="in" />
-    <p class="run__mark num-mark">09 / Asked</p>
+    <p class="run__mark num-mark">09 / FAQ</p>
     <div class="run__main">
       <h2 class="disp disp--md sec__t">Things people ask.</h2>
       <p class="lede sec__l">{faqs.length} questions, answered by the program team.</p>
@@ -852,7 +852,7 @@ const hTail = hw.slice(-2).join(' ');
   .tbl__link { font-weight: 700; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--coral); text-underline-offset: 0.2em; }
   .tbl__sub { display: block; margin-block-start: var(--sp-2); font-size: var(--s--2); font-weight: 400; color: var(--text-faint); }
 
-  /* ──────────────────────────────────────────────────────────── sessions */
+  /* ─────────────────────────────────────────────────────────── workshops */
   .ses { display: grid; }
   .ses__r {
     display: grid; grid-template-columns: 3.2rem minmax(0, 1fr) 2.6rem auto; gap: var(--sp-4);

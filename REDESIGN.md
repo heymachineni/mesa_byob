@@ -539,3 +539,50 @@ It's now applied only to a target small enough to point at: not a `<section>`,
 and under 55% of the viewport. Verified across the boundary — `#targets` (41%)
 marks, `#gates` (99%) doesn't, `#climb` (a 65% section) doesn't, and a single FAQ
 still opens its fold and marks itself.
+
+
+---
+
+# Pass 13 — one name per place
+
+The rail said `05 / Sessions`, the menu said Workshops, the footer said Thirteen
+sessions, and search said Workshops. Auditing all four naming surfaces — rail
+mark, phone dock, menu, footer — **seven of the nine sections carried two or
+three different names**.
+
+"Sessions" was never Mesa's word. The content, the codes (WS1–WS13) and the
+panels all say *workshop*; "session" appears in the source only as a generic noun
+inside sentences ("Kickoff session", "the grading session"). So it was my label,
+and mine to correct — not content drift.
+
+One vocabulary now, everywhere:
+
+| # | rail · dock · menu · footer |
+|---|---|
+| 01 | Overview |
+| 02 | The climb |
+| 03 | Milestones |
+| 04 | Channels |
+| 05 | Workshops |
+| 06 | Revenue |
+| 07 | Help |
+| 08 | Flea |
+| 09 | FAQ |
+
+Two section ids were renamed to match the words above them — `#sessions` →
+`#workshops` and `#asked` → `#faq` — so the URL doesn't contradict the label.
+Search's group headings follow too.
+
+And one duplicate inside the menu: `Help` (the top item) and `Troubleshooting`
+(a row beneath it) pointed at the same anchor — two names for one place, which is
+the thing being fixed everywhere else. The row now names the tool inside it
+("Find your symptom"), and "Still stuck?" got its own `#still-stuck` target
+instead of landing on the section a third time.
+
+**A note on "Revenue":** section 06 covers COGS, marketing spend, other costs and
+inventory as well as revenue — "Money" described it more completely. Renamed as
+asked; worth revisiting if students read it as revenue-only.
+
+Verified: 45 menu rows over 38 destinations and all 100 search results resolve
+against the renamed ids, 26/26 panels reachable, no page references the old ids,
+602 content strings and 450 mappings unchanged.

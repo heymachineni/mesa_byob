@@ -603,15 +603,15 @@ const menu = await getMenu();
 
   /* ── where you are ───────────────────────────────────────────────────── */
   const STOPS: Array<[string, string, string]> = [
-    ['brief', '01', 'The brief'],
-    ['climb', '02', 'Revenue ladder'],
+    ['brief', '01', 'Overview'],
+    ['climb', '02', 'The climb'],
     ['weeks', '03', 'Milestones'],
     ['selling', '04', 'Channels'],
-    ['sessions', '05', 'Workshops'],
-    ['money', '06', 'Money'],
-    ['breaks', '07', 'Troubleshooting'],
+    ['workshops', '05', 'Workshops'],
+    ['money', '06', 'Revenue'],
+    ['breaks', '07', 'Help'],
     ['flea', '08', 'Flea'],
-    ['asked', '09', 'Questions'],
+    ['faq', '09', 'FAQ'],
   ];
   const num = document.querySelector<HTMLElement>('[data-dock-num]')!;
   const label = document.querySelector<HTMLElement>('[data-dock-label]')!;

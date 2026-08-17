@@ -75,7 +75,7 @@ export async function getMenu(): Promise<NavTop[]> {
           items: [
             { label: 'The brief', target: '#brief' },
             { label: 'What you get', target: '#brief' },
-            { label: 'Revenue ladder', target: '#climb' },
+            { label: 'The climb', target: '#climb' },
             { label: 'Capital and gates', target: '#gates' },
           ],
         },
@@ -105,7 +105,7 @@ export async function getMenu(): Promise<NavTop[]> {
     {
       id: 'workshops',
       label: 'Workshops',
-      href: '#sessions',
+      href: '#workshops',
       split: true,
       groups: [
         {
@@ -119,7 +119,7 @@ export async function getMenu(): Promise<NavTop[]> {
     },
     {
       id: 'money',
-      label: 'Money',
+      label: 'Revenue',
       href: '#money',
       groups: [
         {
@@ -140,10 +140,10 @@ export async function getMenu(): Promise<NavTop[]> {
       groups: [
         {
           items: [
-            { label: 'Troubleshooting', target: '#breaks' },
-            { label: 'Questions', target: '#asked' },
-            { label: 'Still stuck?', target: '#breaks' },
-            { label: 'Coming soon', target: '#asked' },
+            { label: 'Find your symptom', target: '#breaks' },
+            { label: 'FAQ', target: '#faq' },
+            { label: 'Still stuck?', target: '#still-stuck' },
+            { label: 'Coming soon', target: '#faq' },
           ],
         },
       ],
@@ -161,11 +161,11 @@ export async function getMenu(): Promise<NavTop[]> {
 const ANCHORS: Record<string, string> = {
   '#journey': '#weeks',
   '#channels': '#selling',
-  '#workshops': '#sessions',
+  '#workshops': '#workshops',
   '#money': '#money',
   '#stuck': '#breaks',
   '#flea': '#flea',
-  '#faq': '#asked',
+  '#faq': '#faq',
 };
 
 export function toTarget(action: string): NavTarget {
@@ -187,11 +187,12 @@ export function toTarget(action: string): NavTarget {
 const WORDS: Record<string, string> = {
   Journey: 'Milestones',
   'The journey': 'Milestones',
-  FAQ: 'Questions',
   'Flea Market': 'Flea',
   'Mesa Flea': 'Flea',
-  'Money matters': 'Money',
-  "When you're stuck": 'Troubleshooting',
+  'Money matters': 'Revenue',
+  Money: 'Revenue',
+  "When you're stuck": 'Help',
+  Troubleshooting: 'Help',
   'Five ways to sell': 'Channels',
 };
 
