@@ -809,3 +809,24 @@ edge; a grey hairline on top of it was belt and braces.
 
 The one remaining tiled pattern on the page is the diagonal stripe inside the M8
 progress bar, which is a deliberate fill in a panel, not a background.
+
+
+---
+
+# Pass 19 — the favicon is the mark
+
+Both designs were drawing their own icon in an SVG data URI: the main one two
+offset squares in the palette of the moment, the Forge one a Georgia "m" standing
+in for a logo it didn't have. Both are now Mesa's actual mark on its rounded
+plate — which is the app-icon lockup, and therefore exactly what a favicon is.
+
+Shipped as two files rather than one: a `.png` at 180px that doubles as the
+apple-touch-icon, and a real `.ico` carrying 16, 32 and 48px bitmaps so the
+tab-sized rendering is drawn rather than downscaled from the large one. 8 KB
+between them.
+
+The plate stays on. It is what gives the mark definition against a browser tab,
+light or dark — the same reason the brand has it — and it is the one place the
+lockup is used at its intended size.
+
+`/` and `/v2` now share it. One site, one icon.

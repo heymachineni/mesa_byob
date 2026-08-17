@@ -39,10 +39,11 @@ const fullTitle = suffix ? `${title} · BYOB Challenge` : title;
       href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap"
     />
 
-    <link
-      rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232A1849'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='19' font-weight='700' fill='%23fff' text-anchor='middle'%3Em%3C/text%3E%3C/svg%3E"
-    />
+    <!-- The same Mesa mark as the main design: one site, one icon. It replaces
+         a hand-drawn "m" that only ever stood in for the real thing. -->
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="180x180" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
 
     <!-- Marks JS as available before first paint, so scroll-reveal never leaves
          content hidden for users without it. -->
