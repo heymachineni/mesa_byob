@@ -44,7 +44,7 @@ const cols = [
     }
 
     <div class="foot__id">
-      <span class="foot__m" aria-hidden="true">m</span>
+      <img class="foot__logo" src="/mesa-mark.png" alt="" width="95" height="84" />
       <p class="foot__name">Mesa</p>
       <p class="kicker foot__school">School of Business</p>
       <p class="foot__prog">{program.title} · {program.programme}</p>
@@ -99,12 +99,7 @@ const cols = [
   .foot__col a:hover { color: var(--coral); }
 
   .foot__id { display: grid; gap: 0.15rem; justify-items: start; align-content: start; }
-  .foot__m {
-    display: grid; place-items: center;
-    inline-size: 1.8rem; block-size: 1.8rem; margin-block-end: var(--sp-3);
-    background: var(--ink); color: var(--paper);
-    font-weight: 800; font-size: 1rem; line-height: 1; padding-block-end: 0.06em;
-  }
+  .foot__logo { block-size: 1.9rem; inline-size: auto; margin-block-end: var(--sp-3); }
   .foot__name { font-family: var(--font-display); font-size: 1.4rem; color: var(--ink-2); line-height: 1; }
   .foot__school { font-size: 0.58rem; }
   .foot__prog { margin-block-start: var(--sp-3); font-size: var(--s--2); color: var(--text-soft); }

@@ -19,13 +19,18 @@ const { title, description } = Astro.props;
     <meta name="description" content={description} />
     <meta name="theme-color" content="#fbf7f0" />
 
+    <!-- New York carries the headings, Manrope everything functional. Both are
+         Mesa's own files, served from this origin and preloaded because the
+         first thing painted is set in them. -->
+    <link rel="preload" href="/fonts/newyork-regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/manrope-variable.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- Caveat appears three times on the entire page, on purpose. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Instrument Serif does the expressive work; Manrope stays out of the way;
-         Caveat appears three times on the entire page, on purpose. -->
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400..800&family=Caveat:wght@500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap"
     />
 
     <link

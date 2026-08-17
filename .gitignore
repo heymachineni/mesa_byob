@@ -11,3 +11,9 @@ dist/
 # the content they carry already lives in src/content/data/*.json.
 *.docx
 ginnis-post-newsletter.html
+
+# Source assets, kept locally. What the site serves is derived from them and
+# committed: public/fonts/*.woff2 (subset, 75 KB vs 6.3 MB of TTF) and
+# public/mesa-mark.png (4 KB, extracted from the logo artwork).
+Mesa fonts/
+PG white.png

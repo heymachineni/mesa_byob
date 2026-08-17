@@ -11,6 +11,37 @@
    Content hangs off it asymmetrically. No stacked full-width bands.
    ========================================================================= */
 
+/* =========================================================================
+   TYPEFACES
+   Mesa's own files, subset to the Latin range plus the marks this kit sets —
+   the rupee sign, en and em dashes, curly quotes, the middot between labels.
+   651 KB of TTF becomes 75 KB of woff2 that way. Self-hosted, so no request
+   leaves the page to render text.
+   ========================================================================= */
+
+@font-face {
+  font-family: 'New York';
+  src: url('/fonts/newyork-regular.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'New York';
+  src: url('/fonts/newyork-italic.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: italic;
+  font-display: swap;
+}
+/* One file for every weight the UI uses, 400 through 800. */
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/manrope-variable.woff2') format('woff2-variations');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* ---------------------------------------------------------- the stock */
   --paper: #fbf7f0; /* bone */
@@ -50,7 +81,7 @@
   /* ------------------------------------------------------------ typography */
   /* Instrument Serif is high-contrast and a little theatrical — it does the
      expressive work so nothing else has to shout. */
-  --font-display: 'Instrument Serif', 'New York', Georgia, serif;
+  --font-display: 'New York', Newsreader, Georgia, serif;
   --font-ui: 'Manrope', ui-sans-serif, system-ui, sans-serif;
   --font-hand: 'Caveat', cursive;
   --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;

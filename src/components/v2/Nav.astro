@@ -16,7 +16,7 @@ const menu = await getMenu();
 <header class="bar">
   <div class="page bar__in">
     <a href="#top" class="bar__brand">
-      <span class="bar__m" aria-hidden="true">m</span>
+      <img class="bar__logo" src="/mesa-mark.png" alt="Mesa" width="95" height="84" />
       <span class="bar__t">BYOB</span>
     </a>
 
@@ -144,18 +144,13 @@ const menu = await getMenu();
     text-decoration: none;
     flex: 0 0 auto;
   }
-  .bar__m {
+  /* Mesa's own mark, in place of the letter that stood in for it. Sized by
+     height so the ratio comes from the file, and given explicit width/height
+     attributes so it reserves its space before it loads. */
+  .bar__logo {
     align-self: center;
-    display: grid;
-    place-items: center;
-    inline-size: 1.4rem;
-    block-size: 1.4rem;
-    background: var(--ink);
-    color: var(--paper);
-    font-weight: 800;
-    font-size: 0.8rem;
-    line-height: 1;
-    padding-block-end: 0.06em;
+    block-size: 1.45rem;
+    inline-size: auto;
   }
   .bar__t {
     font-family: var(--font-display);

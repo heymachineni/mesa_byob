@@ -586,3 +586,59 @@ asked; worth revisiting if students read it as revenue-only.
 Verified: 45 menu rows over 38 destinations and all 100 search results resolve
 against the renamed ids, 26/26 panels reachable, no page references the old ids,
 602 content strings and 450 mappings unchanged.
+
+
+---
+
+# Pass 14 — Mesa's own logo and typefaces
+
+## The mark
+
+`PG white.png` is the **white** lockup: the "Mesa / School of Business" wordmark
+is 100% white — measured, not guessed — so it is invisible on this page's bone
+stock. Only the tile carries colour, an `#11403b` "m" on a white rounded plate.
+
+So the masthead uses the **mark alone**, with the white plate dropped: on bone
+paper a white tile barely reads, and the plate belongs to the app icon rather
+than to a masthead. Extracted, squared, and rendered at 3× for retina — 6948 ×
+2424 and 472 KB becomes **95 × 84 and 4 KB**. It replaces the letter "m" that was
+standing in for it, in the header and in the footer.
+
+**Two things need a decision:**
+
+1. **The full lockup can't go on a light header.** Showing "Mesa School of
+   Business" needs a dark version of the wordmark, or a dark plate behind it.
+2. **The mark is dark green.** It now sits beside a Deep Aubergine and Vivid
+   Violet palette, and the brand rules for this project say no green. Mesa's own
+   logo obviously outranks a palette rule I was working to — but it is a visible
+   clash, and worth a look.
+
+## The typefaces
+
+New York for headings, Manrope for everything functional — Mesa's own files,
+self-hosted. Subset to Latin plus the marks this kit actually sets (the rupee
+sign, en and em dashes, curly quotes, the middot between labels, arrows):
+
+| | source | shipped |
+|---|---|---|
+| New York Large Regular | 241 KB | **22 KB** |
+| New York Large Italic | 249 KB | **25 KB** |
+| Manrope variable (200–800) | 161 KB | **28 KB** |
+| | 651 KB | **75 KB** |
+
+One variable file covers every Manrope weight the UI uses. Both critical faces
+are preloaded, since the first thing painted is set in them. Instrument Serif is
+gone; the only request still leaving the page is Caveat, which appears three
+times on purpose.
+
+New York has no arrow glyph — it never did, in the source file either — but
+every arrow on the page sits in a UI span, so nothing falls back.
+
+**Licensing, worth checking before launch:** Apple licenses New York for
+designing and developing apps *for Apple platforms*. Embedding it as a webfont
+on a public site is not obviously covered. Newsreader — already the next name in
+the stack — is the open substitute the original brief named, so swapping is a
+one-line change if Mesa's counsel says so.
+
+The 6.3 MB of source TTFs and the logo artwork stay out of the repo; what ships
+is derived and committed.
