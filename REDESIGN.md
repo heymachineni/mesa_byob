@@ -781,3 +781,31 @@ diagnostic chip were already right, because they invert deliberately.
 
 `public/mesa-mark.png` — the plate-free green mark for light stock — is kept, so
 reverting the ground is a stylesheet change rather than an asset hunt.
+
+
+---
+
+# Pass 18 — the bar, after Mesa's
+
+**The halftone is gone.** A tiled dot grid at 26% ink over the whole page was
+paper texture on bone stock; inverted onto navy it became a grid of light dots —
+reading as a white grid rather than as tooth. Removed outright rather than
+re-tuned: the misregistration is the graphic device, and the page doesn't need a
+second one.
+
+**The bar matches Mesa's sticky header exactly.** Theirs:
+
+    .header.sticky {
+      background: rgba(42, 73, 58, 0.98);
+      backdrop-filter: blur(10px);
+    }
+
+Same blur, but a **0.98** ground where ours was 0.92 — which is the whole
+difference. At 0.92 the page showed through as it scrolled under; at 0.98 the
+blur is a finishing touch on something already opaque, and it stays clean.
+
+**The rule under the bar is gone too.** With a near-solid ground the bar already has an
+edge; a grey hairline on top of it was belt and braces.
+
+The one remaining tiled pattern on the page is the diagonal stripe inside the M8
+progress bar, which is a deliberate fill in a panel, not a background.

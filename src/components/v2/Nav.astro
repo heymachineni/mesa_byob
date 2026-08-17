@@ -121,10 +121,12 @@ const menu = await getMenu();
     position: sticky;
     inset-block-start: 0;
     z-index: 90;
-    background: color-mix(in srgb, var(--paper) 92%, transparent);
+    /* Mesa's own sticky header: blur(10px) behind a 0.98 ground. Nearly
+       opaque, which is why theirs stays clean as content passes under it —
+       ours was 0.92 and the page showed through. */
+    background: color-mix(in srgb, var(--paper) 98%, transparent);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border-block-end: 1px solid var(--line-soft);
   }
   .bar__in {
     display: flex;

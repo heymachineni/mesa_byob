@@ -236,23 +236,6 @@ body.is-locked {
   }
 }
 
-/* Halftone tooth. A single tiled dot grid at very low opacity — the paper
-   texture of a riso print, not a noise overlay. */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.5;
-  background-image: radial-gradient(
-    circle at 50% 50%,
-    color-mix(in srgb, var(--ink) 26%, transparent) 0.6px,
-    transparent 0.7px
-  );
-  background-size: 4px 4px;
-}
-
 img,
 svg,
 iframe,
