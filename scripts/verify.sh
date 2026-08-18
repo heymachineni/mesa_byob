@@ -40,7 +40,7 @@ echo "--- the sign-in page ---"
 curl -sf "http://localhost:$PORT/signin" -o "$OUT/signin.html"
 for r in not_allowed unverified access_denied signed_out; do
   curl -sf "http://localhost:$PORT/signin?reason=$r" -o "$OUT/r-$r.html"
-  grep -q '<strong>' "$OUT/r-$r.html" || { echo "  ✗ no message for reason=$r"; status=1; }
+  grep -q 'role="alert"' "$OUT/r-$r.html" || { echo "  ✗ no message for reason=$r"; status=1; }
 done
 echo " · renders, and every error state has its own message"
 echo " · pages above rendered with AUTH_DISABLED=1"
