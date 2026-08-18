@@ -13,6 +13,15 @@ export const prerender = false;
 export const GET: APIRoute = async ({ url, cookies, redirect }) => {
   const { clientId } = config();
 
+  /* The address typed on the sign-in page, if any. `login_hint` only prefills
+     Google's account chooser and `hd` only filters what it offers — neither is
+     a security control. `isAllowed` in the callback is the one that decides. */
+  const local = (url.searchParams.get('user') || '').trim();
+  const domain = (url.searchParams.get('domain') || '').trim().toLowerCase();
+  const { domains } = config();
+  const allowed = domains.split(',').map((d) => d.trim().toLowerCase());
+  const hint = local && allowed.includes(domain) ? `${local.replace(/@.*$/, '')}@${domain}` : '';
+
   const nonce = crypto.randomUUID();
   const next = url.searchParams.get('next') || '/';
   /* Only same-site paths: an open redirect here would let someone bounce a
@@ -33,9 +42,15 @@ export const GET: APIRoute = async ({ url, cookies, redirect }) => {
   auth.searchParams.set('response_type', 'code');
   auth.searchParams.set('scope', 'openid email profile');
   auth.searchParams.set('state', nonce);
-  /* Nudges Google's account chooser to the right domain. Not a security
-     control — `isAllowed` is. */
-  auth.searchParams.set('hd', config().domains.split(',')[0].trim());
+  if (hint) {
+    auth.searchParams.set('login_hint', hint);
+    auth.searchParams.set('hd', hint.split('@')[1]);
+  }
+  /* After a rejected account, Google would otherwise sign the same one straight
+     back in and the student would loop. `select_account` breaks that. */
+  if (url.searchParams.get('prompt') === 'select_account') {
+    auth.searchParams.set('prompt', 'select_account');
+  }
 
   return redirect(auth.toString(), 302);
 };

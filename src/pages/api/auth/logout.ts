@@ -5,5 +5,5 @@ export const prerender = false;
 
 export const GET: APIRoute = async ({ cookies, redirect }) => {
   cookies.delete(cookieName, { path: '/' });
-  return redirect('/signed-out?reason=signed_out', 302);
+  return redirect('/signin?reason=signed_out', 302);
 };

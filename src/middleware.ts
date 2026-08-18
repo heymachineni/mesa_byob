@@ -15,7 +15,7 @@ const OPEN = [
   '/api/auth/login',
   '/api/auth/callback',
   '/api/auth/logout',
-  '/signed-out',
+  '/signin',
   '/favicon.ico',
   '/favicon.png',
 ];
@@ -50,7 +50,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   if (!session) {
     const next_ = encodeURIComponent(context.url.pathname + context.url.search);
-    return context.redirect(`/api/auth/login?next=${next_}`, 302);
+    /* To the sign-in page rather than straight at Google: a student who lands
+       here cold should see where they are and which address to use. */
+    return context.redirect(`/signin?next=${next_}`, 302);
   }
 
   /* Available to pages as `Astro.locals.user`. */

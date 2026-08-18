@@ -36,7 +36,12 @@ done
 echo "--- menu + search ---"
 python3 scripts/verify_nav.py "$OUT/index.html" || status=1
 
-echo "--- the gate ---"
-code=$(AUTH_DISABLED= curl -s -o /dev/null -w '%{http_code}' "http://localhost:$PORT/")
-echo " · with AUTH_DISABLED=1 the page renders (that is how the checks above ran)"
+echo "--- the sign-in page ---"
+curl -sf "http://localhost:$PORT/signin" -o "$OUT/signin.html"
+for r in not_allowed unverified access_denied signed_out; do
+  curl -sf "http://localhost:$PORT/signin?reason=$r" -o "$OUT/r-$r.html"
+  grep -q '<strong>' "$OUT/r-$r.html" || { echo "  ✗ no message for reason=$r"; status=1; }
+done
+echo " · renders, and every error state has its own message"
+echo " · pages above rendered with AUTH_DISABLED=1"
 exit $status

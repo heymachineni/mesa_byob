@@ -936,3 +936,60 @@ still passes: 602 content strings, 450 semantic mappings, 100 search entries, 26
 The bypass is `AUTH_DISABLED=1` and it is deliberately explicit rather than "open when
 unconfigured" — a production deploy that forgot its environment variables would otherwise
 serve the whole kit to the world and look like it was working.
+
+
+---
+
+# Pass 22 — the sign-in page
+
+Two domains now: `mesaschool.co` for staff and `forge27.mesaschool.co` for the cohort.
+
+## The page
+
+A picture on the left, the form on the right, one column below 60rem — the picture
+is atmosphere, so it is the half that goes when space is short. It is entirely
+self-contained: no stylesheet and no component from the kit, because it is the one
+page that has to render when something else has gone wrong.
+
+**The email field does not sign anyone in.** Google does that. What it carries is
+a `login_hint`, so the account chooser opens already pointing at the right address
+and a student saves two taps — and an `hd` so Google offers the right domain. The
+button works with the field empty, and the fine print says so rather than
+implying the field is a password box with the password missing.
+
+A typed domain outside the allowlist is discarded rather than passed through:
+`hd` is a convenience and would otherwise look like a control. `isAllowed` in the
+callback remains the only thing that decides.
+
+**Add `public/signin.jpg`** and it becomes the left panel. Until then a gradient
+in the Forge palette stands in — designed to work either way rather than break to
+a broken-image icon. I have no student photograph and will not invent one.
+
+## Every way this fails, and what it says
+
+| | |
+|---|---|
+| wrong domain | "That's not a Mesa account" — names both allowed domains, offers a retry |
+| unverified address | "That address isn't verified" |
+| cancelled at Google | "Sign-in cancelled. Nothing happened." |
+| stale link | "That link had expired" |
+| token exchange failed | "Google couldn't finish" |
+| no id_token | "Google didn't return an identity" |
+| wrong audience | "That sign-in was for a different app" |
+| signed out | "You're signed out" — calm, not an error |
+
+The two the student can actually act on carry `prompt=select_account` on the retry.
+Without it Google silently signs the same rejected account straight back in and
+the student loops through a rejection they cannot escape — the sharpest edge case
+here, and invisible unless you go looking for it.
+
+## Tested
+
+10/10 on the allowlist, including the ones that matter: `forge26.mesaschool.co`
+(a sibling cohort that isn't listed), `evil.mesaschool.co`, `mesaschool.co.evil.com`
+and `notmesaschool.co` all blocked; uppercase addresses allowed.
+
+End to end: `/`, `/v2/` and `/faq` all land on `/signin` with the return path kept;
+a Mesa address becomes `login_hint` and `hd`; `gmail.com` typed into the form is
+discarded; every error state renders its own message. `npm run verify` now checks
+the sign-in page and its error states alongside everything else.
