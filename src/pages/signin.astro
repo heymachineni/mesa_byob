@@ -2,16 +2,13 @@
 /**
  * Sign in.
  *
- * One action. An earlier version put an email field above the button so the
- * address could be passed to Google as a `login_hint` — it saved a tap for
- * anyone with two Google accounts, and cost everyone else a moment of "I've
- * typed my name, now what?". A field that looks like a login form but isn't one
- * is worse than no field, so it is gone. Google asks who you are anyway.
+ * One action, and everything else in service of it. There is no email field:
+ * an earlier version had one to pass Google a `login_hint`, but a field that
+ * looks like a login form and isn't one costs more than the tap it saves.
  *
- * Self-contained on purpose: it borrows no stylesheet or component from the
+ * Self-contained on purpose — it borrows no stylesheet or component from the
  * kit, because it is the page that has to render when something else is broken.
- * Colours, fonts and both control shapes are Forge's own, read from its
- * stylesheet rather than approximated.
+ * Colours and type are Forge's own, read from its stylesheet.
  */
 export const prerender = false;
 
@@ -31,52 +28,28 @@ const NOTES: Record<string, { warn?: boolean; title: string; body: string; retry
   not_allowed: {
     warn: true,
     title: 'That’s not a Mesa account',
-    body: `Sign-in worked, but that address isn’t on ${domains.map((d) => '@' + d).join(' or ')}.`,
+    body: 'Sign-in worked, but that address isn’t one of the two below.',
     retry: true,
   },
   unverified: {
     warn: true,
     title: 'That address isn’t verified',
-    body: 'Google hasn’t verified the email on that account. Verify it, then come back.',
+    body: 'Google hasn’t verified the email on that account.',
     retry: true,
   },
-  access_denied: {
-    title: 'Sign-in cancelled',
-    body: 'Nothing happened. Try again whenever you’re ready.',
-  },
-  state_mismatch: {
-    title: 'That link had expired',
-    body: 'Sign-in links are short-lived. Starting again takes a second.',
-  },
-  bad_request: {
-    title: 'That sign-in was incomplete',
-    body: 'Something was missing on the way back from Google.',
-  },
-  token_exchange: {
-    warn: true,
-    title: 'Google couldn’t finish',
-    body: 'It didn’t complete on Google’s side. Wait a moment and try again.',
-  },
-  no_id_token: {
-    warn: true,
-    title: 'Google didn’t return an identity',
-    body: 'That usually clears on a second attempt.',
-  },
-  wrong_audience: {
-    warn: true,
-    title: 'That sign-in was for a different app',
-    body: 'Start from this page rather than an old link or bookmark.',
-  },
-  signed_out: {
-    title: 'You’re signed out',
-    body: 'Sign in again whenever you need the kit.',
-  },
+  access_denied: { title: 'Sign-in cancelled', body: 'Nothing happened — try again when you’re ready.' },
+  state_mismatch: { title: 'That link had expired', body: 'Sign-in links are short-lived.' },
+  bad_request: { title: 'That sign-in was incomplete', body: 'Something was missing on the way back.' },
+  token_exchange: { warn: true, title: 'Google couldn’t finish', body: 'Wait a moment and try again.' },
+  no_id_token: { warn: true, title: 'Google didn’t return an identity', body: 'This usually clears on a second attempt.' },
+  wrong_audience: { warn: true, title: 'That sign-in was for a different app', body: 'Start from this page, not an old link.' },
+  signed_out: { title: 'You’re signed out', body: 'Sign in again whenever you need the kit.' },
 };
 
 const note = NOTES[reason];
 
-/* After a rejected account Google would sign the same one straight back in, and
-   the student would loop through a rejection they can't escape. */
+/* After a rejected account Google signs the same one straight back in, and the
+   student loops through a rejection they can't escape. */
 const href =
   `/api/auth/login?next=${encodeURIComponent(safeNext)}` +
   (note?.retry ? '&prompt=select_account' : '');
@@ -95,8 +68,8 @@ const href =
     <link rel="preload" href="/fonts/manrope-variable.woff2" as="font" type="font/woff2" crossorigin />
 
     <style is:inline>
-      /* Forge's own two faces: `--body-font: "Manrope"` and
-         `--cursive-font: "New York Large"`, self-hosted here. */
+      /* Forge's own two faces: `--body-font: "Manrope"`, `--cursive-font:
+         "New York Large"`. Self-hosted, subset, same files as the kit. */
       @font-face {
         font-family: 'Manrope';
         src: url('/fonts/manrope-variable.woff2') format('woff2-variations');
@@ -112,15 +85,34 @@ const href =
 
       :root {
         color-scheme: dark;
-        /* Read from Forge's stylesheet, not sampled from a screenshot. */
-        --navy: #0d0e21; /* html, body background */
-        --panel: #161738; /* its card background */
-        --edge: rgba(255, 255, 255, 0.15); /* its card border */
-        --peri: #b1a6f6; /* its CTA colour */
+
+        /* Forge, read from its stylesheet rather than sampled from a picture. */
+        --navy: #0d0e21;
+        --panel: #161738;
+        --deep: #1e0f51;
         --indigo: #444aa5;
-        --deep: #1e0f51; /* --bs-heading-color */
+        --peri: #b1a6f6;
         --ink: #fbf7f0;
-        --soft: #a5a3b8;
+        --soft: #9d9bb0;
+        --edge: rgba(255, 255, 255, 0.15);
+
+        /* One spacing scale, 8px-based. Every gap on this page is a step on it;
+           nothing is eyeballed, which is most of why a layout reads as calm. */
+        --s0: 0.25rem;
+        --s1: 0.5rem;
+        --s2: 0.75rem;
+        --s3: 1rem;
+        --s4: 1.5rem;
+        --s5: 2rem;
+        --s6: 2.5rem;
+        --s7: 3.5rem;
+
+        /* And one type ramp. */
+        --t-title: clamp(1.5rem, 1.3rem + 1vw, 1.75rem);
+        --t-body: 0.9375rem;
+        --t-fine: 0.8125rem;
+
+        --ease: cubic-bezier(0.32, 0.72, 0, 1);
       }
 
       * { box-sizing: border-box; }
@@ -130,111 +122,152 @@ const href =
         min-block-size: 100dvh;
         display: grid;
         place-items: center;
-        padding: clamp(1.25rem, 5vw, 3rem);
-        padding-block-start: max(clamp(1.25rem, 5vw, 3rem), env(safe-area-inset-top));
+        padding: var(--s4);
+        padding-block-start: max(var(--s4), env(safe-area-inset-top));
+        padding-block-end: max(var(--s4), env(safe-area-inset-bottom));
         color: var(--ink);
         font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+        font-size: var(--t-body);
+        line-height: 1.6;
         -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+
         background:
-          radial-gradient(115% 72% at 16% 0%, #2b1d63 0%, transparent 62%),
-          radial-gradient(95% 80% at 88% 100%, rgba(68, 74, 165, 0.75) 0%, transparent 58%),
-          linear-gradient(165deg, var(--deep) 0%, var(--navy) 68%);
+          radial-gradient(120% 75% at 15% 0%, var(--deep) 0%, transparent 60%),
+          radial-gradient(90% 75% at 88% 100%, rgba(68, 74, 165, 0.55) 0%, transparent 55%),
+          var(--navy);
         background-attachment: fixed;
       }
 
-      /* Forge's card, to its own numbers. */
+      /* Narrow on purpose. A sign-in card wants one short measure so the eye
+         goes straight down the middle — widening it only spreads three lines. */
       .card {
         inline-size: 100%;
-        max-inline-size: 23rem;
-        padding: clamp(1.75rem, 6vw, 2.5rem);
+        max-inline-size: 21rem;
+        padding: var(--s6) var(--s5) var(--s5);
         border: 1px solid var(--edge);
-        border-radius: 0.75rem;
+        border-radius: 1rem;
         background: var(--panel);
-        box-shadow: 0 26px 64px -24px rgba(0, 0, 0, 0.75);
+        box-shadow: 0 32px 64px -32px rgba(0, 0, 0, 0.8);
         text-align: center;
       }
+      @media (min-width: 30rem) {
+        .card { padding: var(--s7) var(--s6) var(--s6); }
+      }
 
-      .mark { inline-size: 2.75rem; block-size: 2.75rem; margin: 0 auto 1.5rem; display: block; }
+      /* Rise once, quietly. Motion here is a courtesy, not an effect. */
+      @media (prefers-reduced-motion: no-preference) {
+        .card {
+          animation: rise 0.5s var(--ease) both;
+        }
+        @keyframes rise {
+          from { opacity: 0; transform: translateY(8px); }
+        }
+      }
+
+      .mark {
+        inline-size: 2.5rem;
+        block-size: 2.5rem;
+        display: block;
+        margin: 0 auto var(--s4);
+      }
 
       h1 {
         font-family: 'New York', Georgia, serif;
-        font-size: clamp(1.55rem, 5vw, 1.85rem);
+        font-size: var(--t-title);
         font-weight: 400;
-        line-height: 1.15;
-        margin: 0 0 0.5rem;
+        line-height: 1.2;
+        letter-spacing: -0.01em;
+        margin: 0;
       }
       .lede {
-        margin: 0 0 1.75rem;
+        margin: var(--s1) 0 0;
         color: var(--soft);
-        font-size: 0.95rem;
-        line-height: 1.55;
+        text-wrap: balance;
       }
 
-      /* What went wrong, if anything ------------------------------------- */
+      /* What went wrong, if anything. Tinted rather than boxed — it should read
+         as a remark above the button, not a second component. */
       .note {
-        display: grid;
-        gap: 0.25rem;
-        padding: 0.85rem 1rem;
-        margin-block-end: 1.5rem;
+        margin-block-start: var(--s4);
+        padding: var(--s2) var(--s3);
         border-radius: 0.75rem;
         text-align: start;
-        background: rgba(177, 166, 246, 0.09);
-        border: 1px solid rgba(177, 166, 246, 0.28);
+        background: rgba(177, 166, 246, 0.1);
       }
-      .note--warn {
-        background: rgba(255, 173, 128, 0.09);
-        border-color: rgba(255, 173, 128, 0.32);
+      .note--warn { background: rgba(255, 173, 128, 0.11); }
+      .note b {
+        display: block;
+        font-size: var(--t-fine);
+        font-weight: 700;
+        letter-spacing: 0.01em;
       }
-      .note strong { font-size: 0.9rem; font-weight: 700; }
-      .note span { font-size: 0.85rem; line-height: 1.5; color: var(--soft); }
+      .note span {
+        display: block;
+        margin-block-start: var(--s0);
+        font-size: var(--t-fine);
+        line-height: 1.5;
+        color: var(--soft);
+      }
 
-      /* The one action. Forge's CTA: outlined periwinkle, filling on hover. */
+      /* The one action. Filled, because on a page with a single thing to do the
+         primary control should not be asking permission. Forge's periwinkle on
+         its navy is 8.76:1. */
       .go {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.6rem;
+        gap: var(--s2);
         inline-size: 100%;
         min-block-size: 3rem;
-        padding: 0.6rem 1.1rem;
-        border: 1px solid var(--peri);
+        margin-block-start: var(--s5);
         border-radius: 1rem;
-        background: transparent;
-        color: var(--peri);
-        font-size: 0.95rem;
+        background: var(--peri);
+        color: var(--navy);
+        font-size: var(--t-body);
         font-weight: 700;
         text-decoration: none;
-        transition: all 0.3s ease;
+        transition:
+          filter 0.2s var(--ease),
+          transform 0.2s var(--ease);
       }
-      .go:hover,
-      .go:focus-visible {
-        background: var(--peri);
-        color: #000;
-      }
-      .go svg { inline-size: 1.1rem; block-size: 1.1rem; flex: 0 0 auto; }
-      /* The mark is full-colour, so it needs a light disc once the pill fills. */
-      .go__g { border-radius: 50%; }
+      .go:hover { filter: brightness(1.07); }
+      /* A press should feel like one. */
+      .go:active { transform: scale(0.985); }
+      .go svg { inline-size: 1.125rem; block-size: 1.125rem; flex: 0 0 auto; }
 
-      :focus-visible { outline: 2px solid var(--peri); outline-offset: 3px; }
+      :focus-visible {
+        outline: 2px solid var(--peri);
+        outline-offset: 3px;
+        border-radius: 1rem;
+      }
 
       .fine {
-        margin: 1.25rem 0 0;
-        font-size: 0.8rem;
-        line-height: 1.6;
+        margin: var(--s4) 0 0;
+        font-size: var(--t-fine);
+        line-height: 1.55;
         color: var(--soft);
+        text-wrap: balance;
       }
-      .fine code {
-        font-family: ui-monospace, Menlo, monospace;
-        font-size: 0.95em;
-        color: var(--ink);
-        white-space: nowrap;
+      .fine b { color: var(--ink); font-weight: 600; white-space: nowrap; }
+
+      /* Hairline, then the way out. Separated so it reads as a footnote to the
+         card rather than another option competing with the button. */
+      .out {
+        margin: var(--s5) 0 0;
+        padding-block-start: var(--s4);
+        border-block-start: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: var(--t-fine);
       }
-      .alt { margin: 1.5rem 0 0; font-size: 0.8rem; }
-      .alt a { color: var(--soft); text-decoration: none; }
-      .alt a:hover { color: var(--peri); }
+      .out a {
+        color: var(--soft);
+        text-decoration: none;
+        transition: color 0.2s var(--ease);
+      }
+      .out a:hover { color: var(--peri); }
 
       @media (prefers-reduced-motion: reduce) {
-        .go { transition: none; }
+        * { transition: none !important; animation: none !important; }
       }
     </style>
   </head>
@@ -244,19 +277,19 @@ const href =
       <img class="mark" src="/favicon.png" alt="Mesa" width="96" height="96" />
 
       <h1>BYOB Starter Kit</h1>
-      <p class="lede">Eight weeks, eight milestones. Sign in to open it.</p>
+      <p class="lede">Sign in to open it.</p>
 
       {
         note && (
           <div class:list={['note', note.warn && 'note--warn']} role="alert">
-            <strong>{note.title}</strong>
+            <b>{note.title}</b>
             <span>{note.body}</span>
           </div>
         )
       }
 
       <a class="go" href={href}>
-        <svg class="go__g" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+        <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false">
           <path fill="#4285F4" d="M17.6 9.2c0-.6-.1-1.3-.2-1.8H9v3.5h4.8a4.1 4.1 0 0 1-1.8 2.7v2.2h2.9c1.7-1.6 2.7-3.9 2.7-6.6z"/>
           <path fill="#34A853" d="M9 18c2.4 0 4.5-.8 6-2.2l-2.9-2.2c-.8.5-1.8.9-3.1.9-2.4 0-4.4-1.6-5.1-3.8H.9v2.3A9 9 0 0 0 9 18z"/>
           <path fill="#FBBC05" d="M3.9 10.7a5.4 5.4 0 0 1 0-3.4V5H.9a9 9 0 0 0 0 8l3-2.3z"/>
@@ -266,10 +299,10 @@ const href =
       </a>
 
       <p class="fine">
-        Only {domains.map((d, i) => (<>{i > 0 && ' and '}<code>@{d}</code></>))} accounts can open the kit.
+        For {domains.map((d, i) => (<>{i > 0 && ' and '}<b>@{d}</b></>))} accounts.
       </p>
 
-      <p class="alt"><a href="https://mesaschool.co/" rel="noopener">Back to mesaschool.co</a></p>
+      <p class="out"><a href="https://mesaschool.co/" rel="noopener">mesaschool.co</a></p>
     </main>
   </body>
 </html>

@@ -1029,3 +1029,38 @@ didn't work. It keeps `prompt=select_account` and the return path.
 The fonts needed no change — the two we self-hosted are already the two Forge
 declares. The button did: ours was a filled periwinkle block; Forge's is an
 outlined pill that fills on hover, and that is now what it is.
+
+
+---
+
+# Pass 24 — craft on the sign-in page
+
+The previous pass fixed what the page *does*. This one fixes how it is built.
+
+**One spacing scale, and nothing off it.** Eight steps from 4px to 56px, and
+every margin, padding and gap on the page is one of them — checked, not assumed:
+grepping the rendered CSS for a length that isn't a scale token returns nothing.
+Ad-hoc values were most of why it read as slightly-off rather than calm.
+
+**One type ramp.** Three sizes — title, body, fine — instead of six clamps
+invented at the point of use.
+
+**A narrower card.** 21rem, down from 23. A sign-in card wants one short measure
+so the eye falls straight down the middle; widening it only spreads three lines
+of text further apart.
+
+**Filled button, not outlined.** Forge's own CTA is an outlined pill, because on
+their site it sits among navigation and is one option of several. Here it is the
+only thing on the page to do, and a primary action shouldn't ask permission.
+Same periwinkle, 8.76:1 on the navy.
+
+**Interaction.** A 0.985 scale on press, so a tap feels like one; brightness on
+hover; a 2px periwinkle focus ring at 3px offset; and one quiet 8px rise on load.
+Everything on the same `cubic-bezier(.32,.72,0,1)`, and all of it off under
+`prefers-reduced-motion`.
+
+**The error note is tinted, not boxed.** It should read as a remark above the
+button, not a second component competing with it.
+
+**The exit is below a hairline.** A footnote to the card rather than a second
+option next to the button.
