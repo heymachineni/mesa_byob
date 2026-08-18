@@ -6,11 +6,11 @@
  * trying to reach so they land there rather than on the homepage.
  */
 import type { APIRoute } from 'astro';
-import { config } from '../../../lib/auth';
+import { config, origin } from '../../../lib/auth';
 
 export const prerender = false;
 
-export const GET: APIRoute = async ({ url, cookies, redirect }) => {
+export const GET: APIRoute = async ({ url, cookies, redirect, request }) => {
   const { clientId } = config();
 
   /* The address typed on the sign-in page, if any. `login_hint` only prefills
@@ -38,7 +38,7 @@ export const GET: APIRoute = async ({ url, cookies, redirect }) => {
 
   const auth = new URL('https://accounts.google.com/o/oauth2/v2/auth');
   auth.searchParams.set('client_id', clientId);
-  auth.searchParams.set('redirect_uri', new URL('/api/auth/callback', url.origin).toString());
+  auth.searchParams.set('redirect_uri', `${origin(request, url.origin)}/api/auth/callback`);
   auth.searchParams.set('response_type', 'code');
   auth.searchParams.set('scope', 'openid email profile');
   auth.searchParams.set('state', nonce);

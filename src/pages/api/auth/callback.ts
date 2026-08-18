@@ -6,11 +6,11 @@
  * whole thing in the browser.
  */
 import type { APIRoute } from 'astro';
-import { config, sign, isAllowed, cookieName, cookieOptions, maxAge } from '../../../lib/auth';
+import { config, sign, isAllowed, cookieName, cookieOptions, maxAge, origin } from '../../../lib/auth';
 
 export const prerender = false;
 
-export const GET: APIRoute = async ({ url, cookies, redirect }) => {
+export const GET: APIRoute = async ({ url, cookies, redirect, request }) => {
   const { clientId, clientSecret, sessionSecret, domains } = config();
 
   const error = url.searchParams.get('error');
@@ -33,11 +33,25 @@ export const GET: APIRoute = async ({ url, cookies, redirect }) => {
       code,
       client_id: clientId,
       client_secret: clientSecret,
-      redirect_uri: new URL('/api/auth/callback', url.origin).toString(),
+      redirect_uri: `${origin(request, url.origin)}/api/auth/callback`,
       grant_type: 'authorization_code',
     }),
   });
-  if (!res.ok) return redirect('/signin?reason=token_exchange', 302);
+  if (!res.ok) {
+    /* Google says exactly what was wrong — `invalid_client`, `invalid_grant`,
+       `redirect_uri_mismatch`. Throwing that away left "try again" as the only
+       advice for problems that retrying can never fix. Logged in full for the
+       deployment's logs, and the code passed on so the page can be specific. */
+    const body = await res.text();
+    console.error('[auth] token exchange failed', res.status, body);
+    let detail = 'unknown';
+    try {
+      detail = (JSON.parse(body) as { error?: string }).error ?? 'unknown';
+    } catch {
+      /* not JSON — the status will have to do */
+    }
+    return redirect(`/signin?reason=token_exchange&detail=${encodeURIComponent(detail)}`, 302);
+  }
 
   const token = (await res.json()) as { id_token?: string };
   if (!token.id_token) return redirect('/signin?reason=no_id_token', 302);

@@ -46,6 +46,21 @@ const NOTES: Record<string, { warn?: boolean; title: string; body: string; retry
   signed_out: { title: 'You’re signed out', body: 'Sign in again whenever you need the kit.' },
 };
 
+/* What Google actually said, when it said anything. These are configuration
+   faults, not student mistakes — telling someone to "try again" when the app's
+   own credentials are wrong wastes their time and hides the real problem. */
+const DETAIL: Record<string, string> = {
+  invalid_client:
+    'The app’s Google credentials are wrong or missing. This is a setup problem on our side, not yours.',
+  redirect_uri_mismatch:
+    'This deployment’s address isn’t registered with Google. A setup problem on our side.',
+  invalid_grant:
+    'That sign-in link had already been used. Start again from this page.',
+  unauthorized_client:
+    'This app isn’t authorised for that sign-in method. A setup problem on our side.',
+};
+const detail = DETAIL[Astro.url.searchParams.get('detail') ?? ''];
+
 const note = NOTES[reason];
 
 /* After a rejected account Google signs the same one straight back in, and the
@@ -283,7 +298,7 @@ const href =
         note && (
           <div class:list={['note', note.warn && 'note--warn']} role="alert">
             <b>{note.title}</b>
-            <span>{note.body}</span>
+            <span>{detail ?? note.body}</span>
           </div>
         )
       }

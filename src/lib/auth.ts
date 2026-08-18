@@ -122,6 +122,25 @@ export function env(key: string): string | undefined {
   return process.env?.[key];
 }
 
+/**
+ * The public origin of this deployment.
+ *
+ * `url.origin` is what the *server* saw, and behind a proxy that is not always
+ * what the browser used — TLS terminates at the edge, so the protocol can come
+ * through as http, and the host can be the internal deployment URL rather than
+ * the domain. Google requires the `redirect_uri` at the token step to match the
+ * one used at the authorize step byte for byte, so a mismatch here fails the
+ * exchange with no useful message.
+ */
+export function origin(request: Request, fallback: string): string {
+  const explicit = env('PUBLIC_SITE_URL');
+  if (explicit) return explicit.replace(/\/$/, '');
+
+  const host = request.headers.get('x-forwarded-host') ?? request.headers.get('host');
+  const proto = request.headers.get('x-forwarded-proto') ?? 'https';
+  return host ? `${proto}://${host}` : fallback;
+}
+
 /** Fails loudly at boot rather than mysteriously at sign-in. */
 export function config() {
   const missing = ['GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'SESSION_SECRET'].filter(
