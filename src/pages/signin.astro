@@ -19,45 +19,51 @@ const domains = (env('ALLOWED_EMAIL_DOMAINS') || 'mesaschool.co')
   .map((d) => d.trim())
   .filter(Boolean);
 
+/* Built once and used in both places that name the domains, so the banner and
+   the line under the button can never disagree about them or their order. */
+const addresses = domains.map((d) => '@' + d).join(' or ');
+
 const reason = Astro.url.searchParams.get('reason') ?? '';
 const next = Astro.url.searchParams.get('next') ?? '/';
 const safeNext = next.startsWith('/') && !next.startsWith('//') ? next : '/';
 
-/** What happened, and what to do about it. Never just "an error occurred". */
-const NOTES: Record<string, { warn?: boolean; title: string; body: string; retry?: boolean }> = {
+/**
+ * One line each. The lede above already says who the kit is for, so a banner
+ * only has to say what to do about this particular failure — repeating the
+ * audience in bold above the same sentence was the page telling you twice.
+ *
+ * `warn` tints it; `retry` relabels the button and forces Google's account
+ * chooser, without which Google signs the rejected account straight back in.
+ */
+const NOTES: Record<string, { text: string; warn?: boolean; retry?: boolean }> = {
   not_allowed: {
     warn: true,
-    title: 'That’s not a Mesa account',
-    body: 'Sign-in worked, but that address isn’t one of the two below.',
     retry: true,
+    text: `Sign in with your ${addresses} account.`,
   },
   unverified: {
     warn: true,
-    title: 'That address isn’t verified',
-    body: 'Google hasn’t verified the email on that account.',
     retry: true,
+    text: 'Google hasn’t confirmed the email on that account yet.',
   },
-  access_denied: { title: 'Sign-in cancelled', body: 'Nothing happened — try again when you’re ready.' },
-  state_mismatch: { title: 'That link had expired', body: 'Sign-in links are short-lived.' },
-  bad_request: { title: 'That sign-in was incomplete', body: 'Something was missing on the way back.' },
-  token_exchange: { warn: true, title: 'Google couldn’t finish', body: 'Wait a moment and try again.' },
-  no_id_token: { warn: true, title: 'Google didn’t return an identity', body: 'This usually clears on a second attempt.' },
-  wrong_audience: { warn: true, title: 'That sign-in was for a different app', body: 'Start from this page, not an old link.' },
-  signed_out: { title: 'You’re signed out', body: 'Sign in again whenever you need the kit.' },
+  access_denied: { text: 'Sign-in cancelled — nothing happened.' },
+  state_mismatch: { text: 'That link had expired. Start again from here.' },
+  bad_request: { text: 'Sign-in didn’t complete. Start again from here.' },
+  token_exchange: { warn: true, text: 'Google couldn’t finish. Wait a moment and try again.' },
+  no_id_token: { warn: true, text: 'Google didn’t finish signing you in. Try once more.' },
+  wrong_audience: { warn: true, text: 'That sign-in was for a different app. Start from this page.' },
+  signed_out: { text: 'You’re signed out.' },
 };
 
-/* What Google actually said, when it said anything. These are configuration
-   faults, not student mistakes — telling someone to "try again" when the app's
-   own credentials are wrong wastes their time and hides the real problem. */
+/* Google's own reason, when it gave one. The three setup faults collapse into a
+   single message: a student can't act differently on any of them, so telling
+   them apart only ever helped me — and the precise code still goes to the logs,
+   where it is actually useful. */
 const DETAIL: Record<string, string> = {
-  invalid_client:
-    'The app’s Google credentials are wrong or missing. This is a setup problem on our side, not yours.',
-  redirect_uri_mismatch:
-    'This deployment’s address isn’t registered with Google. A setup problem on our side.',
-  invalid_grant:
-    'That sign-in link had already been used. Start again from this page.',
-  unauthorized_client:
-    'This app isn’t authorised for that sign-in method. A setup problem on our side.',
+  invalid_client: 'Sign-in isn’t set up correctly. That’s on our side, not your account.',
+  redirect_uri_mismatch: 'Sign-in isn’t set up correctly. That’s on our side, not your account.',
+  unauthorized_client: 'Sign-in isn’t set up correctly. That’s on our side, not your account.',
+  invalid_grant: 'That link had already been used. Start again from here.',
 };
 const detail = DETAIL[Astro.url.searchParams.get('detail') ?? ''];
 
@@ -211,18 +217,9 @@ const href =
         background: rgba(177, 166, 246, 0.1);
       }
       .note--warn { background: rgba(255, 173, 128, 0.11); }
-      .note b {
-        display: block;
-        font-size: var(--t-fine);
-        font-weight: 700;
-        letter-spacing: 0.01em;
-      }
-      .note span {
-        display: block;
-        margin-block-start: var(--s0);
+      .note {
         font-size: var(--t-fine);
         line-height: 1.5;
-        color: var(--soft);
       }
 
       /* The one action. Filled, because on a page with a single thing to do the
@@ -274,12 +271,7 @@ const href =
         border-block-start: 1px solid rgba(255, 255, 255, 0.08);
         font-size: var(--t-fine);
       }
-      .out a {
-        color: var(--soft);
-        text-decoration: none;
-        transition: color 0.2s var(--ease);
-      }
-      .out a:hover { color: var(--peri); }
+      .out { color: var(--soft); }
 
       @media (prefers-reduced-motion: reduce) {
         * { transition: none !important; animation: none !important; }
@@ -292,13 +284,12 @@ const href =
       <img class="mark" src="/favicon.png" alt="Mesa" width="96" height="96" />
 
       <h1>BYOB Starter Kit</h1>
-      <p class="lede">Sign in to open it.</p>
+      <p class="lede">This kit is for Mesa students.</p>
 
       {
         note && (
           <div class:list={['note', note.warn && 'note--warn']} role="alert">
-            <b>{note.title}</b>
-            <span>{detail ?? note.body}</span>
+            {detail ?? note.text}
           </div>
         )
       }
@@ -313,11 +304,14 @@ const href =
         {note?.retry ? 'Try a different account' : 'Continue with Google'}
       </a>
 
-      <p class="fine">
-        For {domains.map((d, i) => (<>{i > 0 && ' and '}<b>@{d}</b></>))} accounts.
-      </p>
+      {
+        /* Hidden when a banner is showing — it would be the same sentence twice. */
+        !note && (
+          <p class="fine">Use your {addresses} account.</p>
+        )
+      }
 
-      <p class="out"><a href="https://mesaschool.co/" rel="noopener">mesaschool.co</a></p>
+      <p class="out">Can’t get in? Ask your mentor.</p>
     </main>
   </body>
 </html>
