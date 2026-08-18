@@ -17,3 +17,6 @@ ginnis-post-newsletter.html
 # public/mesa-mark.png (4 KB, extracted from the logo artwork).
 Mesa fonts/
 PG white.png
+
+# Adapter build output
+.vercel/

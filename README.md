@@ -51,19 +51,28 @@ ever losing their place.
 
 ```bash
 npm install
-npm run dev      # http://localhost:4321
-npm run build    # static output in dist/
-npm run preview  # serve the built site
-npm run check    # type + template diagnostics
+cp .env.example .env   # then fill in GOOGLE_CLIENT_SECRET and SESSION_SECRET
+npm run dev            # http://localhost:4321
+npm run build          # .vercel/output — a render function plus static assets
+npm run verify         # builds, serves, and checks the rendered pages
+npm run check          # type + template diagnostics
 ```
 
-Node 20+ required (built and verified on Node 24). `npm run build` produces a fully static
-site — no server, no database, no environment variables. It deploys as-is to Netlify,
-Vercel, Cloudflare Pages, GitHub Pages, or any static host.
+Node 20+ required (built and verified on Node 24).
+
+**The pages render on demand.** They were static until Google sign-in was added, and the
+gate is the reason: Astro middleware runs at build time for a prerendered page and
+per-request only for an on-demand one, so a static file has no moment at which it could
+check a cookie. Anything done in the browser instead would be a curtain rather than a
+lock, because the whole Starter Pack is in the HTML.
+
+The trade is real — it now needs a host that runs functions (it targets Vercel) and three
+environment variables, where before it deployed to any static host with none. To run it
+open, without sign-in, set `AUTH_DISABLED=1`.
 
 ## Stack
 
-- **Astro 7**, static output.
+- **Astro 7**, on-demand rendering via `@astrojs/vercel`.
 - **Zero client framework.** Every interaction — the milestone disclosure, the sticky
   journey nav, the symptom diagnostic, FAQ search, tabs, accordions, video embeds — is
   built on native semantic elements progressively enhanced with a small amount of

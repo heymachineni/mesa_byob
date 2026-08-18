@@ -874,3 +874,65 @@ mega menu and now radius, this is a good deal more Mesa and a good deal less
 riso. That is a defensible destination for a Mesa property, but it arrived one
 request at a time, and it is worth saying plainly that it was a change of
 direction rather than a refinement of the original one.
+
+
+---
+
+# Pass 21 — Google sign-in
+
+## Why the site stopped being static
+
+Astro middleware runs **at build time** for a prerendered page and per-request only for an
+on-demand one. A file on a CDN has no moment at which it can read a cookie, and Vercel's
+own routing middleware explicitly excludes Astro projects. So a gate over static output
+was never going to be a gate.
+
+Doing it in the browser was the other option and is worse: every word of the Starter Pack
+is in the HTML, so a client-side check is a curtain someone lifts with View Source.
+
+The site therefore renders on demand. That is a real cost — a host that runs functions
+instead of any static host, three environment variables instead of none — and it buys the
+only version of this that actually protects anything.
+
+## The shape of it
+
+    src/lib/auth.ts                    HMAC-SHA256 session signing, and the domain gate
+    src/pages/api/auth/login.ts        → Google, with a nonce and the return path in state
+    src/pages/api/auth/callback.ts     code → id_token → signed cookie
+    src/pages/api/auth/logout.ts
+    src/middleware.ts                  the gate
+    src/pages/signed-out.astro         where a failure or a sign-out lands
+
+No session store and no database: the cookie *is* the session, signed so it can be verified
+without a lookup. Nothing secret is inside it — who you are, and when it expires — so a
+stolen cookie yields the same content the signed-in student already sees. Web Crypto rather
+than a library, so there is no dependency to keep current in the security-critical path.
+
+## The check that actually matters
+
+The consent screen is published as **External**, which means Google will authenticate any
+Gmail account on earth. Google verifying someone is not the same as them belonging here —
+`ALLOWED_EMAIL_DOMAINS` is what decides, and it is checked against the *verified* email
+claim. Switching the client to Internal would enforce it at Google's end too.
+
+Tested, 12/12: tampered payload rejected, tampered signature rejected, wrong secret
+rejected, expired rejected, gmail rejected, lookalike domain (`notmesaschool.co`) rejected,
+suffix trick (`x@mesaschool.co.evil.com`) rejected, empty allowlist rejects everyone.
+
+And end to end: `/` and `/v2/` 302 to the login route with the return path preserved,
+`/signed-out` and the assets stay reachable, and the login route redirects to Google with
+the right client, scope, state and `hd`.
+
+**Not tested:** the round trip through Google, which needs the client secret. That is the
+one thing left, and it belongs to whoever holds the credential.
+
+## The verification suite had to move with it
+
+`npm run verify` read `dist/index.html`, and there is no such file any more. It now builds,
+starts the server with the gate explicitly open, and fetches the two pages exactly as a
+browser would — arguably a better test, since it checks what is actually served. All of it
+still passes: 602 content strings, 450 semantic mappings, 100 search entries, 26/26 panels.
+
+The bypass is `AUTH_DISABLED=1` and it is deliberately explicit rather than "open when
+unconfigured" — a production deploy that forgot its environment variables would otherwise
+serve the whole kit to the world and look like it was working.
