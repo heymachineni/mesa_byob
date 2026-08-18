@@ -11,7 +11,7 @@ import { config } from '../../../lib/auth';
 export const prerender = false;
 
 export const GET: APIRoute = async ({ url, cookies, redirect }) => {
-  const { clientId } = config(import.meta.env);
+  const { clientId } = config();
 
   const nonce = crypto.randomUUID();
   const next = url.searchParams.get('next') || '/';
@@ -35,7 +35,7 @@ export const GET: APIRoute = async ({ url, cookies, redirect }) => {
   auth.searchParams.set('state', nonce);
   /* Nudges Google's account chooser to the right domain. Not a security
      control — `isAllowed` is. */
-  auth.searchParams.set('hd', config(import.meta.env).domains.split(',')[0].trim());
+  auth.searchParams.set('hd', config().domains.split(',')[0].trim());
 
   return redirect(auth.toString(), 302);
 };

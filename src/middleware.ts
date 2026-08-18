@@ -8,7 +8,7 @@
  * lock, since the whole Starter Pack is in the HTML.
  */
 import { defineMiddleware } from 'astro:middleware';
-import { verify, cookieName } from './lib/auth';
+import { verify, cookieName, env } from './lib/auth';
 
 /** Reachable without a session, or nobody could ever sign in. */
 const OPEN = [
@@ -34,9 +34,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
      pages it checks. Explicit rather than "open when unconfigured", because a
      production deploy that forgot its environment variables would otherwise
      serve the whole kit to the world and look like it was working. */
-  if (import.meta.env.AUTH_DISABLED === '1') return next();
+  if (env('AUTH_DISABLED') === '1') return next();
 
-  const secret = import.meta.env.SESSION_SECRET;
+  const secret = env('SESSION_SECRET');
   if (!secret) {
     return new Response(
       'Sign-in is not configured on this deployment. Set GOOGLE_CLIENT_ID, ' +

@@ -109,10 +109,23 @@ export function isAllowed(email: string | undefined, verified: boolean, domains:
   return allowed.includes(domain);
 }
 
+/**
+ * Read the environment at *runtime*.
+ *
+ * `import.meta.env` is replaced by the bundler during the build, which has two
+ * consequences that only show up in production: the value is compiled into the
+ * deployed artifact, and a value changed in the host's dashboard does nothing
+ * until the next rebuild. A dynamic key is not enough to avoid it — Vite
+ * substitutes the whole object — so this file does not reference it at all.
+ */
+export function env(key: string): string | undefined {
+  return process.env?.[key];
+}
+
 /** Fails loudly at boot rather than mysteriously at sign-in. */
-export function config(env: Record<string, string | undefined>) {
+export function config() {
   const missing = ['GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'SESSION_SECRET'].filter(
-    (k) => !env[k]
+    (k) => !env(k)
   );
   if (missing.length) {
     throw new Error(
@@ -121,9 +134,9 @@ export function config(env: Record<string, string | undefined>) {
     );
   }
   return {
-    clientId: env.GOOGLE_CLIENT_ID!,
-    clientSecret: env.GOOGLE_CLIENT_SECRET!,
-    sessionSecret: env.SESSION_SECRET!,
-    domains: env.ALLOWED_EMAIL_DOMAINS || 'mesaschool.co',
+    clientId: env('GOOGLE_CLIENT_ID')!,
+    clientSecret: env('GOOGLE_CLIENT_SECRET')!,
+    sessionSecret: env('SESSION_SECRET')!,
+    domains: env('ALLOWED_EMAIL_DOMAINS') || 'mesaschool.co',
   };
 }

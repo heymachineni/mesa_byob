@@ -11,7 +11,7 @@ import { config, sign, isAllowed, cookieName, cookieOptions, maxAge } from '../.
 export const prerender = false;
 
 export const GET: APIRoute = async ({ url, cookies, redirect }) => {
-  const { clientId, clientSecret, sessionSecret, domains } = config(import.meta.env);
+  const { clientId, clientSecret, sessionSecret, domains } = config();
 
   const error = url.searchParams.get('error');
   if (error) return redirect(`/signed-out?reason=${encodeURIComponent(error)}`, 302);
