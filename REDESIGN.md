@@ -995,3 +995,37 @@ End to end: `/`, `/v2/` and `/faq` all land on `/signin` with the return path ke
 a Mesa address becomes `login_hint` and `hd`; `gmail.com` typed into the form is
 discarded; every error state renders its own message. `npm run verify` now checks
 the sign-in page and its error states alongside everything else.
+
+
+---
+
+# Pass 23 — one action
+
+The sign-in card put an email field above the button. The reaction to it was
+"I've entered my name — where's the continue button?", which is the field doing
+exactly the damage a half-form does: it looks like a login form, so it sets the
+expectation that filling it is how you proceed. It wasn't. It only passed a
+`login_hint` to Google, saving a tap for anyone with two Google accounts and
+costing everyone else a moment of doubt.
+
+**It's gone.** Google asks who you are anyway. What's left is a mark, a heading,
+a line, and one button — and after an error, one banner above it. There is
+nothing on the page that isn't the action or an explanation of it.
+
+The button also relabels itself: **"Continue with Google"** normally,
+**"Try a different account"** after a rejected one — which is both the accurate
+description of what that tap does and a quiet acknowledgement that the last one
+didn't work. It keeps `prompt=select_account` and the return path.
+
+## Read from Forge, not sampled from a screenshot
+
+| | Forge's value | where |
+|---|---|---|
+| fonts | `Manrope` + `New York Large` | `--body-font`, `--cursive-font` |
+| card | `#161738`, `1px solid rgba(255,255,255,.15)`, `0.75rem` | its menu cards |
+| CTA | outlined `#B1A6F6`, `1rem`, fills on hover with black text | `.header-button a` |
+| ground | `#0d0e21` into `#1e0f51` | `html, body` and `--bs-heading-color` |
+
+The fonts needed no change — the two we self-hosted are already the two Forge
+declares. The button did: ours was a filled periwinkle block; Forge's is an
+outlined pill that fills on hover, and that is now what it is.
