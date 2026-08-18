@@ -946,10 +946,16 @@ Two domains now: `mesaschool.co` for staff and `forge27.mesaschool.co` for the c
 
 ## The page
 
-A picture on the left, the form on the right, one column below 60rem — the picture
-is atmosphere, so it is the half that goes when space is short. It is entirely
-self-contained: no stylesheet and no component from the kit, because it is the one
-page that has to render when something else has gone wrong.
+One card, centred, on a gradient built from Forge's own purples — deep indigo lit
+from the top left, its lighter indigo from the bottom right, settling into the navy
+the rest of the kit sits on. Entirely self-contained: no stylesheet and no component
+from the kit, because it is the one page that has to render when something else has
+gone wrong.
+
+Centred means there is no second panel to lose, so the layout never rearranges
+itself — it is the same composition at 320px and at 1920px, which is a better
+answer than a two-column design that has to shed half of itself on a phone. It also
+removes the dependency on a photograph nobody had yet.
 
 **The email field does not sign anyone in.** Google does that. What it carries is
 a `login_hint`, so the account chooser opens already pointing at the right address
@@ -960,10 +966,6 @@ implying the field is a password box with the password missing.
 A typed domain outside the allowlist is discarded rather than passed through:
 `hd` is a convenience and would otherwise look like a control. `isAllowed` in the
 callback remains the only thing that decides.
-
-**Add `public/signin.jpg`** and it becomes the left panel. Until then a gradient
-in the Forge palette stands in — designed to work either way rather than break to
-a broken-image icon. I have no student photograph and will not invent one.
 
 ## Every way this fails, and what it says
 
