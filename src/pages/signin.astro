@@ -6,7 +6,7 @@
  * an earlier version had one to pass Google a `login_hint`, but a field that
  * looks like a login form and isn't one costs more than the tap it saves.
  *
- * Self-contained on purpose — it borrows no stylesheet or component from the
+ * Self-contained on purpose, it borrows no stylesheet or component from the
  * kit, because it is the page that has to render when something else is broken.
  * Colours and type are Forge's own, read from its stylesheet.
  */
@@ -29,7 +29,7 @@ const safeNext = next.startsWith('/') && !next.startsWith('//') ? next : '/';
 
 /**
  * One line each. The lede above already says who the kit is for, so a banner
- * only has to say what to do about this particular failure — repeating the
+ * only has to say what to do about this particular failure, repeating the
  * audience in bold above the same sentence was the page telling you twice.
  *
  * `warn` tints it; `retry` relabels the button and forces Google's account
@@ -46,7 +46,7 @@ const NOTES: Record<string, { text: string; warn?: boolean; retry?: boolean }> =
     retry: true,
     text: 'Google hasn’t confirmed the email on that account yet.',
   },
-  access_denied: { text: 'Sign-in cancelled — nothing happened.' },
+  access_denied: { text: 'Sign-in cancelled. Nothing happened.' },
   state_mismatch: { text: 'That link had expired. Start again from here.' },
   bad_request: { text: 'Sign-in didn’t complete. Start again from here.' },
   token_exchange: { warn: true, text: 'Google couldn’t finish. Wait a moment and try again.' },
@@ -57,7 +57,7 @@ const NOTES: Record<string, { text: string; warn?: boolean; retry?: boolean }> =
 
 /* Google's own reason, when it gave one. The three setup faults collapse into a
    single message: a student can't act differently on any of them, so telling
-   them apart only ever helped me — and the precise code still goes to the logs,
+   them apart only ever helped me, and the precise code still goes to the logs,
    where it is actually useful. */
 const DETAIL: Record<string, string> = {
   invalid_client: 'Sign-in isn’t set up correctly. That’s on our side, not your account.',
@@ -81,7 +81,7 @@ const href =
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Sign in — BYOB Starter Kit</title>
+    <title>Sign in, BYOB Starter Kit</title>
     <meta name="robots" content="noindex" />
     <meta name="theme-color" content="#0d0e21" />
     <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
@@ -161,7 +161,7 @@ const href =
       }
 
       /* Narrow on purpose. A sign-in card wants one short measure so the eye
-         goes straight down the middle — widening it only spreads three lines. */
+         goes straight down the middle, widening it only spreads three lines. */
       .card {
         inline-size: 100%;
         max-inline-size: 21rem;
@@ -207,7 +207,7 @@ const href =
         text-wrap: balance;
       }
 
-      /* What went wrong, if anything. Tinted rather than boxed — it should read
+      /* What went wrong, if anything. Tinted rather than boxed, it should read
          as a remark above the button, not a second component. */
       .note {
         margin-block-start: var(--s4);
@@ -305,7 +305,7 @@ const href =
       </a>
 
       {
-        /* Hidden when a banner is showing — it would be the same sentence twice. */
+        /* Hidden when a banner is showing, it would be the same sentence twice. */
         !note && (
           <p class="fine">Use your {addresses} account.</p>
         )

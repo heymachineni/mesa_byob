@@ -127,6 +127,7 @@
 
   --gutter: clamp(1.25rem, 0.5rem + 3.4vw, 4rem);
   --w-page: 78rem;
+  --w-shell: 74rem;
   --w-read: 62ch;
 
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);

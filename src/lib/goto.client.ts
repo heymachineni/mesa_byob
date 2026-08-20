@@ -1,31 +1,14 @@
 /**
- * Going to a destination — shared by the menu and by search.
- *
- * The hard part of navigating this page is that roughly half its text sits
- * inside a collapsed `<details>` and another 26 documents live in drawer
- * panels that aren't rendered until you ask for them. Scrolling to an anchor
- * is therefore not enough: you'd arrive somewhere that still looks empty.
- * So a destination is *opened*, then scrolled to, then flashed.
+ * Arriving on a page with a hash. Half the kit's detail sits inside <details>
+ * folds, so landing on an anchor has to open the fold it lives in before the
+ * browser can scroll to it — and a brief mark shows which entry answered you.
  */
+export function onArrival() {
+  const hash = decodeURIComponent(location.hash);
+  if (!hash || hash.length < 2) return;
+  const el = document.querySelector<HTMLElement>(hash.replace(/([^\w#-])/g, '\\$1'));
+  if (!el) return;
 
-/** `#id` scrolls to an anchor; `panel:<id>` opens a drawer panel. */
-export function go(target: string): boolean {
-  if (target.startsWith('panel:')) {
-    /* Reuse the page's own trigger rather than reaching into the drawer's
-       internals — that keeps history, focus and the scroll lock consistent
-       with a normal click, and there is always at least one trigger per panel. */
-    const id = target.slice(6);
-    const trigger = document.querySelector<HTMLElement>(`[data-open="${id}"]`);
-    if (!trigger) return false;
-    trigger.click();
-    return true;
-  }
-
-  const el = document.querySelector<HTMLElement>(target);
-  if (!el) return false;
-
-  /* Open the fold it's in, and itself if it is one. Walking up catches a
-     question inside the FAQ accordion inside a section. */
   if (el instanceof HTMLDetailsElement) el.open = true;
   for (let n = el.parentElement; n; n = n.parentElement) {
     if (n instanceof HTMLDetailsElement) n.open = true;
@@ -34,25 +17,8 @@ export function go(target: string): boolean {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
 
-  /* The mark exists to point at the line that answered the question. A whole
-     section is one and a half to three and a half screens tall, so marking it
-     washes the viewport in colour and says nothing you don't already know from
-     the heading you just landed on. Only mark a target small enough to point. */
   if (el.tagName !== 'SECTION' && el.getBoundingClientRect().height < innerHeight * 0.55) {
-    flash(el);
+    el.classList.add('is-found');
+    setTimeout(() => el.classList.remove('is-found'), 2000);
   }
-  return true;
-}
-
-/**
- * A brief mark on the thing you were sent to. Without it, arriving in the
- * middle of a long section leaves you to work out which paragraph answered
- * your question.
- */
-export function flash(el: HTMLElement) {
-  el.classList.remove('is-found');
-  /* Restart the animation if the same target is picked twice. */
-  void el.offsetWidth;
-  el.classList.add('is-found');
-  window.setTimeout(() => el.classList.remove('is-found'), 2000);
 }

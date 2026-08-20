@@ -1,0 +1,56 @@
+---
+/** Money Matters: inventory, so you never lose a sale or your cash. */
+import Kit from '../../layouts/Kit.astro';
+import Clip from '../../components/Clip.astro';
+import { getMoney } from '../../lib/content';
+
+export const prerender = false;
+const { inventory } = await getMoney();
+---
+
+<Kit title="Inventory" description={inventory.oneLine} current="/playbook/inventory">
+  <header class="ph">
+    <p class="kicker">Money Matters</p>
+    <h1 class="disp disp--lg">Inventory</h1>
+    <p class="lede">{inventory.intro}</p>
+  </header>
+
+  <section class="sec" aria-labelledby="terms-h" id="terms">
+    <h2 class="disp disp--sm" id="terms-h">Four terms worth knowing</h2>
+    <dl class="terms">
+      {inventory.terms.map((t) => (
+        <div class="term"><dt>{t.term}</dt><dd>{t.body}</dd></div>
+      ))}
+    </dl>
+  </section>
+
+  <section class="sec" aria-labelledby="phase-h">
+    <h2 class="disp disp--sm" id="phase-h">How to think about it, phase by phase</h2>
+    <ol class="steps">
+      {inventory.phases.map((p) => (
+        <li><h3 class="step__t">{p.label}</h3><p class="step__b">{p.body}</p></li>
+      ))}
+    </ol>
+    <p class="aside aside--violet"><b>A simple system.</b> {inventory.system}</p>
+  </section>
+
+  <section class="sec" aria-labelledby="avoid-h">
+    <h2 class="disp disp--sm" id="avoid-h">Avoid this</h2>
+    <ul class="nope">{inventory.avoid.map((a) => <li>{a}</li>)}</ul>
+  </section>
+
+  <section class="sec" aria-labelledby="watch-h">
+    <h2 class="disp disp--sm" id="watch-h">Watch &amp; learn</h2>
+    <div class="vids">{inventory.videos.map((v) => <Clip video={v} />)}</div>
+  </section>
+</Kit>
+
+<style>
+  .ph { display: grid; gap: var(--sp-3); padding-block-end: var(--sp-5); }
+  .lede { max-inline-size: 60ch; }
+  .sec { padding-block: var(--sp-5); border-block-start: 1px solid var(--line-soft); display: grid; gap: var(--sp-4); }
+  .sec:first-of-type { border-block-start: 0; }
+  .step__t { font-family: var(--font-display); font-size: var(--s-0); color: var(--ink-2); }
+  .step__b { font-size: var(--s--1); line-height: 1.7; color: var(--text-soft); margin-block-start: 0.25rem; }
+  .vids { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr)); gap: var(--sp-5); }
+</style>

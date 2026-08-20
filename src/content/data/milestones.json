@@ -14,10 +14,7 @@
       "Supplier details sheet (name, MOQ, cost, backup)"
     ],
     "gate": null,
-    "escalation": null,
-    "mentorQuestion": "Is your product locked with real evidence someone will buy it? Do you have a genuine backup supplier, not just a primary?",
-    "workshops": ["ws1", "ws2", "ws3"],
-    "channels": []
+    "note": null
   },
   {
     "id": "m2",
@@ -31,24 +28,16 @@
     "headline": "Pitch the IC",
     "deliverables": [
       "Pitch deck (product + supplier)",
-      "3 AI-generated product images + 1 AI video",
-      "Physical prototype ready to show IC"
+      "Physical prototype ready to show IC",
+      "Branding & packaging ready",
+      "First physical product ready"
     ],
     "gate": {
       "name": "Gate 1",
-      "rule": "Pass pitch → ₹30K released. Fail pitch → 1 re-attempt in 48 hrs.",
-      "spendOn": [
-        "Raw materials",
-        "Packaging",
-        "Samples",
-        "Logistics",
-        "First inventory batch"
-      ]
+      "rule": "Pass pitch → ₹30K released. Fail → 1 re-attempt within 48 hrs.",
+      "usedFor": "raw materials, packaging, samples, logistics, first inventory batch."
     },
-    "escalation": null,
-    "mentorQuestion": "Is your pitch deck IC-ready? Does it show a real path to ₹7L, not just a good story?",
-    "workshops": ["ws4", "ws5"],
-    "channels": []
+    "note": null
   },
   {
     "id": "m3",
@@ -63,23 +52,14 @@
     "deliverables": [
       "Live online store (product pages, checkout, payment gateway)",
       "Social media accounts live (Instagram, LinkedIn, etc.)",
-      "≥ 3 posts published",
-      "4-week content calendar submitted"
+      "First 25 customers"
     ],
     "gate": {
       "name": "Gate 2",
       "rule": "M3 verified → next tranche unlocked.",
-      "spendOn": [
-        "Ad spend",
-        "Platform fees",
-        "Additional inventory",
-        "Packaging upgrades"
-      ]
+      "usedFor": "ad spend, platform fees, additional inventory, packaging upgrades."
     },
-    "escalation": null,
-    "mentorQuestion": "Is your store actually live and taking payments? Is your 4-week content calendar submitted?",
-    "workshops": ["ws5", "ws6", "ws7", "ws8"],
-    "channels": ["online-organic", "offline"]
+    "note": null
   },
   {
     "id": "m4",
@@ -90,18 +70,13 @@
     "date": "30 Sept",
     "revenueGoal": 75000,
     "revenueLabel": "₹75,000",
-    "headline": "First 10 customers",
+    "headline": "First paid ad campaign",
     "deliverables": [
       "₹75K verified revenue",
-      "First paid ad campaign",
-      "≥ 5 qualified B2B leads documented",
-      "First 10 customers"
+      "First paid ad campaign"
     ],
     "gate": null,
-    "escalation": "Lagging teams: mandatory review with BYOB Lead.",
-    "mentorQuestion": "Which channels actually got you to ₹75K? Who are your first 10 customers, by name?",
-    "workshops": ["ws9", "ws10", "ws11", "ws12"],
-    "channels": ["performance", "b2b", "online-organic"]
+    "note": "Lagging teams: mandatory review with your BYOB Lead."
   },
   {
     "id": "m5",
@@ -115,24 +90,14 @@
     "headline": "Find what works",
     "deliverables": [
       "₹150K cumulative revenue",
-      "Channel report: performance data per channel",
-      "Action plan to scale top channel",
-      "Updated cost tracker"
+      "Action plan to scale top channel"
     ],
     "gate": {
       "name": "Gate 3",
-      "rule": "M5 verified → next capital tranche released.",
-      "spendOn": [
-        "Scaling top channel",
-        "B2B samples",
-        "Influencer fees",
-        "Flea Market stall"
-      ]
+      "rule": "M5 verified → next capital tranche released. Below ₹50K: mandatory emergency pivot session.",
+      "usedFor": "scaling top channel, B2B samples, influencer fees, Flea Market stall."
     },
-    "escalation": "Teams below ₹50K: emergency pivot session.",
-    "mentorQuestion": "Which channel is genuinely profitable? What does your cost tracker say about margin?",
-    "workshops": ["ws12"],
-    "channels": ["offline", "online-organic", "influencer", "performance", "b2b"]
+    "note": null
   },
   {
     "id": "m6",
@@ -145,15 +110,10 @@
     "revenueLabel": "₹2,75,000",
     "headline": "Scale the winner",
     "deliverables": [
-      "₹275K cumulative revenue",
-      "Mid-challenge reflection reel posted (top 3 wins + 3 challenges)",
-      "Updated influencer pipeline"
+      "₹275K cumulative revenue"
     ],
     "gate": null,
-    "escalation": null,
-    "mentorQuestion": "Is your reflection honest about what's not working — not just a highlight reel?",
-    "workshops": ["ws10"],
-    "channels": ["influencer", "online-organic"]
+    "note": null
   },
   {
     "id": "m7",
@@ -166,52 +126,35 @@
     "revenueLabel": "₹5,50,000",
     "headline": "Push hard",
     "deliverables": [
-      "₹550K cumulative revenue",
-      "≥ 1 influencer collaboration executed",
-      "≥ 1 AI/automation process implemented"
+      "₹550K cumulative revenue"
     ],
     "gate": {
-      "name": "Gate 4",
-      "rule": "M7 verified → final tranche (if applicable) unlocked. Released only if required.",
-      "spendOn": [
-        "Scaling top channel",
-        "B2B inventory",
-        "Influencer fees",
-        "Flea Market stall"
-      ]
+      "name": "Gate 4 (if required)",
+      "rule": "M7 verified → final tranche unlocked.",
+      "usedFor": "scaling top channel, B2B inventory, influencer fees, Flea Market stall."
     },
-    "escalation": null,
-    "mentorQuestion": "Has your influencer collaboration actually gone live? What's genuinely automated now, not just planned?",
-    "workshops": ["ws10", "ws11"],
-    "channels": ["influencer", "performance", "b2b"]
+    "note": null
   },
   {
     "id": "m8",
     "code": "M8",
     "week": 8,
     "phase": "optimize",
-    "deadlineLabel": "Flea Market Day (Week 8)",
+    "deadlineLabel": "Flea Market Day (Wk 8)",
     "date": "31 Oct",
-    "dateConfirming": {
-      "note": "The milestones graphic dates M8 to 31 October, but the Challenge is confirmed to end on 30 October. The Flea Market date is being confirmed with the program team."
-    },
     "revenueGoal": 700000,
     "revenueLabel": "₹7,00,000+",
     "headline": "Prove it, live",
     "deliverables": [
       "₹700K+ cumulative revenue",
-      "Final blog published (~1,000 words: what worked, what didn't, lessons)",
+      "Final blog published (Reel + LinkedIn post)",
       "Flea Market stall and sales",
-      "Capital repayment (₹1L by 15 Nov)"
+      "Capital repayment"
     ],
     "gate": {
-      "name": "Capital repayment",
-      "rule": "₹1L repaid by 15 Nov. Capital default → grade penalty.",
-      "spendOn": []
+      "name": null,
+      "rule": "₹1L repaid by 31 Oct. Capital default → grade penalty."
     },
-    "escalation": null,
-    "mentorQuestion": "Is your team fully flea ready — inventory, payments, plan? Is your capital repayment on track?",
-    "workshops": ["ws13"],
-    "channels": ["offline"]
+    "note": null
   }
 ]

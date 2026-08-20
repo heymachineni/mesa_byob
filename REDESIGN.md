@@ -1064,3 +1064,50 @@ button, not a second component competing with it.
 
 **The exit is below a hairline.** A footnote to the card rather than a second
 option next to the button.
+
+
+---
+
+# Pass 25: rebuilt from the updated Starter Pack, as separate pages
+
+The document was replaced (609 KB vs 1.34 MB) and every graphic is now real
+text, so for the first time the whole pack is verifiable. Of the 419 strings we
+shipped, 363 survived; the real diffs, all applied:
+
+- **Grading is written.** Input 45% (ICP, validation, brand, GTM, with GTM
+  carrying the weight), Output 45% with the Revenue-to-Credits table
+  (₹50K=1 through ₹5L=5), Peer Review 10%. It is now its own page.
+- **Deliverables simplified**: eleven removed (AI images, content calendar,
+  B2B leads doc, reflection reel, influencer pipeline, automation), four added
+  (branding and packaging, first physical product, first 25 customers, blog as
+  Reel + LinkedIn post). Gates gained their "Used for" lines.
+- **The three Flea reels have real URLs** (PG Flea Market, Zora, Future
+  Founders). The placeholder slots are gone.
+- **WS9 and WS10 lost their version numbers**, as suspected.
+- **Channel targets are gone from the document** and, per the owner's call,
+  from the site: no minimums, wins, budgets, or the ₹7L split.
+- **Incentives WIP card removed**: the owner confirmed the pack is final and
+  "What you will gain" is the incentives story.
+- **Repayment: 31 October.** The document contradicts itself (M8 gate says
+  10 Nov; its own money lens says 31 Oct). The owner ruled 31 Oct; the gate
+  line was normalised to match. One line to change if that ever flips.
+- Two verbatim quirks shipped on principle: "Always closing with a bundle"
+  and "Shrink the task to a small pilot" are what the document now says.
+
+**No long dashes anywhere.** 159 content strings rewritten (label dashes became
+colons, pauses became commas, ranges became hyphens), the layout and sign-in
+copy cleaned, and the check is now part of verify: any em or en dash in visible
+text fails the build.
+
+**The architecture: fifteen pages instead of one scroll.** A left index on
+desktop (every page at one small size, the current one semibold with a marker
+line), the bottom dock on phones opening a page sheet, prev/next at the foot of
+every page so the kit reads as a sequence. Search results are page URLs now,
+which means they are shareable links. Old deep links 301 to their new homes;
+/v2 (the retired second design) comes home to /. The drawer system, the mega
+menu, and both old single-page designs are deleted.
+
+Verified: 565 content strings all present across the pages, one h1 per page,
+every internal link and all 103 search entries resolve, milestones 8/8,
+workshops 13/13, FAQ 13/13, check-ins 8/8, the auth gate covers every new page,
+and legacy links survive the sign-in round trip.

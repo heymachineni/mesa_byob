@@ -1,0 +1,384 @@
+---
+/**
+ * The shell every page shares: top bar, the left index on wide screens, the
+ * bottom dock on narrow ones, and a prev/next footer so the kit reads as a
+ * sequence, not a pile.
+ *
+ * The rail is the whole wayfinding model. Every page is listed, all at one
+ * small size, and the one you are on is semibold with a short marker line:
+ * position is always visible, never announced.
+ */
+import '../styles/v2/riso.css';
+import Find from '../components/Find.astro';
+import { PAGES, prevNext } from '../lib/nav';
+
+interface Props {
+  title: string;
+  description: string;
+  current: string;
+}
+const { title, description, current } = Astro.props;
+const { prev, next } = prevNext(current);
+const groups = [...new Set(PAGES.map((p) => p.group))];
+const here = PAGES.find((p) => p.href === current);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} · BYOB Starter Kit</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0d0e21" />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="180x180" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <link rel="preload" href="/fonts/newyork-regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/manrope-variable.woff2" as="font" type="font/woff2" crossorigin />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="bar">
+      <div class="bar__in">
+        <a href="/" class="bar__brand">
+          <img class="bar__logo" src="/mesa-mark-on-dark.png" alt="Mesa" width="96" height="96" />
+          <span class="bar__t">BYOB</span>
+          <span class="bar__s">Starter Kit</span>
+        </a>
+        <div class="bar__tools">
+          <Find />
+          <button class="bar__burger" type="button" aria-expanded="false" aria-controls="sheet" data-dock-open>
+            <span class="sr-only">Pages</span>
+            <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+              <path d="M2 4.5h12M2 8h12M2 11.5h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="shell">
+      <nav class="rail" aria-label="Pages">
+        {groups.map((g) => (
+          <div class="rail__g">
+            <p class="rail__h">{g}</p>
+            <ul>
+              {PAGES.filter((p) => p.group === g).map((p) => (
+                <li>
+                  <a
+                    class:list={['rail__a', p.href === current && 'is-here']}
+                    href={p.href}
+                    aria-current={p.href === current ? 'page' : undefined}
+                  >{p.label}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        <a class="rail__out" href="/api/auth/logout">Sign out</a>
+      </nav>
+
+      <main id="main" class="content">
+        <slot />
+
+        <nav class="turn" aria-label="Continue">
+          {prev ? (
+            <a class="turn__a" href={prev.href}>
+              <span class="turn__k">Previous</span>
+              <span class="turn__t">{prev.label}</span>
+            </a>
+          ) : <span></span>}
+          {next && (
+            <a class="turn__a turn__a--next" href={next.href}>
+              <span class="turn__k">Next</span>
+              <span class="turn__t">{next.label}</span>
+            </a>
+          )}
+        </nav>
+
+        <footer class="foot">
+          <p>BYOB Starter Kit · Mesa School of Business · PGP Forge</p>
+        </footer>
+      </main>
+    </div>
+
+    <!-- Narrow screens: where you are, and one tap to the full list. -->
+    <button class="dock" type="button" aria-expanded="false" aria-controls="sheet" data-dock-open>
+      <span class="dock__label">{here?.label ?? 'Pages'}</span>
+      <svg class="dock__chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+        <path d="M3.5 10.5 8 6l4.5 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"></path>
+      </svg>
+    </button>
+
+    <div class="sheet" id="sheet" hidden>
+      <div class="sheet__scrim" data-dock-close></div>
+      <nav class="sheet__panel" aria-label="All pages">
+        {groups.map((g) => (
+          <div class="sheet__g">
+            <p class="rail__h">{g}</p>
+            <ul>
+              {PAGES.filter((p) => p.group === g).map((p) => (
+                <li>
+                  <a
+                    class:list={['sheet__a', p.href === current && 'is-here']}
+                    href={p.href}
+                    aria-current={p.href === current ? 'page' : undefined}
+                  >{p.label}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        <a class="sheet__out" href="/api/auth/logout">Sign out</a>
+      </nav>
+    </div>
+
+    <style>
+      .skip {
+        position: absolute;
+        inset-inline-start: 1rem;
+        transform: translateY(-160%);
+        z-index: 200;
+        background: var(--coral);
+        color: var(--paper);
+        padding: 0.7rem 1.2rem;
+        border-radius: var(--r-sm);
+        font-weight: 700;
+        transition: transform var(--fast) var(--ease);
+      }
+      .skip:focus-visible { transform: translateY(0.5rem); }
+
+      /* ── top bar ──────────────────────────────────────────────────────── */
+      .bar {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 90;
+        background: color-mix(in srgb, var(--paper) 98%, transparent);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+      }
+      .bar__in {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--sp-4);
+        max-inline-size: var(--w-shell);
+        margin-inline: auto;
+        padding-inline: var(--gutter);
+        min-block-size: var(--hdr-h);
+      }
+      .bar__brand { display: inline-flex; align-items: baseline; gap: 0.5rem; text-decoration: none; }
+      .bar__logo { align-self: center; block-size: 1.6rem; inline-size: auto; }
+      .bar__t { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink-2); }
+      .bar__s {
+        font-size: var(--s--2);
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text-faint);
+      }
+      .bar__tools { display: flex; align-items: center; gap: var(--sp-2); }
+      .bar__burger {
+        display: none;
+        place-items: center;
+        inline-size: 2.6rem;
+        block-size: 2.6rem;
+        border-radius: var(--r-sm);
+        color: var(--ink);
+        cursor: pointer;
+      }
+      .bar__burger svg { inline-size: 1.1rem; block-size: 1.1rem; }
+
+      /* ── the shell: rail plus content ─────────────────────────────────── */
+      .shell {
+        display: grid;
+        grid-template-columns: 15rem minmax(0, 1fr);
+        gap: var(--sp-8);
+        max-inline-size: var(--w-shell);
+        margin-inline: auto;
+        padding-inline: var(--gutter);
+      }
+
+      .rail {
+        position: sticky;
+        inset-block-start: calc(var(--hdr-h) + 1.5rem);
+        align-self: start;
+        max-block-size: calc(100dvh - var(--hdr-h) - 3rem);
+        overflow-y: auto;
+        padding-block: var(--sp-6) var(--sp-4);
+        scrollbar-width: thin;
+      }
+      .rail__g + .rail__g { margin-block-start: var(--sp-5); }
+      .rail__h {
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--text-faint);
+        margin-block-end: var(--sp-2);
+      }
+      .rail__a {
+        position: relative;
+        display: block;
+        padding: 0.32rem 0 0.32rem 0.9rem;
+        font-size: var(--s--1);
+        color: var(--text-soft);
+        text-decoration: none;
+        transition: color var(--fast) var(--ease);
+      }
+      .rail__a::before {
+        content: '';
+        position: absolute;
+        inset-inline-start: 0;
+        inset-block: 0.55rem;
+        inline-size: 2px;
+        border-radius: 1px;
+        background: transparent;
+        transition: background var(--fast) var(--ease);
+      }
+      .rail__a:hover { color: var(--ink); }
+      .rail__a.is-here { color: var(--ink); font-weight: 600; }
+      .rail__a.is-here::before { background: var(--coral); }
+      .rail__out {
+        display: inline-block;
+        margin-block-start: var(--sp-6);
+        font-size: var(--s--2);
+        color: var(--text-faint);
+        text-decoration: none;
+      }
+      .rail__out:hover { color: var(--coral); }
+
+      .content { padding-block: var(--sp-7) var(--sp-8); min-inline-size: 0; }
+
+      /* ── prev/next ────────────────────────────────────────────────────── */
+      .turn {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--sp-4);
+        margin-block-start: var(--sp-8);
+        padding-block-start: var(--sp-6);
+        border-block-start: 1px solid var(--line-soft);
+      }
+      .turn__a {
+        display: grid;
+        gap: 0.2rem;
+        padding: var(--sp-4);
+        border-radius: var(--r-card);
+        background: var(--card);
+        box-shadow: inset 0 0 0 1.4px var(--card-line);
+        text-decoration: none;
+        transition: box-shadow var(--fast) var(--ease);
+      }
+      .turn__a:hover { box-shadow: inset 0 0 0 1.4px var(--coral); }
+      .turn__a--next { text-align: end; }
+      .turn__k {
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--text-faint);
+      }
+      .turn__t { font-family: var(--font-display); font-size: var(--s-1); color: var(--ink-2); }
+
+      .foot {
+        margin-block-start: var(--sp-7);
+        font-size: var(--s--2);
+        color: var(--text-faint);
+      }
+
+      /* ── narrow screens ───────────────────────────────────────────────── */
+      @media (max-width: 64rem) {
+        .shell { display: block; }
+        .rail { display: none; }
+        .bar__burger { display: grid; }
+        .bar__s { display: none; }
+        body { padding-block-end: 5.5rem; }
+      }
+
+      .dock {
+        display: none;
+        position: fixed;
+        inset-block-end: calc(env(safe-area-inset-bottom, 0px) + 0.7rem);
+        inset-inline: 0.9rem;
+        z-index: 80;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--sp-3);
+        min-block-size: 3.1rem;
+        padding-inline: 1.1rem;
+        border-radius: var(--r-btn);
+        background: color-mix(in srgb, var(--paper) 96%, transparent);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow:
+          inset 0 0 0 1.4px var(--ink),
+          3px 3px 0 color-mix(in srgb, var(--coral) 40%, var(--paper));
+        cursor: pointer;
+      }
+      @media (max-width: 64rem) { .dock { display: flex; } }
+      .dock__label { font-size: var(--s--1); font-weight: 700; color: var(--ink); }
+      .dock__chev { inline-size: 1.05rem; block-size: 1.05rem; color: var(--ink-2); }
+
+      .sheet { position: fixed; inset: 0; z-index: 95; }
+      .sheet__scrim { position: absolute; inset: 0; background: color-mix(in srgb, #000 55%, transparent); }
+      .sheet__panel {
+        position: absolute;
+        inset-inline: 0;
+        inset-block-end: 0;
+        max-block-size: 82dvh;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: var(--sp-5) var(--sp-5) calc(var(--sp-5) + env(safe-area-inset-bottom, 0px));
+        border-start-start-radius: var(--r-card);
+        border-start-end-radius: var(--r-card);
+        background: var(--paper-2);
+        box-shadow: 0 -6px 0 var(--coral);
+      }
+      .sheet__g + .sheet__g { margin-block-start: var(--sp-5); }
+      .sheet__a {
+        display: block;
+        padding: 0.55rem 0.2rem;
+        font-size: var(--s-0);
+        color: var(--text-soft);
+        text-decoration: none;
+      }
+      .sheet__a.is-here { color: var(--ink); font-weight: 700; }
+      .sheet__out {
+        display: inline-block;
+        margin-block-start: var(--sp-5);
+        font-size: var(--s--2);
+        color: var(--text-faint);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .skip, .rail__a, .turn__a { transition: none; }
+      }
+    </style>
+
+    <script>
+      import { onArrival } from '../lib/goto.client';
+      onArrival();
+      addEventListener('hashchange', onArrival);
+
+      const sheet = document.getElementById('sheet')!;
+      const openers = [...document.querySelectorAll<HTMLButtonElement>('[data-dock-open]')];
+      const set = (open: boolean) => {
+        sheet.hidden = !open;
+        document.body.classList.toggle('is-locked', open);
+        openers.forEach((b) => b.setAttribute('aria-expanded', String(open)));
+      };
+      openers.forEach((b) => b.addEventListener('click', () => set(Boolean(sheet.hidden))));
+      sheet.querySelector('[data-dock-close]')!.addEventListener('click', () => set(false));
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !sheet.hidden) set(false);
+      });
+    </script>
+  </body>
+</html>

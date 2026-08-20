@@ -1,0 +1,81 @@
+[
+  {
+    "id": "grading",
+    "title": "How You’ll Be Evaluated",
+    "intro": "Your BYOB grade isn't just about the revenue number, it's split three ways, across what you do, what you deliver, and how your team says you showed up.",
+    "components": [
+      {
+        "name": "BYOB Input",
+        "weight": "45%",
+        "body": "This is the work that gets you to revenue: how sharp your customer definition is, how real your market validation is, how coherent your brand is, and how consistently you're executing on your go-to-market plan. It's reviewed in your weekly mentor check-in and scored against your BYOB Progress Card.",
+        "criteria": [
+          {
+            "term": "ICP Definition",
+            "body": "how clearly you've defined and validated exactly who you're selling to"
+          },
+          {
+            "term": "Market Validation",
+            "body": "how real the gap is that you're going after, backed by actual interviews or demand signals, not assumptions"
+          },
+          {
+            "term": "Brand Building",
+            "body": "how coherent your positioning is across your store, social handles, ad creatives, and packaging"
+          },
+          {
+            "term": "GTM Execution",
+            "body": "whether you're consistently showing up and executing across your chosen channels, week over week"
+          }
+        ],
+        "note": "GTM Execution alone carries most of the weight here, strategy documents matter, but consistent weekly execution is what actually moves this score."
+      },
+      {
+        "name": "BYOB Output",
+        "weight": "45%",
+        "body": "This is the number everyone talks about: revenue against your weekly target, tracked and verified. Your score scales directly with what you generate in Term 1:",
+        "credits": [
+          {
+            "revenue": "₹50K",
+            "credits": "1"
+          },
+          {
+            "revenue": "₹1L",
+            "credits": "2"
+          },
+          {
+            "revenue": "₹2.5L",
+            "credits": "3"
+          },
+          {
+            "revenue": "₹4L",
+            "credits": "4"
+          },
+          {
+            "revenue": "₹5L",
+            "credits": "5"
+          }
+        ]
+      },
+      {
+        "name": "BYOB Peer Review",
+        "weight": "10%",
+        "body": "At the end of the challenge, your teammates rate how you actually showed up, not what you say you did, but what they saw. Three things get evaluated:",
+        "criteria": [
+          {
+            "term": "Collaboration",
+            "body": "how effectively you work within your founding team"
+          },
+          {
+            "term": "Ownership",
+            "body": "whether your effort is visible and consistent to the people next to you"
+          },
+          {
+            "term": "Conflict Handling",
+            "body": "whether you surface and handle disagreement constructively instead of letting it fester"
+          }
+        ],
+        "note": "This part of your grade is entirely in your teammates' hands. A strong revenue number doesn't cover for being a bad teammate."
+      }
+    ],
+    "cgpaNote": "Your final BYOB scores can impact up to 20% of your CGPA. Full detail comes at the credit and grading session during orientation."
+  }
+]

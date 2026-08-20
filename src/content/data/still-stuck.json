@@ -2,13 +2,12 @@
   {
     "id": "still-stuck",
     "title": "Still stuck?",
-    "body": "If you've tried the fixes above and you're still stuck, that's exactly what your Wednesday 1:1 is for. Your mentor's job is to help you think it through — not to have the answer memorised. Come to your check-in with:",
+    "body": "If you've tried the fixes above and you're still stuck, that's exactly what your Wednesday 1:1 is for. Your mentor's job is to help you think it through, not to have the answer memorised. Come to your check-in with:",
     "bring": [
       "What you tried",
-      "What actually happened — numbers, not vibes",
+      "What actually happened: numbers, not vibes",
       "Where, specifically, you think you're stuck"
     ],
-    "closing": "Bring the problem, not just the frustration — that's what turns a 1:1 into real progress.",
-    "videoNote": "A note on the videos in this guide: they're general tutorials from the wider internet, not BYOB or Mesa content — useful for the fundamentals, but always adapt the specifics to your product, budget, and campus context."
+    "closing": "Bring the problem, not just the frustration, that's what turns a 1:1 into real progress."
   }
 ]

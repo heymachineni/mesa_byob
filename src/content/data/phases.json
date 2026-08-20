@@ -3,48 +3,36 @@
     "id": "discover",
     "code": "01",
     "name": "Discover",
-    "altName": "Discover & Validate",
-    "weeks": "Weeks 1–2",
+    "weeks": "Weeks 1-2",
     "weekFrom": 1,
     "weekTo": 2,
-    "summary": "Lock your product, validate demand, and get your pitch ready for the Investment Committee.",
-    "beats": ["Lock the product.", "Validate demand.", "Prepare the pitch."],
-    "tone": "dark"
+    "summary": "Lock your product, validate demand, and get your pitch ready for the Investment Committee."
   },
   {
     "id": "build",
     "code": "02",
     "name": "Build",
-    "altName": "Build & Brand",
-    "weeks": "Weeks 3–4",
+    "weeks": "Weeks 3-4",
     "weekFrom": 3,
     "weekTo": 4,
-    "summary": "Go live — launch your online store, build your social presence, and start converting your first customers.",
-    "beats": ["Launch the store.", "Build social presence.", "Get first customers."],
-    "tone": "light"
+    "summary": "Go live: launch your online store, build your social presence, and start converting your first customers."
   },
   {
     "id": "sell",
     "code": "03",
     "name": "Sell",
-    "altName": "Sell & Scale",
-    "weeks": "Weeks 5–6",
+    "weeks": "Weeks 5-6",
     "weekFrom": 5,
     "weekTo": 6,
-    "summary": "Find your best-performing channels and scale what's working.",
-    "beats": ["Find what works.", "Scale the strongest channels."],
-    "tone": "dark"
+    "summary": "Find your best-performing channels and scale what's working."
   },
   {
     "id": "optimize",
     "code": "04",
     "name": "Optimize & Close",
-    "altName": "Optimize & Close",
-    "weeks": "Weeks 7–8",
+    "weeks": "Weeks 7-8",
     "weekFrom": 7,
     "weekTo": 8,
-    "summary": "Push hard across every channel, execute your final plays, and close strong at the Flea Market.",
-    "beats": ["Push hard.", "Execute final plays.", "Prepare for Flea Market."],
-    "tone": "light"
+    "summary": "Push hard across every channel, execute your final plays, and close strong at the Flea Market."
   }
 ]

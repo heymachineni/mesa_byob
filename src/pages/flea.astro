@@ -1,0 +1,75 @@
+---
+/** The last day: Mesa Flea. */
+import Kit from '../layouts/Kit.astro';
+import Clip from '../components/Clip.astro';
+import { getFlea, getMilestones, getStillStuck } from '../lib/content';
+
+export const prerender = false;
+const flea = await getFlea();
+const m8 = (await getMilestones()).find((m) => m.code === 'M8')!;
+const stuck = await getStillStuck();
+---
+
+<Kit title="Flea Market" description={flea.headline} current="/flea">
+  <header class="ph">
+    <p class="kicker">{flea.kicker}</p>
+    <h1 class="disp disp--xl">Mesa Flea</h1>
+    <p class="lede">{flea.lede}</p>
+    <p class="meta">
+      <span class="tag tag--coral mono">{m8.date}</span>
+      <span class="tag tag--quiet mono">{m8.deadlineLabel}</span>
+      <span class="tag tag--quiet mono">{m8.revenueLabel}</span>
+    </p>
+  </header>
+
+  <p class="head">{flea.headline}</p>
+  {flea.paragraphs.map((p) => <p class="body">{p}</p>)}
+
+  <section class="sec" aria-labelledby="why">
+    <h2 class="disp disp--md" id="why">{flea.whyBestTitle}</h2>
+    <ol class="why">
+      {flea.whyBest.map((w) => (
+        <li><h3 class="why__t">{w.title}</h3><p class="why__b">{w.body}</p></li>
+      ))}
+    </ol>
+  </section>
+
+  <aside class="proof card">
+    <p class="kicker">{flea.proof.title}</p>
+    <p class="proof__b">{flea.proof.body}</p>
+  </aside>
+
+  <section class="sec" aria-labelledby="watch">
+    <h2 class="disp disp--md" id="watch">{flea.watchTitle}</h2>
+    <h3 class="sub">{flea.pastReelsTitle}</h3>
+    <div class="vids">{flea.pastReels.map((v) => <Clip video={v} />)}</div>
+    <h3 class="sub">{flea.realTitle}</h3>
+    <div class="vids">{flea.realContent.map((v) => <Clip video={v} />)}</div>
+  </section>
+
+  <aside class="stuck">
+    <h2 class="disp disp--sm">{stuck.title}</h2>
+    <p class="stuck__b">{stuck.body}</p>
+    <ul class="bullets">{stuck.bring.map((b) => <li>{b}</li>)}</ul>
+    <p class="stuck__c">{stuck.closing}</p>
+  </aside>
+</Kit>
+
+<style>
+  .ph { display: grid; gap: var(--sp-3); padding-block-end: var(--sp-5); }
+  .meta { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+  .head { font-family: var(--font-display); font-size: var(--s-2); line-height: 1.4; color: var(--ink); max-inline-size: 30ch; padding-block-end: var(--sp-4); }
+  .body { font-size: var(--s--1); line-height: 1.8; color: var(--text-soft); max-inline-size: 66ch; margin-block-end: var(--sp-4); }
+  .sec { padding-block: var(--sp-6); border-block-start: 1px solid var(--line-soft); display: grid; gap: var(--sp-4); }
+  .why { display: grid; gap: var(--sp-4); }
+  .why__t { font-family: var(--font-display); font-size: var(--s-0); color: var(--ink-2); }
+  .why__b { font-size: var(--s--1); line-height: 1.7; color: var(--text-soft); margin-block-start: 0.2rem; }
+  .card { padding: var(--sp-5); border-radius: var(--r-card); background: var(--card); box-shadow: inset 0 0 0 1.4px var(--card-line); }
+  .proof { display: grid; gap: var(--sp-2); margin-block: var(--sp-4); }
+  .proof__b { font-size: var(--s--1); line-height: 1.75; color: var(--text-soft); }
+  .sub { font-family: var(--font-mono); font-size: 0.66rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--coral); margin-block-start: var(--sp-3); }
+  .vids { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr)); gap: var(--sp-5); }
+  .stuck { margin-block-start: var(--sp-6); padding: var(--sp-5); border-radius: var(--r-card); background: var(--card); box-shadow: inset 0 0 0 1.4px var(--card-line); display: grid; gap: var(--sp-3); }
+  .stuck__b { font-size: var(--s--1); line-height: 1.75; color: var(--text-soft); }
+  .stuck__c { font-family: var(--font-display); font-size: var(--s-0); color: var(--ink-2); }
+</style>

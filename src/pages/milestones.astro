@@ -1,0 +1,118 @@
+---
+/** Eight milestones across four phases: dates, goals, deliverables, gates. */
+import Kit from '../layouts/Kit.astro';
+import { getProgram, getPhases, getMilestones, getRevenueLadder } from '../lib/content';
+
+export const prerender = false;
+
+const program = await getProgram();
+const phases = await getPhases();
+const milestones = await getMilestones();
+const ladder = await getRevenueLadder();
+---
+
+<Kit title="Milestones" description={program.milestonesIntro} current="/milestones">
+  <header class="ph">
+    <p class="kicker">BYOB Milestones</p>
+    <h1 class="disp disp--lg">Eight milestones. Four phases.</h1>
+    <p class="lede">{program.milestonesIntro}</p>
+  </header>
+
+  <div class="climb" role="img" aria-label={`The revenue climb from ₹0 to ${program.revenueTargetLabel}`}>
+    {ladder.map((r) => (
+      <div class="climb__s" style={`--h:${(10 + r.fraction * 90).toFixed(1)}%`}>
+        <span class:list={['climb__bar', r.isTarget && 'climb__bar--top']}></span>
+        <span class="climb__v">{r.label}</span>
+        <span class="climb__m mono">{r.codes}</span>
+      </div>
+    ))}
+  </div>
+
+  {phases.map((p) => (
+    <section class="phase" aria-labelledby={`p-${p.id}`}>
+      <header class="phase__h">
+        <p class="kicker">Phase {p.code} · {p.weeks}</p>
+        <h2 class="disp disp--md" id={`p-${p.id}`}>{p.name}</h2>
+        <p class="lede">{p.summary}</p>
+      </header>
+
+      {milestones.filter((m) => m.phase === p.id).map((m) => (
+        <article class="ms card" id={m.id}>
+          <header class="ms__top">
+            <span class="tag tag--coral mono">{m.code}</span>
+            <h3 class="ms__t">{m.headline}</h3>
+            <p class="ms__meta mono">{m.deadlineLabel} · {m.date} · {m.revenueLabel}</p>
+          </header>
+          <div class="ms__grid">
+            <div>
+              <h4 class="ms__k">Deliverables</h4>
+              <ul class="ticks">{m.deliverables.map((d) => <li>{d}</li>)}</ul>
+            </div>
+            {(m.gate || m.note) && (
+              <div class="ms__gate">
+                <h4 class="ms__k">{m.gate?.name ?? 'Note'}</h4>
+                {m.gate && <p class="ms__rule">{m.gate.rule}</p>}
+                {m.gate?.usedFor && <p class="ms__used"><b>Used for:</b> {m.gate.usedFor}</p>}
+                {m.note && <p class="ms__rule">{m.note}</p>}
+              </div>
+            )}
+          </div>
+        </article>
+      ))}
+    </section>
+  ))}
+
+  <section class="capital">
+    <p class="aside aside--violet">{program.capitalNote}</p>
+    <p class="aside">{program.trancheNote}</p>
+  </section>
+</Kit>
+
+<style>
+  .ph { display: grid; gap: var(--sp-3); padding-block-end: var(--sp-6); }
+  .lede { max-inline-size: 58ch; }
+
+  .climb {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: clamp(0.3rem, 1vw, 0.8rem);
+    align-items: end;
+    block-size: clamp(8rem, 18vw, 12rem);
+    margin-block-end: var(--sp-7);
+  }
+  .climb__s { display: grid; grid-template-rows: 1fr auto auto; gap: 0.35rem; block-size: 100%; align-items: end; min-inline-size: 0; }
+  .climb__bar {
+    display: block; inline-size: 100%; block-size: var(--h);
+    border-radius: var(--r-sm) var(--r-sm) 0 0;
+    background: color-mix(in srgb, var(--violet) 55%, var(--paper));
+  }
+  .climb__bar--top { background: var(--coral); }
+  .climb__v { font-family: var(--font-display); font-size: clamp(0.7rem, 1.6vw, 1rem); color: var(--ink-2); text-align: center; line-height: 1; }
+  .climb__m { font-size: 0.62rem; color: var(--text-faint); text-align: center; }
+
+  .phase { padding-block: var(--sp-6); border-block-start: 1px solid var(--line-soft); display: grid; gap: var(--sp-4); }
+  .phase__h { display: grid; gap: var(--sp-2); }
+
+  .card {
+    padding: var(--sp-5);
+    border-radius: var(--r-card);
+    background: var(--card);
+    box-shadow: inset 0 0 0 1.4px var(--card-line);
+    scroll-margin-block-start: calc(var(--hdr-h) + 1rem);
+  }
+  .ms { display: grid; gap: var(--sp-4); }
+  .ms__top { display: flex; align-items: baseline; gap: var(--sp-3); flex-wrap: wrap; }
+  .ms__t { font-family: var(--font-display); font-size: var(--s-2); color: var(--ink-2); }
+  .ms__meta { font-size: var(--s--2); color: var(--text-faint); margin-inline-start: auto; }
+  .ms__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr)); gap: var(--sp-5); }
+  .ms__k {
+    font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--coral);
+    margin-block-end: var(--sp-2);
+  }
+  .ms__gate { border-inline-start: 2px solid var(--coral); padding-inline-start: var(--sp-4); align-self: start; }
+  .ms__rule { font-size: var(--s--1); line-height: 1.7; color: var(--text); }
+  .ms__used { font-size: var(--s--2); line-height: 1.6; color: var(--text-soft); margin-block-start: var(--sp-2); }
+
+  .capital { display: grid; gap: var(--sp-4); padding-block-start: var(--sp-6); }
+</style>

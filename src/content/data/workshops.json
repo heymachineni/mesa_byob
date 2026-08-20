@@ -4,116 +4,90 @@
     "code": "WS1",
     "n": 1,
     "title": "BYOB Launch",
-    "expect": "Kickoff session — what BYOB is, the 8-week roadmap, and what's expected of you and your team from day one.",
-    "milestone": "m1",
-    "phase": "discover"
+    "expect": "Kickoff session: what BYOB is, the 8-week roadmap, and what's expected of you and your team from day one."
   },
   {
     "id": "ws2",
     "code": "WS2",
     "n": 2,
     "title": "Framework for Picking Profitable Products",
-    "expect": "A practical framework for evaluating product ideas — margins, demand signals, and sourcing feasibility — so you lock a product with a real shot at ₹7L.",
-    "milestone": "m1",
-    "phase": "discover"
+    "expect": "A practical framework for evaluating product ideas, margins, demand signals, and sourcing feasibility, so you lock a product with a real shot at ₹7L."
   },
   {
     "id": "ws3",
     "code": "WS3",
     "n": 3,
     "title": "Sourcing: From Local Sourcing to Pan India Shipping",
-    "expect": "How to find and vet suppliers, negotiate MOQs, and get your product moving from a local vendor to nationwide shipping.",
-    "milestone": "m1",
-    "phase": "discover"
+    "expect": "How to find and vet suppliers, negotiate MOQs, and get your product moving from a local vendor to nationwide shipping."
   },
   {
     "id": "ws4",
     "code": "WS4",
     "n": 4,
     "title": "How to Make a Pitch Deck",
-    "expect": "Building a tight, investor-ready pitch deck — what the Investment Committee actually wants to see before releasing your first tranche.",
-    "milestone": "m2",
-    "phase": "discover"
+    "expect": "Building a tight, investor-ready pitch deck: what the Investment Committee actually wants to see before releasing your first tranche."
   },
   {
     "id": "ws5",
     "code": "WS5",
     "n": 5,
     "title": "ICP/USP + Brand Building & Content Strategy + Packaging Clinic",
-    "expect": "Nailing down who you're selling to and why they should choose you, then turning that into your brand identity, content plan, and packaging.",
-    "milestone": "m2",
-    "phase": "discover"
+    "expect": "Nailing down who you're selling to and why they should choose you, then turning that into your brand identity, content plan, and packaging."
   },
   {
     "id": "ws6",
     "code": "WS6",
     "n": 6,
     "title": "Social Media Strategies",
-    "expect": "How to plan and execute content that actually sells — posting cadence, Reels, Stories, and turning followers into buyers.",
-    "milestone": "m3",
-    "phase": "build"
+    "expect": "How to plan and execute content that actually sells, posting cadence, Reels, Stories, and turning followers into buyers."
   },
   {
     "id": "ws7",
     "code": "WS7",
     "n": 7,
     "title": "Offline Sales & Activities",
-    "expect": "Running stalls, pop-ups, and door-to-door sales — how to set up, pitch, and close in person.",
-    "milestone": "m3",
-    "phase": "build"
+    "expect": "Running stalls, pop-ups, and door-to-door sales: how to set up, pitch, and close in person."
   },
   {
     "id": "ws8",
     "code": "WS8",
     "n": 8,
     "title": "Setting up Ecommerce",
-    "expect": "Getting your online store live end-to-end — product pages, payments, and a checkout that actually converts.",
-    "milestone": "m3",
-    "phase": "build"
+    "expect": "Getting your online store live end-to-end: product pages, payments, and a checkout that actually converts."
   },
   {
     "id": "ws9",
     "code": "WS9",
     "n": 9,
-    "title": "Website Funnel Optimization & Content 1.5",
-    "expect": "A hands-on session to tighten your website funnel and content so more visitors actually become customers.",
-    "milestone": "m4",
-    "phase": "build"
+    "title": "Website Funnel Optimization & Content",
+    "expect": "A hands-on session to tighten your website funnel and content so more visitors actually become customers."
   },
   {
     "id": "ws10",
     "code": "WS10",
     "n": 10,
-    "title": "Affiliate / Influencer Marketing 2.5",
-    "expect": "Finding, pitching, and working with nano and micro creators — plus how to track what's actually converting.",
-    "milestone": "m4",
-    "phase": "build"
+    "title": "Affiliate / Influencer Marketing",
+    "expect": "Finding, pitching, and working with nano and micro creators, plus how to track what's actually converting."
   },
   {
     "id": "ws11",
     "code": "WS11",
     "n": 11,
     "title": "Performance Marketing (Meta & Google)",
-    "expect": "Setting up tracking, testing ad creatives, and reading your numbers to scale paid spend responsibly.",
-    "milestone": "m4",
-    "phase": "build"
+    "expect": "Setting up tracking, testing ad creatives, and reading your numbers to scale paid spend responsibly."
   },
   {
     "id": "ws12",
     "code": "WS12",
     "n": 12,
     "title": "B2B Sales & Bulk Order Playbook",
-    "expect": "Pitching bulk buyers — hostels, cafes, corporates — and closing your first wholesale deals.",
-    "milestone": "m4",
-    "phase": "build"
+    "expect": "Pitching bulk buyers: hostels, cafes, corporates: and closing your first wholesale deals."
   },
   {
     "id": "ws13",
     "code": "WS13",
     "n": 13,
     "title": "Flea Market Ops & Sales",
-    "expect": "Getting stall-ready for the grand finale — inventory, payments, and making the most of a single big selling day.",
-    "milestone": "m8",
-    "phase": "optimize"
+    "expect": "Getting stall-ready for the grand finale: inventory, payments, and making the most of a single big selling day."
   }
 ]

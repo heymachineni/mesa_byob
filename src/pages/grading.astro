@@ -1,0 +1,78 @@
+---
+/** How BYOB is graded: input, output, and how your team says you showed up. */
+import Kit from '../layouts/Kit.astro';
+import { getGrading } from '../lib/content';
+
+export const prerender = false;
+const g = await getGrading();
+---
+
+<Kit title="Grading" description={g.intro} current="/grading">
+  <header class="ph">
+    <p class="kicker">Grading</p>
+    <h1 class="disp disp--lg">{g.title}</h1>
+    <p class="lede">{g.intro}</p>
+  </header>
+
+  <div class="comps">
+    {g.components.map((c, i) => (
+      <section class="comp card" aria-labelledby={`g-${i}`}>
+        <header class="comp__h">
+          <span class="comp__w disp disp--md">{c.weight}</span>
+          <h2 class="comp__t" id={`g-${i}`}>{c.name}</h2>
+        </header>
+        <p class="comp__b">{c.body}</p>
+
+        {c.criteria && (
+          <dl class="crit">
+            {c.criteria.map((cr) => (
+              <div class="crit__i"><dt>{cr.term}</dt><dd>{cr.body}</dd></div>
+            ))}
+          </dl>
+        )}
+
+        {c.credits && (
+          <table class="cred">
+            <caption class="sr-only">Revenue to credits</caption>
+            <thead><tr><th scope="col">Revenue</th><th scope="col">Credits</th></tr></thead>
+            <tbody>
+              {c.credits.map((r) => (
+                <tr><td class="mono">{r.revenue}</td><td class="mono">{r.credits}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+
+        {c.note && <p class="aside">{c.note}</p>}
+      </section>
+    ))}
+  </div>
+
+  <p class="aside aside--violet">{g.cgpaNote}</p>
+</Kit>
+
+<style>
+  .ph { display: grid; gap: var(--sp-3); padding-block-end: var(--sp-6); }
+  .lede { max-inline-size: 58ch; }
+  .comps { display: grid; gap: var(--sp-5); }
+  .card { padding: var(--sp-6); border-radius: var(--r-card); background: var(--card); box-shadow: inset 0 0 0 1.4px var(--card-line); }
+  .comp { display: grid; gap: var(--sp-4); }
+  .comp__h { display: flex; align-items: baseline; gap: var(--sp-4); }
+  .comp__w { color: var(--coral); }
+  .comp__t { font-family: var(--font-display); font-size: var(--s-2); color: var(--ink-2); }
+  .comp__b { font-size: var(--s--1); line-height: 1.75; color: var(--text-soft); max-inline-size: 66ch; }
+
+  .crit { display: grid; gap: var(--sp-3); }
+  .crit__i { display: grid; grid-template-columns: minmax(9rem, auto) 1fr; gap: var(--sp-4); align-items: baseline; padding-block-end: var(--sp-3); border-block-end: 1px solid var(--line-soft); }
+  .crit__i:last-child { border-block-end: 0; padding-block-end: 0; }
+  .crit__i dt { font-family: var(--font-display); font-size: var(--s-0); color: var(--ink-2); }
+  .crit__i dd { font-size: var(--s--1); line-height: 1.65; color: var(--text-soft); }
+  @media (max-width: 34rem) { .crit__i { grid-template-columns: 1fr; gap: var(--sp-1); } }
+
+  .cred { border-collapse: collapse; max-inline-size: 20rem; }
+  .cred th, .cred td { text-align: start; padding: 0.55rem 1rem 0.55rem 0; border-block-end: 1px solid var(--line-soft); font-size: var(--s--1); }
+  .cred th { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-faint); }
+  .cred td:last-child { color: var(--coral); font-weight: 700; }
+
+  .aside--violet { margin-block-start: var(--sp-5); }
+</style>

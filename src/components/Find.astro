@@ -1,18 +1,15 @@
 ---
 /**
- * Search.
- *
- * The index is the one already built for the Forge design — same content, same
- * entries, remapped onto this page's destinations. Forking it would give us two
- * indexes over one body of content, and they would drift.
- *
- * A field on a wide screen; an icon opening a full-screen view on a narrow one,
- * where a cramped input would give cramped results.
+ * Search. An icon that opens a panel; every result is a page URL, so a result
+ * can be opened, shared, or middle-clicked like any link.
  */
-import { getSearchIndex, SEARCH_SUGGESTIONS } from '../../lib/content';
-import { localise } from '../../lib/nav';
+import { getSearchIndex, SEARCH_SUGGESTIONS } from '../lib/content';
 
-const index = localise(await getSearchIndex());
+/* Every entry's target is a real page URL now, so activating a result is just
+   navigation — the browser does the rest, and results are shareable links. */
+const index = (await getSearchIndex()).map((e) => ({
+  t: e.title, s: e.sub, w: e.where, g: e.group, x: e.text, a: e.url,
+}));
 ---
 
 <div class="find" data-find>
@@ -277,8 +274,6 @@ const index = localise(await getSearchIndex());
 </style>
 
 <script>
-  import { go } from '../../lib/goto.client';
-
   type Hit = { t: string; s: string; w: string; g: string; x: string; a: string };
 
   const read = <T,>(sel: string): T =>
@@ -416,7 +411,7 @@ const index = localise(await getSearchIndex());
     const target = el.dataset.a!;
     closeSheet();
     q.value = '';
-    go(target);
+    location.assign(target);
   }
 
   openBtn.addEventListener('click', openSheet);

@@ -1,0 +1,119 @@
+---
+/**
+ * One channel, one page: why it works, how to run it, the playbook, the FAQ,
+ * and what to do when you're stuck. The five pages share this template so a
+ * student always knows where things live.
+ */
+import Kit from '../../layouts/Kit.astro';
+import Clip from '../../components/Clip.astro';
+import { getChannel } from '../../lib/content';
+
+export const prerender = false;
+
+const c = await getChannel(Astro.params.channel!);
+if (!c) return Astro.redirect('/playbook', 302);
+---
+
+<Kit title={c.name} description={c.oneLine} current={`/playbook/${c.id}`}>
+  <header class="ph">
+    <p class="kicker">Channel {c.code}</p>
+    <h1 class="disp disp--lg">{c.name}</h1>
+    <p class="lede">{c.tagline}</p>
+  </header>
+
+  <p class="why">{c.why}</p>
+
+  <section class="sec" aria-labelledby="hw">
+    <h2 class="sr-only" id="hw">How, when, where, and what you need</h2>
+    <dl class="hww">
+      <div class="hww__i card"><dt>How</dt><dd>{c.how}</dd></div>
+      <div class="hww__i card"><dt>When</dt><dd>{c.when}</dd></div>
+      <div class="hww__i card"><dt>Where</dt><dd>{c.where}</dd></div>
+      <div class="hww__i card"><dt>What you need</dt><dd>{c.whatYouNeed}</dd></div>
+    </dl>
+  </section>
+
+  <section class="sec" aria-labelledby="gs">
+    <h2 class="disp disp--sm" id="gs">Getting started</h2>
+    <ul class="ticks">{c.gettingStarted.map((s) => <li>{s}</li>)}</ul>
+  </section>
+
+  <section class="sec" aria-labelledby="pb">
+    <h2 class="disp disp--sm" id="pb">The playbook</h2>
+    <ol class="pbs">
+      {c.playbook.map((s, i) => (
+        <li class="pbs__i">
+          <span class="pbs__n mono">{i + 1}</span>
+          <div>
+            <h3 class="pbs__t">{s.title}</h3>
+            <p class="pbs__b">{s.body}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  {c.faqs.length > 0 && (
+    <section class="sec" aria-labelledby="cf" id="channel-faq">
+      <h2 class="disp disp--sm" id="cf">Questions people ask</h2>
+      <div class="qa">
+        {c.faqs.map((f) => (
+          <details class="fold"><summary>{f.q}</summary><div class="fold__body"><p>{f.a}</p></div></details>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section class="sec" aria-labelledby="ts" id="troubleshooting">
+    <h2 class="disp disp--sm" id="ts">When you're stuck</h2>
+    <div class="stuck">
+      {c.stuck.map((s) => (
+        <div class="stuck__i card">
+          <h3 class="stuck__s">{s.symptom}</h3>
+          <p class="stuck__f">{s.fix}</p>
+        </div>
+      ))}
+    </div>
+    <p class="aside aside--violet"><b>What good looks like.</b> {c.goodLooksLike}</p>
+  </section>
+
+  <section class="sec" aria-labelledby="av">
+    <h2 class="disp disp--sm" id="av">Avoid this</h2>
+    <ul class="nope">{c.avoid.map((a) => <li>{a}</li>)}</ul>
+  </section>
+
+  <section class="sec" aria-labelledby="wt">
+    <h2 class="disp disp--sm" id="wt">Watch &amp; learn</h2>
+    <div class="vids">{c.videos.map((v) => <Clip video={v} />)}</div>
+  </section>
+</Kit>
+
+<style>
+  .ph { display: grid; gap: var(--sp-3); padding-block-end: var(--sp-4); }
+  .lede { max-inline-size: 56ch; }
+  .why { font-size: var(--s-0); line-height: 1.75; color: var(--text-soft); max-inline-size: 66ch; padding-block-end: var(--sp-5); }
+  .sec { padding-block: var(--sp-5); border-block-start: 1px solid var(--line-soft); display: grid; gap: var(--sp-4); scroll-margin-block-start: calc(var(--hdr-h) + 1rem); }
+
+  .card { border-radius: var(--r-card); background: var(--card); box-shadow: inset 0 0 0 1.4px var(--card-line); }
+  .hww { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(19rem, 100%), 1fr)); gap: var(--sp-4); }
+  .hww__i { padding: var(--sp-5); }
+  .hww__i dt {
+    font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--coral);
+    margin-block-end: var(--sp-2);
+  }
+  .hww__i dd { font-size: var(--s--1); line-height: 1.7; color: var(--text-soft); }
+
+  .pbs { display: grid; gap: var(--sp-4); }
+  .pbs__i { display: grid; grid-template-columns: 2rem 1fr; gap: var(--sp-3); }
+  .pbs__n { font-size: var(--s--2); font-weight: 700; color: var(--coral); padding-block-start: 0.35em; }
+  .pbs__t { font-family: var(--font-display); font-size: var(--s-0); color: var(--ink-2); }
+  .pbs__b { font-size: var(--s--1); line-height: 1.7; color: var(--text-soft); margin-block-start: 0.2rem; }
+
+  .qa { display: grid; gap: var(--sp-2); }
+  .stuck { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(19rem, 100%), 1fr)); gap: var(--sp-4); }
+  .stuck__i { padding: var(--sp-4) var(--sp-5); }
+  .stuck__s { font-size: var(--s--1); font-weight: 700; color: var(--ink); }
+  .stuck__f { font-size: var(--s--1); line-height: 1.7; color: var(--text-soft); margin-block-start: var(--sp-2); }
+  .vids { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr)); gap: var(--sp-5); }
+</style>

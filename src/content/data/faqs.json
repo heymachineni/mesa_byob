@@ -3,78 +3,105 @@
     "id": "why",
     "q": "Why are we doing this?",
     "a": "The BYOB Challenge is a unique pedagogical tool designed to help you learn the fundamentals of startups. It complements the coursework that you do in the classroom.",
-    "tags": ["Program"]
+    "tags": [
+      "Program"
+    ]
   },
   {
     "id": "cgpa",
     "q": "Does this impact my CGPA?",
     "a": "Yes, the final scores you achieve as part of BYOB can impact upto 20% of your CGPA. More details about this will be provided during the credit and grading session at the orientation.",
-    "tags": ["Grading"]
+    "tags": [
+      "Grading"
+    ]
   },
   {
     "id": "team",
     "q": "Can I choose my team? Can I change my team?",
     "a": "Yes, you can choose your team. No, you cannot change your team.",
-    "tags": ["Team"]
+    "tags": [
+      "Team"
+    ]
   },
   {
     "id": "product",
     "q": "What products can I choose? Can I pivot?",
-    "a": "You can select any product or service you want so long as there is a clear pathway to meet the revenue target of ₹7 lakh in under 8 weeks. And yes, you can pivot — but remember, the more pivots you make, the less time you will have to generate sales.",
-    "tags": ["Product"]
+    "a": "You can select any product or service you want so long as there is a clear pathway to meet the revenue target of ₹7 lakh in under 8 weeks. And yes, you can pivot, but remember, the more pivots you make, the less time you will have to generate sales.",
+    "tags": [
+      "Product"
+    ]
   },
   {
     "id": "own-capital",
     "q": "Can I put in my own capital? Can I keep my revenue?",
     "a": "Yes, you can put in your capital or raise funds from other sources to launch and scale your business. And yes, you get to keep all revenues earned from the company (apart from any investments made by Mesa).",
-    "tags": ["Money"]
+    "tags": [
+      "Money"
+    ]
   },
   {
     "id": "disbursal",
     "q": "How are the funds disbursed to teams?",
     "a": "Funds will be disbursed in multiple tranches of upto ₹35-40,000 each and will be tied to performance against specific milestones, evaluated by the investment committee/mentors.",
-    "tags": ["Money"]
+    "tags": [
+      "Money"
+    ]
   },
   {
     "id": "repay",
     "q": "Do I need to pay back the capital to Mesa?",
     "a": "Yes, Mesa provides capital in the form of interest-free debt. You must return all capital raised from Mesa.",
-    "tags": ["Money"]
+    "tags": [
+      "Money"
+    ]
   },
   {
     "id": "skip",
     "q": "Can I skip milestones?",
-    "a": "No, you cannot skip any of them while you are free to meet the milestone earlier than the deadline. Each milestone is in there for a reason—meeting it is critical to meeting your overall goal of maximizing revenue.",
-    "tags": ["Milestones"]
+    "a": "No, you cannot skip any of them while you are free to meet the milestone earlier than the deadline. Each milestone is in there for a reason, meeting it is critical to meeting your overall goal of maximizing revenue.",
+    "tags": [
+      "Milestones"
+    ]
   },
   {
     "id": "deadline",
     "q": "What if I meet only the metrics? How will missing a deadline impact me?",
     "a": "Missing a deadline for a milestone will result in penalties and negatively affect your team's score and your CGPA.",
-    "tags": ["Milestones", "Grading"]
+    "tags": [
+      "Milestones",
+      "Grading"
+    ]
   },
   {
     "id": "support",
     "q": "What help will we get from Mesa?",
     "a": "Mesa will conduct regular workshops with functional experts and startup leaders to help you create high-quality assets for each milestone. In addition, mentors will support you through pre-scheduled check-ins (or otherwise). We will also share specific guidelines and frameworks during BYOB.",
-    "tags": ["Support"]
+    "tags": [
+      "Support"
+    ]
   },
   {
     "id": "sales-time",
     "q": "Why should I spend so much time doing sales in BYOB?",
     "a": "Sales is the core of entrepreneurship. If you're not inclined towards sales, Mesa, and perhaps the startup ecosystem, might not be the right fit for you. Teams that generate significant revenue will have access to exclusive opportunities.",
-    "tags": ["Selling"]
+    "tags": [
+      "Selling"
+    ]
   },
   {
     "id": "strategies",
     "q": "What strategies should I use for online and offline sales?",
     "a": "For online sales, leverage social media marketing, SEO, and influencer partnerships to drive traffic to your e-commerce site. For offline sales, focus on pop-up shops, local events, and strategic retail partnerships to build brand presence and engage directly with customers.",
-    "tags": ["Selling"]
+    "tags": [
+      "Selling"
+    ]
   },
   {
     "id": "cohort-family",
     "q": "Can I sell to my cohort mates or family members?",
     "a": "You can sell your product or service to your cohort or family members.",
-    "tags": ["Selling"]
+    "tags": [
+      "Selling"
+    ]
   }
 ]

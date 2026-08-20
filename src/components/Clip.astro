@@ -1,26 +1,18 @@
 ---
-import { youTubeId } from '../../lib/format';
+import { youTubeId } from '../lib/format';
 
 /**
  * A video, taped into the kit. The frame is rotated a degree, double-bordered
- * (dashed pass offset behind a solid pass) and held down with tape — so it
+ * (dashed pass offset behind a solid pass) and held down with tape, so it
  * reads as a photo stuck onto a page rather than an embed in a box.
  *
- * Real iframes, lazy — inside a closed panel they are never fetched at all.
+ * Real iframes, lazy: inside a closed panel they are never fetched at all.
  */
 interface Props {
-  video: {
-    title: string;
-    url: string | null;
-    source: string;
-    kind: 'youtube' | 'instagram' | 'link';
-    placeholder: boolean;
-    note?: string | undefined;
-  };
+  video: { title: string; url: string; note?: string | undefined };
 }
 const { video } = Astro.props;
-const yt = video.kind === 'youtube' ? youTubeId(video.url) : null;
-const empty = video.placeholder || !video.url;
+const yt = youTubeId(video.url);
 ---
 
 <figure class="clip">
@@ -36,14 +28,10 @@ const empty = video.placeholder || !video.url;
           referrerpolicy="strict-origin-when-cross-origin"
         />
       </div>
-    ) : empty ? (
-      <div class="clip__frame clip__frame--empty">
-        <span class="clip__slot hand">clip goes here</span>
-      </div>
     ) : (
       <a class="clip__frame clip__frame--link" href={video.url} target="_blank" rel="noopener noreferrer">
         <span class="clip__ext hand">
-          {video.kind === 'instagram' ? 'On Instagram' : 'Open'} <span class="arrow">↗</span>
+          {video.url.includes('instagram.com') ? 'Watch on Instagram' : 'Open'} <span class="arrow">↗</span>
         </span>
       </a>
     )
@@ -51,10 +39,7 @@ const empty = video.placeholder || !video.url;
 
   <figcaption class="clip__cap">
     <span class="clip__title">{video.title}</span>
-    <span class="clip__src">
-      {video.source}{empty ? ' — link to be added' : ''}
-    </span>
-    {video.note && <span class="clip__note hand">{video.note}</span>}
+    {video.note && <span class="clip__note">{video.note}</span>}
   </figcaption>
 </figure>
 

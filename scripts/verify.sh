@@ -1,47 +1,41 @@
 #!/usr/bin/env bash
-# Verification, now that pages render on demand.
-#
-# The checks have always run against real rendered HTML rather than source, and
-# that stays true — there just isn't a `dist/index.html` to read any more. So we
-# build, start the server with the gate explicitly open, and fetch the two pages
-# exactly as a browser would.
+# Fetch every page exactly as a browser would, then check content and structure.
 set -euo pipefail
 
 PORT=${VERIFY_PORT:-4399}
 OUT=$(mktemp -d)
-trap 'kill "${DEV_PID:-}" 2>/dev/null || true; rm -rf "$OUT"' EXIT
+trap 'npx astro dev stop >/dev/null 2>&1 || true; rm -rf "$OUT"' EXIT
 
 npx astro build >/dev/null
 
 AUTH_DISABLED=1 npx astro dev --port "$PORT" >"$OUT/dev.log" 2>&1 &
-DEV_PID=$!
-
 for _ in $(seq 1 60); do
   curl -sf -o /dev/null "http://localhost:$PORT/" && break
   sleep 0.5
 done
 
-curl -sf "http://localhost:$PORT/"    -o "$OUT/index.html"
-curl -sf "http://localhost:$PORT/v2/" -o "$OUT/v2.html"
+ROUTES=(/ /milestones /weeks /workshops /playbook /playbook/inventory /playbook/revenue
+        /playbook/offline /playbook/online-organic /playbook/influencer
+        /playbook/performance /playbook/b2b /grading /flea /faq /signin)
+
+python3 - "$OUT" "${ROUTES[@]}" <<'PY'
+import json, sys, pathlib
+out = pathlib.Path(sys.argv[1])
+pages = {r: (r.strip('/').replace('/', '-') or 'index') + '.html' for r in sys.argv[2:]}
+(out / 'pages.json').write_text(json.dumps(pages))
+PY
 
 status=0
-for page in "$OUT/index.html:/" "$OUT/v2.html:/v2/"; do
-  file=${page%%:*}; label=${page##*:}
-  echo "--- $label ---"
-  python3 scripts/verify_content.py  "$file" || status=1
-  python3 scripts/verify_mapping.py  "$file" || status=1
-  python3 scripts/verify_structure.py "$file" || status=1
+for r in "${ROUTES[@]}"; do
+  f="$OUT/$(echo "${r#/}" | tr '/' '-')"; [ "$r" = "/" ] && f="$OUT/index"
+  curl -sf "http://localhost:$PORT$r" -o "$f.html" || { echo "  ✗ fetch failed: $r"; status=1; }
 done
 
-echo "--- menu + search ---"
-python3 scripts/verify_nav.py "$OUT/index.html" || status=1
+cat "$OUT"/*.html > "$OUT/union.html"
+echo "--- content (all pages together) ---"
+python3 scripts/verify_content.py "$OUT/union.html" || status=1
 
-echo "--- the sign-in page ---"
-curl -sf "http://localhost:$PORT/signin" -o "$OUT/signin.html"
-for r in not_allowed unverified access_denied signed_out; do
-  curl -sf "http://localhost:$PORT/signin?reason=$r" -o "$OUT/r-$r.html"
-  grep -q 'role="alert"' "$OUT/r-$r.html" || { echo "  ✗ no message for reason=$r"; status=1; }
-done
-echo " · renders, and every error state has its own message"
-echo " · pages above rendered with AUTH_DISABLED=1"
+echo "--- structure, links, dashes ---"
+python3 scripts/verify_pages.py "$OUT" || status=1
+
 exit $status

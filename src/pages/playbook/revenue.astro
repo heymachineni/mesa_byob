@@ -1,0 +1,85 @@
+---
+/** Money Matters: revenue and expenses, milestone by milestone. */
+import Kit from '../../layouts/Kit.astro';
+import { getMoney } from '../../lib/content';
+
+export const prerender = false;
+const { revenue } = await getMoney();
+---
+
+<Kit title="Revenue & Expenses" description={revenue.oneLine} current="/playbook/revenue">
+  <header class="ph">
+    <p class="kicker">Money Matters</p>
+    <h1 class="disp disp--lg">Revenue &amp; Expenses</h1>
+    <p class="lede">{revenue.intro}</p>
+  </header>
+
+  <section class="sec" aria-labelledby="numbers-h" id="numbers">
+    <h2 class="disp disp--sm" id="numbers-h">Track these five numbers weekly</h2>
+    <p class="hint">One simple spreadsheet is enough.</p>
+    <ol class="eq">
+      {revenue.numbers.map((n, i) => {
+        const last = i === revenue.numbers.length - 1;
+        return (
+          <li class:list={['eq__r', last && 'eq__r--out']}>
+            <span class="eq__o mono" aria-hidden="true">{i === 0 ? '' : last ? '=' : '−'}</span>
+            <span class="eq__n">{n.name}</span>
+            <span class="eq__d">{n.body}</span>
+          </li>
+        );
+      })}
+    </ol>
+  </section>
+
+  <section class="sec" aria-labelledby="lens-h" id="lens">
+    <h2 class="disp disp--sm" id="lens-h">The financial lens at each milestone</h2>
+    <div class="lens">
+      {revenue.lens.map((l) => (
+        <article class="lens__i card">
+          <header class="lens__t">
+            <h3>{l.milestone}</h3>
+            <span class="lens__g mono">{l.revGoal}</span>
+          </header>
+          <p><span class="lens__k">Focus</span>{l.focus}</p>
+          <p><span class="lens__k lens__k--w">Watch for</span>{l.watchFor}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <aside class="ask">
+    <p class="ask__q disp disp--sm">“{revenue.question}”</p>
+    <p class="ask__b">{revenue.questionBody}</p>
+  </aside>
+</Kit>
+
+<style>
+  .ph { display: grid; gap: var(--sp-3); padding-block-end: var(--sp-5); }
+  .lede { max-inline-size: 60ch; }
+  .sec { padding-block: var(--sp-5); border-block-start: 1px solid var(--line-soft); display: grid; gap: var(--sp-4); }
+  .sec:first-of-type { border-block-start: 0; }
+  .hint { font-size: var(--s--1); color: var(--text-faint); margin-block-start: calc(-1 * var(--sp-3)); }
+
+  .eq { display: grid; gap: var(--sp-4); max-inline-size: 44rem; }
+  .eq__r { display: grid; grid-template-columns: 1.5rem minmax(0, 1fr); column-gap: var(--sp-3); align-items: baseline; }
+  .eq__o { font-size: var(--s-1); color: var(--coral); text-align: center; }
+  .eq__n { font-family: var(--font-display); font-size: var(--s-1); color: var(--ink-2); }
+  .eq__d { grid-column: 2; margin-block-start: 0.2rem; font-size: var(--s--2); line-height: 1.6; color: var(--text-soft); }
+  .eq__r--out { padding: var(--sp-4); border-radius: var(--r-card); background: var(--card); box-shadow: inset 0 0 0 1.4px var(--coral); }
+
+  .card { padding: var(--sp-5); border-radius: var(--r-card); background: var(--card); box-shadow: inset 0 0 0 1.4px var(--card-line); }
+  .lens { display: grid; gap: var(--sp-4); }
+  .lens__t { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-3); flex-wrap: wrap; margin-block-end: var(--sp-3); }
+  .lens__t h3 { font-family: var(--font-display); font-size: var(--s-0); color: var(--ink-2); }
+  .lens__g { color: var(--coral); font-weight: 700; font-size: var(--s--1); }
+  .lens__i p { font-size: var(--s--1); line-height: 1.72; margin-block-end: var(--sp-3); }
+  .lens__k {
+    display: block; font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-faint); margin-block-end: 0.15rem;
+  }
+  .lens__k--w { color: var(--coral); }
+
+  .ask { margin-block-start: var(--sp-6); padding-block-start: var(--sp-6); border-block-start: 1px solid var(--line-soft); display: grid; gap: var(--sp-3); }
+  .ask__q { color: var(--coral); font-style: italic; max-inline-size: 24ch; }
+  .ask__b { font-size: var(--s--1); line-height: 1.75; color: var(--text-soft); max-inline-size: 56ch; }
+</style>

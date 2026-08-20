@@ -1,0 +1,31 @@
+---
+/** Thirteen questions, answered. */
+import Kit from '../layouts/Kit.astro';
+import { getFaqs } from '../lib/content';
+
+export const prerender = false;
+const faqs = await getFaqs();
+const slug = (id: string) => `q-${id.replace(/^faq-/, '')}`;
+---
+
+<Kit title="FAQ" description="Thirteen questions about the BYOB Challenge, answered." current="/faq">
+  <header class="ph">
+    <p class="kicker">FAQ</p>
+    <h1 class="disp disp--lg">Thirteen questions, answered.</h1>
+  </header>
+
+  <div class="qs">
+    {faqs.map((f) => (
+      <details class="fold" id={slug(f.id)}>
+        <summary>{f.q}</summary>
+        <div class="fold__body"><p>{f.a}</p></div>
+      </details>
+    ))}
+  </div>
+</Kit>
+
+<style>
+  .ph { display: grid; gap: var(--sp-3); padding-block-end: var(--sp-6); }
+  .qs { display: grid; gap: var(--sp-2); }
+  .fold { scroll-margin-block-start: calc(var(--hdr-h) + 1rem); }
+</style>
