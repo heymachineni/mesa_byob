@@ -109,9 +109,20 @@ const here = PAGES.find((p) => p.href === current);
       </svg>
     </button>
 
-    <div class="sheet" id="sheet">
+    <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Pages">
       <div class="sheet__scrim" data-dock-close></div>
-      <nav class="sheet__panel" aria-label="All pages">
+      <div class="sheet__panel">
+        <div class="sheet__grab" aria-hidden="true"></div>
+        <header class="sheet__head">
+          <p class="sheet__title">Pages</p>
+          <button class="sheet__x" type="button" data-dock-close>
+            <span class="sr-only">Close</span>
+            <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+              <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+            </svg>
+          </button>
+        </header>
+        <nav aria-label="All pages">
         {groups.map((g) => (
           <div class="sheet__g">
             <p class="rail__h">{g}</p>
@@ -128,8 +139,9 @@ const here = PAGES.find((p) => p.href === current);
             </ul>
           </div>
         ))}
+        </nav>
         <a class="sheet__out" href="/api/auth/logout">Sign out</a>
-      </nav>
+      </div>
     </div>
 
     <style>
@@ -342,26 +354,65 @@ const here = PAGES.find((p) => p.href === current);
       .sheet__panel {
         transform: translateY(100%);
         transition: transform 500ms var(--ease-drawer);
-      }
-      .sheet[data-open] .sheet__panel { transform: translateY(0); }
-      .sheet__panel {
         position: absolute;
         inset-inline: 0;
         inset-block-end: 0;
-        max-block-size: 82dvh;
-        overflow-y: auto;
-        overscroll-behavior: contain;
-        padding: var(--sp-5) var(--sp-5) calc(var(--sp-5) + env(safe-area-inset-bottom, 0px));
+        max-block-size: 84dvh;
+        display: flex;
+        flex-direction: column;
+        padding: var(--sp-2) var(--sp-5) calc(var(--sp-4) + env(safe-area-inset-bottom, 0px));
         border-start-start-radius: var(--r-card);
         border-start-end-radius: var(--r-card);
         background: var(--paper-2);
         box-shadow: 0 -6px 0 var(--coral);
       }
+      .sheet[data-open] .sheet__panel { transform: translateY(0); }
+
+      .sheet__grab {
+        inline-size: 2.25rem;
+        block-size: 0.25rem;
+        border-radius: 999px;
+        background: var(--line);
+        margin: 0.35rem auto var(--sp-2);
+        flex: 0 0 auto;
+      }
+      .sheet__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-block-end: var(--sp-2);
+        border-block-end: 1px solid var(--line-soft);
+        margin-block-end: var(--sp-3);
+        flex: 0 0 auto;
+      }
+      .sheet__title {
+        font-family: var(--font-display);
+        font-size: var(--s-0);
+        color: var(--ink-2);
+      }
+      .sheet__x {
+        display: grid;
+        place-items: center;
+        inline-size: 2.75rem;
+        block-size: 2.75rem;
+        margin-inline-end: -0.6rem;
+        border-radius: var(--r-sm);
+        color: var(--ink);
+        cursor: pointer;
+      }
+      .sheet__x svg { inline-size: 1rem; block-size: 1rem; }
+      .sheet__panel nav {
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        min-block-size: 0;
+      }
       .sheet__g + .sheet__g { margin-block-start: var(--sp-5); }
       .sheet__a {
         position: relative;
-        display: block;
-        padding: 0.55rem 0.2rem 0.55rem 0.9rem;
+        display: flex;
+        align-items: center;
+        min-block-size: 2.75rem;
+        padding: 0.35rem 0.2rem 0.35rem 0.9rem;
         font-size: var(--s--1);
         color: var(--text-soft);
         text-decoration: none;
@@ -379,10 +430,16 @@ const here = PAGES.find((p) => p.href === current);
       .sheet__a.is-here { color: var(--ink); font-weight: 600; }
       .sheet__a.is-here::before { background: var(--coral); }
       .sheet__out {
-        display: inline-block;
-        margin-block-start: var(--sp-5);
+        display: flex;
+        align-items: center;
+        min-block-size: 2.75rem;
+        margin-block-start: var(--sp-3);
+        padding-block-start: var(--sp-2);
+        border-block-start: 1px solid var(--line-soft);
         font-size: var(--s--2);
         color: var(--text-faint);
+        text-decoration: none;
+        flex: 0 0 auto;
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -426,11 +483,29 @@ const here = PAGES.find((p) => p.href === current);
 
       const sheet = document.getElementById('sheet')!;
       const openers = [...document.querySelectorAll<HTMLButtonElement>('[data-dock-open]')];
+      let opener: HTMLElement | null = null;
       const set = (open: boolean) => {
         sheet.toggleAttribute('data-open', open);
         document.body.classList.toggle('is-locked', open);
         openers.forEach((b) => b.setAttribute('aria-expanded', String(open)));
+        if (open) {
+          opener = document.activeElement as HTMLElement;
+          sheet.querySelector<HTMLElement>('.sheet__x')?.focus();
+        } else {
+          opener?.focus();
+        }
       };
+      /* Keep Tab inside the open sheet — it is a modal, so focus is too. */
+      sheet.addEventListener('keydown', (e) => {
+        if (e.key !== 'Tab') return;
+        const f = [...sheet.querySelectorAll<HTMLElement>('button, a[href]')].filter(
+          (el) => el.offsetParent !== null
+        );
+        if (!f.length) return;
+        const first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { last.focus(); e.preventDefault(); }
+        else if (!e.shiftKey && document.activeElement === last) { first.focus(); e.preventDefault(); }
+      });
       openers.forEach((b) => b.addEventListener('click', () => set(!sheet.hasAttribute('data-open'))));
       sheet.querySelector('[data-dock-close]')!.addEventListener('click', () => set(false));
       document.addEventListener('keydown', (e) => {
