@@ -52,12 +52,6 @@ const here = PAGES.find((p) => p.href === current);
         </a>
         <div class="bar__tools">
           <Find />
-          <button class="bar__burger" type="button" aria-expanded="false" aria-controls="sheet" data-dock-open>
-            <span class="sr-only">Pages</span>
-            <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-              <path d="M2 4.5h12M2 8h12M2 11.5h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
-            </svg>
-          </button>
         </div>
       </div>
     </header>
@@ -183,16 +177,6 @@ const here = PAGES.find((p) => p.href === current);
         color: var(--text-faint);
       }
       .bar__tools { display: flex; align-items: center; gap: var(--sp-2); }
-      .bar__burger {
-        display: none;
-        place-items: center;
-        inline-size: 2.6rem;
-        block-size: 2.6rem;
-        border-radius: var(--r-sm);
-        color: var(--ink);
-        cursor: pointer;
-      }
-      .bar__burger svg { inline-size: 1.1rem; block-size: 1.1rem; }
 
       /* ── the shell: rail plus content ─────────────────────────────────── */
       .shell {
@@ -306,7 +290,6 @@ const here = PAGES.find((p) => p.href === current);
       @media (max-width: 64rem) {
         .shell { display: block; }
         .rail { display: none; }
-        .bar__burger { display: grid; }
         .bar__s { display: none; }
         body { padding-block-end: 5.5rem; }
         .content { padding-block-start: var(--sp-5); }
