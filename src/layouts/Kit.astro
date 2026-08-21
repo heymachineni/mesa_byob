@@ -59,8 +59,18 @@ const here = PAGES.find((p) => p.href === current);
     <div class="shell">
       <nav class="rail" aria-label="Pages">
         {groups.map((g) => (
-          <div class="rail__g">
-            <p class="rail__h">{g}</p>
+          <details
+            class="rail__g"
+            name="rail-group"
+            data-acc
+            open={PAGES.some((p) => p.group === g && p.href === current) || undefined}
+          >
+            <summary class="rail__h">
+              <span>{g}</span>
+              <svg class="rail__chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path d="M3.5 6 8 10.5 12.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"></path>
+              </svg>
+            </summary>
             <ul>
               {PAGES.filter((p) => p.group === g).map((p) => (
                 <li>
@@ -72,7 +82,7 @@ const here = PAGES.find((p) => p.href === current);
                 </li>
               ))}
             </ul>
-          </div>
+          </details>
         ))}
         <a class="rail__out" href="/api/auth/logout">Sign out</a>
       </nav>
@@ -219,16 +229,33 @@ const here = PAGES.find((p) => p.href === current);
         padding-block: var(--sp-6) var(--sp-4);
         scrollbar-width: thin;
       }
-      .rail__g + .rail__g { margin-block-start: var(--sp-5); }
+      .rail__g + .rail__g { margin-block-start: var(--sp-4); }
       .rail__h {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--sp-3);
+        cursor: pointer;
+        list-style: none;
+        padding-block: 0.4rem;
         font-family: var(--font-mono);
         font-size: 0.62rem;
         font-weight: 700;
         letter-spacing: 0.14em;
         text-transform: uppercase;
         color: var(--text-faint);
-        margin-block-end: var(--sp-2);
+        transition: color var(--fast) var(--ease);
       }
+      .rail__h::-webkit-details-marker { display: none; }
+      .rail__h:hover { color: var(--ink); }
+      .rail__g[open] .rail__h { color: var(--ink); margin-block-end: var(--sp-1); }
+      .rail__chev {
+        inline-size: 0.8rem;
+        block-size: 0.8rem;
+        flex: 0 0 auto;
+        transition: transform 200ms var(--ease-out);
+      }
+      .rail__g[open] .rail__chev { transform: rotate(180deg); }
       .rail__a {
         position: relative;
         display: block;
@@ -551,14 +578,17 @@ const here = PAGES.find((p) => p.href === current);
         if (e.key === 'Escape' && sheet.hasAttribute('data-open')) set(false);
       });
 
-      /* One group open at a time. <details name> already enforces this in new
+      /* One group open at a time, per nav — the rail and the sheet are each
+         their own accordion. <details name> already enforces this in new
          browsers; this covers the rest. */
-      const accs = [...sheet.querySelectorAll<HTMLDetailsElement>('details[data-acc]')];
-      accs.forEach((d) =>
-        d.addEventListener('toggle', () => {
-          if (d.open) accs.forEach((o) => { if (o !== d) o.open = false; });
-        })
-      );
+      for (const scope of [document.querySelector('.rail')!, sheet]) {
+        const accs = [...scope.querySelectorAll<HTMLDetailsElement>('details[data-acc]')];
+        accs.forEach((d) =>
+          d.addEventListener('toggle', () => {
+            if (d.open) accs.forEach((o) => { if (o !== d) o.open = false; });
+          })
+        );
+      }
     </script>
   </body>
 </html>
