@@ -109,7 +109,7 @@ const here = PAGES.find((p) => p.href === current);
       </svg>
     </button>
 
-    <div class="sheet" id="sheet" hidden>
+    <div class="sheet" id="sheet">
       <div class="sheet__scrim" data-dock-close></div>
       <nav class="sheet__panel" aria-label="All pages">
         {groups.map((g) => (
@@ -316,13 +316,34 @@ const here = PAGES.find((p) => p.href === current);
           inset 0 0 0 1.4px var(--ink),
           3px 3px 0 color-mix(in srgb, var(--coral) 40%, var(--paper));
         cursor: pointer;
+        transition: transform 160ms var(--ease-out);
       }
+      .dock:active { transform: scale(0.97); }
       @media (max-width: 64rem) { .dock { display: flex; } }
       .dock__label { font-size: var(--s--1); font-weight: 700; color: var(--ink); }
       .dock__chev { inline-size: 1.05rem; block-size: 1.05rem; color: var(--ink-2); }
 
-      .sheet { position: fixed; inset: 0; z-index: 95; }
-      .sheet__scrim { position: absolute; inset: 0; background: color-mix(in srgb, #000 55%, transparent); }
+      /* Closed by default; [data-open] slides it up. visibility waits for the
+         exit transition, so the sheet leaves the way it arrived instead of
+         vanishing mid-slide. */
+      .sheet {
+        position: fixed; inset: 0; z-index: 95;
+        visibility: hidden;
+        transition: visibility 0s 500ms;
+      }
+      .sheet[data-open] { visibility: visible; transition: visibility 0s; }
+      .sheet__scrim {
+        position: absolute; inset: 0;
+        background: color-mix(in srgb, #000 55%, transparent);
+        opacity: 0;
+        transition: opacity 250ms var(--ease-out);
+      }
+      .sheet[data-open] .sheet__scrim { opacity: 1; }
+      .sheet__panel {
+        transform: translateY(100%);
+        transition: transform 500ms var(--ease-drawer);
+      }
+      .sheet[data-open] .sheet__panel { transform: translateY(0); }
       .sheet__panel {
         position: absolute;
         inset-inline: 0;
@@ -366,6 +387,8 @@ const here = PAGES.find((p) => p.href === current);
 
       @media (prefers-reduced-motion: reduce) {
         .skip, .rail__a, .turn__a { transition: none; }
+        .sheet__panel { transition: none; }
+        .sheet { transition: none; }
       }
     </style>
 
@@ -377,14 +400,14 @@ const here = PAGES.find((p) => p.href === current);
       const sheet = document.getElementById('sheet')!;
       const openers = [...document.querySelectorAll<HTMLButtonElement>('[data-dock-open]')];
       const set = (open: boolean) => {
-        sheet.hidden = !open;
+        sheet.toggleAttribute('data-open', open);
         document.body.classList.toggle('is-locked', open);
         openers.forEach((b) => b.setAttribute('aria-expanded', String(open)));
       };
-      openers.forEach((b) => b.addEventListener('click', () => set(Boolean(sheet.hidden))));
+      openers.forEach((b) => b.addEventListener('click', () => set(!sheet.hasAttribute('data-open'))));
       sheet.querySelector('[data-dock-close]')!.addEventListener('click', () => set(false));
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !sheet.hidden) set(false);
+        if (e.key === 'Escape' && sheet.hasAttribute('data-open')) set(false);
       });
     </script>
   </body>

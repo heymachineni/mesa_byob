@@ -124,6 +124,19 @@ const index = (await getSearchIndex()).map((e) => ({
     border: 1px solid var(--card-line);
     background: var(--paper-2);
     box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.7);
+    /* Scales out of the icon's corner, not out of thin air. @starting-style
+       animates the entry from display:none; browsers without it show it
+       instantly, which is the correct fallback. */
+    transform-origin: top right;
+    transition:
+      opacity 200ms var(--ease-out),
+      transform 200ms var(--ease-out);
+  }
+  .find[data-open] .find__sheet {
+    @starting-style {
+      opacity: 0;
+      transform: scale(0.97);
+    }
   }
   .find[data-open] .find__sheet {
     display: block;
@@ -147,6 +160,8 @@ const index = (await getSearchIndex()).map((e) => ({
       inset: 0;
       inline-size: auto;
       box-shadow: none;
+      transform-origin: center;
+      transition: opacity 200ms var(--ease-out);
       position: fixed;
       z-index: 99;
       background: var(--paper);

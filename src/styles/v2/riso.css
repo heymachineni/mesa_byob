@@ -130,9 +130,14 @@
   --w-shell: 74rem;
   --w-read: 62ch;
 
-  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  /* Easing, from emilkowalski/skills: built-in curves are too weak. --ease
+     stays as the alias every existing rule points at. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease: var(--ease-out);
   --fast: 150ms;
-  --base: 260ms;
+  --base: 250ms;
   --slow: 480ms;
 
   --hdr-h: 3.4rem;
@@ -180,6 +185,8 @@
   background: var(--coral);
 }
 [data-ink='flood'] .btn {
+  transition: transform 160ms var(--ease-out);
+
   background: var(--coral);
   color: var(--paper-3);
   box-shadow: 4px 4px 0 color-mix(in srgb, #fbf7f0 30%, transparent);
@@ -652,6 +659,10 @@ a:hover { text-decoration-color: var(--coral); }
 
 /* =============================================================== controls */
 
+/* Press feedback: the interface heard you. scale() carries the label with it. */
+.btn:active { transform: scale(0.97); }
+
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -795,6 +806,14 @@ a:hover .arrow, button:hover .arrow, .btn:hover .arrow { translate: 3px 0; }
   transition: color var(--fast) var(--ease);
 }
 .fold > summary::-webkit-details-marker { display: none; }
+/* The revealed body rises 4px as it fades in; the height change itself is
+   instant, so nothing pays layout on every frame. */
+.fold[open] > .fold__body {
+  animation: fold-in 200ms var(--ease-out);
+}
+@keyframes fold-in {
+  from { opacity: 0; transform: translateY(4px); }
+}
 .fold > summary:hover { color: var(--coral); }
 .fold > summary::after {
   content: '+'; font-family: var(--font-mono); font-size: 1.1em; line-height: 1;
@@ -805,7 +824,6 @@ a:hover .arrow, button:hover .arrow, .btn:hover .arrow { translate: 3px 0; }
   padding-block-end: var(--sp-5); color: var(--text-soft);
   max-inline-size: var(--w-read); line-height: 1.75;
 }
-.fold[open] .fold__body { animation: rise var(--base) var(--ease) both; }
 @keyframes rise { from { opacity: 0; translate: 0 -4px; } }
 
 /* A phone bar wants to be shallow; a bar carrying a seven-item menu and a
@@ -847,13 +865,6 @@ blockquote {
 
 /* ================================================================= motion */
 
-.js [data-in] {
-  opacity: 0;
-  translate: 0 12px;
-  transition: opacity var(--slow) var(--ease), translate var(--slow) var(--ease);
-  transition-delay: var(--in-delay, 0ms);
-}
-.js [data-in].is-in { opacity: 1; translate: 0 0; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -861,5 +872,4 @@ blockquote {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
   }
-  .js [data-in] { opacity: 1; translate: 0; }
 }
