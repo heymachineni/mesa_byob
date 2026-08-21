@@ -1,11 +1,22 @@
 ---
-/** The Channel Playbook: what's in it, and where to go. */
+/**
+ * The playbook's front page. Not a menu: the switcher and the rail already
+ * navigate, so this page carries the orientation a first visit needs — Mesa's
+ * intro, the document's own one-line directory, and the note about videos.
+ */
 import Kit from '../../layouts/Kit.astro';
+import PlaybookNav from '../../components/PlaybookNav.astro';
 import { getChannels, getMoney } from '../../lib/content';
 
 export const prerender = false;
 const channels = await getChannels();
 const money = await getMoney();
+
+const rows = [
+  { num: null, href: '/playbook/inventory', name: 'Money Matters: Inventory', line: money.inventory.oneLine },
+  { num: null, href: '/playbook/revenue', name: 'Money Matters: Revenue & Expenses', line: money.revenue.oneLine },
+  ...channels.map((c) => ({ num: c.code, href: `/playbook/${c.id}`, name: c.name, line: c.oneLine })),
+];
 ---
 
 <Kit title="Playbook" description={money.playbookLede} current="/playbook">
@@ -15,52 +26,52 @@ const money = await getMoney();
     <p class="lede">{money.playbookLede}</p>
   </header>
 
+  <PlaybookNav current="/playbook" />
+
   <p class="intro">{money.playbookIntro}</p>
 
-  <section class="sec" aria-labelledby="mm">
-    <h2 class="disp disp--sm" id="mm">Money matters</h2>
-    <div class="grid2">
-      <a class="card card--link" href="/playbook/inventory">
-        <h3 class="card__t">Inventory</h3>
-        <p class="card__b">{money.inventory.oneLine}</p>
-      </a>
-      <a class="card card--link" href="/playbook/revenue">
-        <h3 class="card__t">Revenue &amp; Expenses</h3>
-        <p class="card__b">{money.revenue.oneLine}</p>
-      </a>
-    </div>
-  </section>
-
-  <section class="sec" aria-labelledby="ch">
-    <h2 class="disp disp--sm" id="ch">The five channels</h2>
-    <div class="grid2">
-      {channels.map((c) => (
-        <a class="card card--link" href={`/playbook/${c.id}`}>
-          <span class="num-mark mono">{c.code}</span>
-          <h3 class="card__t">{c.name}</h3>
-          <p class="card__b">{c.oneLine}</p>
-        </a>
+  <section class="sec" aria-labelledby="dir">
+    <h2 class="disp disp--sm" id="dir">What's in the playbook</h2>
+    <ol class="dir">
+      {rows.map((r) => (
+        <li>
+          <a class="dir__row" href={r.href}>
+            <span class="dir__n mono">{r.num ?? '·'}</span>
+            <span class="dir__name">{r.name}</span>
+            <span class="dir__line">{r.line}</span>
+          </a>
+        </li>
       ))}
-    </div>
+    </ol>
   </section>
 
   <p class="aside">{money.videoNote}</p>
 </Kit>
 
 <style>
-  .ph { display: grid; gap: var(--sp-3); padding-block-end: var(--sp-5); }
-  .intro { font-size: var(--s-0); line-height: 1.75; color: var(--text-soft); max-inline-size: 66ch; padding-block-end: var(--sp-5); }
-  .sec { padding-block: var(--sp-5); display: grid; gap: var(--sp-4); }
-  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(19rem, 100%), 1fr)); gap: var(--sp-4); }
-  .card {
-    display: grid; gap: var(--sp-2); align-content: start;
-    padding: var(--sp-5);
+  .ph { display: grid; gap: var(--sp-3); padding-block-end: var(--sp-4); }
+  .intro { font-size: var(--s-0); line-height: 1.75; color: var(--text-soft); max-inline-size: 70ch; padding-block-end: var(--sp-5); }
+  .sec { display: grid; gap: var(--sp-4); padding-block-end: var(--sp-5); }
+
+  .dir { display: grid; gap: var(--sp-2); }
+  .dir__row {
+    display: grid;
+    grid-template-columns: 2rem minmax(11rem, auto) 1fr;
+    gap: var(--sp-4);
+    align-items: baseline;
+    padding: var(--sp-3) var(--sp-4);
     border-radius: var(--r-card);
+    text-decoration: none;
     background: var(--card);
     box-shadow: inset 0 0 0 1.4px var(--card-line);
+    transition: box-shadow var(--fast) var(--ease);
   }
-  .card--link { text-decoration: none; transition: box-shadow var(--fast) var(--ease); }
-  .card--link:hover { box-shadow: inset 0 0 0 1.4px var(--coral); }
-  .card__t { font-family: var(--font-display); font-size: var(--s-1); color: var(--ink-2); }
-  .card__b { font-size: var(--s--1); line-height: 1.65; color: var(--text-soft); }
+  .dir__row:hover { box-shadow: inset 0 0 0 1.4px var(--coral); }
+  .dir__n { font-size: var(--s--2); font-weight: 700; color: var(--coral); }
+  .dir__name { font-family: var(--font-display); font-size: var(--s-0); color: var(--ink-2); }
+  .dir__line { font-size: var(--s--1); line-height: 1.6; color: var(--text-soft); }
+  @media (max-width: 44rem) {
+    .dir__row { grid-template-columns: 2rem 1fr; }
+    .dir__line { grid-column: 2; }
+  }
 </style>

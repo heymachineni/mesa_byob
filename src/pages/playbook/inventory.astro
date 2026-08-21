@@ -2,6 +2,7 @@
 /** Money Matters: inventory, so you never lose a sale or your cash. */
 import Kit from '../../layouts/Kit.astro';
 import Clip from '../../components/Clip.astro';
+import PlaybookNav from '../../components/PlaybookNav.astro';
 import { getMoney } from '../../lib/content';
 
 export const prerender = false;
@@ -14,6 +15,8 @@ const { inventory } = await getMoney();
     <h1 class="disp disp--lg">Inventory</h1>
     <p class="lede">{inventory.intro}</p>
   </header>
+
+  <PlaybookNav current="/playbook/inventory" />
 
   <section class="sec" aria-labelledby="terms-h" id="terms">
     <h2 class="disp disp--sm" id="terms-h">Four terms worth knowing</h2>
