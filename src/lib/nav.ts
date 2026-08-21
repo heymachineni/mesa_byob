@@ -19,6 +19,7 @@ export const PAGES: Page[] = [
   { href: '/playbook/performance', label: 'Performance Marketing', group: 'Channel Playbook' },
   { href: '/playbook/b2b', label: 'B2B', group: 'Channel Playbook' },
   { href: '/grading', label: 'Grading', group: 'Wrap-up' },
+  { href: '/incentives', label: 'Incentives', group: 'Wrap-up' },
   { href: '/flea', label: 'Flea Market', group: 'Wrap-up' },
   { href: '/faq', label: 'FAQ', group: 'Wrap-up' },
 ];

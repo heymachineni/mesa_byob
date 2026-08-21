@@ -62,6 +62,11 @@ export async function getStillStuck() {
   return s[0].data;
 }
 
+export async function getIncentives() {
+  const i = await getCollection('incentives');
+  return i[0].data;
+}
+
 /**
  * Chart labels only: one compact format for every bar — K under a lakh,
  * L at and above it (₹25K, ₹1.5L, ₹2.75L, ₹7L+). Milestone cards keep the

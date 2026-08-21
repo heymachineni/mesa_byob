@@ -138,4 +138,12 @@ export const collections = {
     loader: data('still-stuck'),
     schema: z.object({ id: z.string(), title: z.string(), body: z.string(), bring: z.array(z.string()), closing: z.string() }),
   }),
+  incentives: defineCollection({
+    loader: data('incentives'),
+    schema: z.object({
+      id: z.string(), title: z.string(), kicker: z.string(), intro: z.string(),
+      note: z.string().optional(),
+      items: z.array(z.object({ title: z.string(), body: z.string() })),
+    }),
+  }),
 };
