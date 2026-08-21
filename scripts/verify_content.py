@@ -24,6 +24,11 @@ norm = re.sub(r'\s+', ' ', visible)
 # it in the source. What matters is that a reader sees it contiguously.
 text_only = re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', page)))
 
+# And a third with tags removed to nothing: inline markup that closes flush
+# against punctuation (…seed capital</strong>, so…) would otherwise leave a
+# stray space before the comma and break the contiguous match.
+text_tight = re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', '', page)))
+
 SKIP_KEYS = {'id', 'kind', 'placeholder', 'tone', 'phase', 'milestone', 'channel',
              'target', 'workshops', 'channels', 'tags', 'seq'}
 
@@ -52,7 +57,7 @@ def walk(node, path, key=None):
             missing.append((path, f'video id {m.group(1)} ({needle[:60]})'))
             return
 
-        if needle not in norm and needle not in text_only:
+        if needle not in norm and needle not in text_only and needle not in text_tight:
             missing.append((path, needle[:110]))
 
 for f in sorted((ROOT / 'src/content/data').glob('*.json')):

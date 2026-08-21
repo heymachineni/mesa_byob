@@ -11,19 +11,23 @@
         "criteria": [
           {
             "term": "ICP Definition",
-            "body": "how clearly you've defined and validated exactly who you're selling to"
+            "body": "how clearly you've defined and validated exactly who you're selling to",
+            "credits": "0.5"
           },
           {
             "term": "Market Validation",
-            "body": "how real the gap is that you're going after, backed by actual interviews or demand signals, not assumptions"
+            "body": "how real the gap is that you're going after, backed by actual interviews or demand signals, not assumptions",
+            "credits": "0.5"
           },
           {
             "term": "Brand Building",
-            "body": "how coherent your positioning is across your store, social handles, ad creatives, and packaging"
+            "body": "how coherent your positioning is across your store, social handles, ad creatives, and packaging",
+            "credits": "0.5"
           },
           {
             "term": "GTM Execution",
-            "body": "whether you're consistently showing up and executing across your chosen channels, week over week"
+            "body": "whether you're consistently showing up and executing across your chosen channels, week over week",
+            "credits": "3.5"
           }
         ],
         "note": "GTM Execution alone carries most of the weight here, strategy documents matter, but consistent weekly execution is what actually moves this score."
@@ -73,7 +77,8 @@
             "body": "whether you surface and handle disagreement constructively instead of letting it fester"
           }
         ],
-        "note": "This part of your grade is entirely in your teammates' hands. A strong revenue number doesn't cover for being a bad teammate."
+        "note": "This part of your grade is entirely in your teammates' hands. A strong revenue number doesn't cover for being a bad teammate.",
+        "creditsTotal": "1"
       }
     ],
     "cgpaNote": "Your final BYOB scores can impact up to 20% of your CGPA. Full detail comes at the credit and grading session during orientation."

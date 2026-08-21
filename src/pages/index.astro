@@ -52,13 +52,20 @@ const program = await getProgram();
     <h2 class="disp disp--md" id="gain">What you will gain</h2>
     <p class="lede">{program.gainsIntro}</p>
     <ol class="grid2">
-      {program.gains.map((g, i) => (
-        <li class="card">
-          <span class="num-mark mono">{i + 1}</span>
-          <h3 class="card__t">{g.title}</h3>
-          <p class="card__b">{g.body}</p>
-        </li>
-      ))}
+      {program.gains.map((g, i) => {
+        /* The one sentence the programme wants remembered is set apart in the
+           body — brightest text on the page, same voice as the headings. */
+        const parts = g.highlight ? g.body.split(g.highlight) : null;
+        return (
+          <li class="card">
+            <span class="num-mark mono">{i + 1}</span>
+            <h3 class="card__t">{g.title}</h3>
+            <p class="card__b">
+              {parts ? (<>{parts[0]}<strong class="card__hl">{g.highlight}</strong>{parts[1]}</>) : g.body}
+            </p>
+          </li>
+        );
+      })}
     </ol>
     <p class="close">{program.closingNote}</p>
   </section>
@@ -120,6 +127,7 @@ const program = await getProgram();
   }
   .card__t { font-family: var(--font-display); font-size: var(--s-1); color: var(--ink-2); }
   .card__b { font-size: var(--s--1); line-height: 1.7; color: var(--text-soft); }
+  .card__hl { font-weight: 700; color: var(--ink); }
   .close { font-size: var(--s--1); line-height: 1.75; color: var(--text-soft); max-inline-size: 62ch; }
   .watch { max-inline-size: 34rem; }
 </style>
