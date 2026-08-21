@@ -63,11 +63,18 @@ export async function getStillStuck() {
 }
 
 /**
- * The revenue climb, straight from the milestone goals. Labels are the
- * document's own (₹25,000 … ₹7,00,000+), untransformed: the abbreviation pass
- * that turned them into ₹25K/₹1.5L produced a third format for the same number
- * on the same page — and, in one case, the mangled "₹7,00K+".
+ * Chart labels only: one compact format for every bar — K under a lakh,
+ * L at and above it (₹25K, ₹1.5L, ₹2.75L, ₹7L+). Milestone cards keep the
+ * document's full figures.
  */
+function compactINR(n: number, plus: boolean) {
+  const s = n >= 100000
+    ? `${parseFloat((n / 100000).toFixed(2))}L`
+    : `${parseFloat((n / 1000).toFixed(1))}K`;
+  return `₹${s}${plus ? '+' : ''}`;
+}
+
+/** The revenue climb, straight from the milestone goals. */
 export async function getRevenueLadder() {
   const ms = await getMilestones();
   const top = Math.max(...ms.map((m) => m.revenueGoal));
@@ -76,7 +83,7 @@ export async function getRevenueLadder() {
     ...ms
       .filter((m) => m.revenueGoal > 0)
       .map((m) => ({
-        label: m.revenueLabel,
+        label: compactINR(m.revenueGoal, m.revenueLabel.trim().endsWith('+')),
         fraction: m.revenueGoal / top,
         codes: `Week ${m.week}`,
         isTarget: m.revenueGoal >= top,
