@@ -1,7 +1,6 @@
 ---
 /** Money Matters: revenue and expenses, milestone by milestone. */
 import Kit from '../../layouts/Kit.astro';
-import PlaybookNav from '../../components/PlaybookNav.astro';
 import { getMoney } from '../../lib/content';
 
 export const prerender = false;
@@ -14,8 +13,6 @@ const { revenue } = await getMoney();
     <h1 class="disp disp--lg">Revenue &amp; Expenses</h1>
     <p class="lede">{revenue.intro}</p>
   </header>
-
-  <PlaybookNav current="/playbook/revenue" />
 
   <section class="sec" aria-labelledby="numbers-h" id="numbers">
     <h2 class="disp disp--sm" id="numbers-h">Track these five numbers weekly</h2>

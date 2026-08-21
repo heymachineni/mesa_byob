@@ -6,7 +6,6 @@
  */
 import Kit from '../../layouts/Kit.astro';
 import Clip from '../../components/Clip.astro';
-import PlaybookNav from '../../components/PlaybookNav.astro';
 import { getChannel } from '../../lib/content';
 
 export const prerender = false;
@@ -21,8 +20,6 @@ if (!c) return Astro.redirect('/playbook', 302);
     <h1 class="disp disp--lg">{c.name}</h1>
     <p class="lede">{c.tagline}</p>
   </header>
-
-  <PlaybookNav current={`/playbook/${c.id}`} />
 
   <p class="why">{c.why}</p>
 
