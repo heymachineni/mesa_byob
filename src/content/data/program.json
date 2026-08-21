@@ -5,7 +5,7 @@
     "programme": "PGP Forge",
     "heroKicker": "Your first day starts here",
     "heroStatement": "Build something people will actually buy.",
-    "heroSupport": "Eight weeks. Eight milestones. A real product, real customers, and a minimum of ₹7 lakhs in revenue. Not a case study, a venture with your name on it.",
+    "heroSupport": "Build a real brand with real customers.",
     "revenueTarget": 700000,
     "revenueTargetLabel": "₹7 lakhs",
     "capitalMaxLabel": "₹1.5 lakh",
@@ -20,36 +20,36 @@
       {
         "n": "1",
         "title": "Goal",
-        "body": "Identify a customer need, develop a D2C product, and sell to real customers to generate as much revenue as possible. You must meet a minimum revenue target of ₹7 lakhs. Remember, this is just the minimum revenue target you must meet."
+        "body": "Identify a customer need, develop a D2C product, and sell to real customers to generate as much revenue as possible."
       },
       {
         "n": "2",
         "title": "Team",
-        "body": "You can choose a 2/3-member team. They are the ‘co-founders’ (team members) with whom you will build your ‘venture’ (BYOB business idea). The allocation optimizes for a diversity of backgrounds within each venture."
+        "body": "Find your own 3-member team. They are your cofounders for the next 2 months."
       },
       {
         "n": "3",
         "title": "Milestones",
-        "body": "During BYOB, your venture must hit eight milestones before the stipulated deadline. To meet these milestones, you and your co-founders must submit outputs (e.g., investment memo) and achieve specific business goals (e.g., revenue)."
+        "body": "You must meet a minimum revenue target of ₹7 lakhs. We'll provide a weekly breakdown to make it easier."
       },
       {
         "n": "4",
         "title": "Investment",
-        "body": "You can raise interest-free debt of up to ₹1.5 lakh from Mesa. This will be disbursed in multiple tranches of up to ₹35-40,000 each and tied to performance against specific milestones. The Investment Committee (IC) will evaluate the deliverables of your venture to decide on the investment and the amount, the IC will not release the funds if the deliverables do not meet the milestone targets."
+        "body": "You can raise interest-free debt of up to ₹1.5 lakh from Mesa. This will be disbursed in multiple tranches of up to ₹35-40,000 each and tied to performance. The Investment Committee (IC) will evaluate your venture to decide on the investment and the amount. The IC will not release the funds if the deliverables do not meet the milestone targets."
       },
       {
         "n": "5",
         "title": "Time",
-        "body": "Your time starts now! You have between 1st September, 2026 and 30th October 2026 to complete the BYOB Challenge. Note that each milestone has a specific deadline associated with it."
+        "body": "Your time starts now! You have between 1st September, 2026 and 30th October 2026 to complete the BYOB Challenge."
       },
       {
         "n": "6",
         "title": "What's Next",
-        "body": "The Challenge doesn't end when the 8 weeks are up. If your venture is working, you're free to keep building it, as a side hustle alongside your coursework, or full-time if you want to go all in. Mesa is happy to support you either way, with continued mentorship and guidance as you take it further."
+        "body": "The Challenge doesn't end when the 8 weeks are up. If your venture is working, you're free to keep building it, as a side hustle alongside your coursework, or full-time if you want to go all in. Mesa is happy to support you either way."
       }
     ],
-    "keyOutcome": "Key outcome: revenue moves directly to your venture. What you earn from customers goes straight to your team, only the Mesa investment tranches route through the IC.",
-    "capitalNote": "How this ties to capital: each tranche from Mesa is released only after the IC reviews that milestone's deliverables against the targets above, hit the bar, and the next gate unlocks. Miss it, and the tranche (and your grade) are both at risk.",
+    "keyOutcome": "Key outcome: revenue moves directly to your venture. What you earn from customers goes straight to your team, only the Mesa investment tranches come through the IC.",
+    "capitalNote": "How this ties to capital: each tranche from Mesa is released only after the IC reviews that milestone's deliverables against the targets. Miss it, and the tranche (and your grade) are both at risk.",
     "gainsIntro": "You've joined Mesa to learn the skills, mindsets, and tools required to thrive in India's startup ecosystem. This is your opportunity to do all that as part of an intense sprint. Putting in the effort and fight to build a strong business will set you up for success for the rest of the program.",
     "gains": [
       {
@@ -78,12 +78,12 @@
         "highlight": "The revenue and profit you generate here becomes the seed capital for whatever you build next"
       }
     ],
-    "closingNote": "Finally, Mesa students absolutely love BYOB: they've shared that it is the most fulfilling experience of their time at Mesa. It allowed them to get out of their comfort zone, get close to their cohort mates, and build something that they are proud of.",
+    "closingNote": "Previous Mesa students absolutely loved BYOB: they've shared that it is the most fulfilling experience of their time at Mesa. It allowed them to get out of their comfort zone, get close to their cohort mates, and build something that they are proud of.",
     "watch": {
       "title": "Hear from Mesa students about their BYOB experience",
       "url": "https://www.youtube.com/watch?v=bOnJ0bAdZ40"
     },
-    "trancheNote": "A note on all investment tranches: Tranche 2 onwards is optional, based on your need projections and need the committee shall approve and disburse the amount.",
-    "milestonesIntro": "Your venture must hit eight milestones across four phases before the Challenge ends. Each one is mandatory and dated, you can hit them early, but missing a deadline affects your grade, your next capital tranche, and gets escalated to your mentor and the Investment Committee. Here's what's expected at each stage, and what it unlocks."
+    "trancheNote": "A note on all investment tranches: Tranche 2 onwards is optional, based on your need projections and performance.",
+    "milestonesIntro": "Your venture must hit eight milestones across four phases before the Challenge ends. Each one is mandatory and dated, you can hit them early, but missing a deadline affects your grade, your next capital tranche, and gets escalated to your mentor and the Investment Committee."
   }
 ]
