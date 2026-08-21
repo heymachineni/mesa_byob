@@ -73,7 +73,7 @@ const g = await getGrading();
   .comp__b { font-size: var(--s--1); line-height: 1.75; color: var(--text-soft); max-inline-size: 66ch; }
 
   .crit { display: grid; gap: var(--sp-3); }
-  .crit__i { display: grid; grid-template-columns: minmax(9rem, auto) 1fr; gap: var(--sp-4); align-items: baseline; padding-block-end: var(--sp-3); border-block-end: 1px solid var(--line-soft); }
+  .crit__i { display: grid; gap: var(--sp-1); padding-block-end: var(--sp-3); border-block-end: 1px solid var(--line-soft); }
   .crit__i:last-child { border-block-end: 0; padding-block-end: 0; }
   .crit__i dt {
     font-family: var(--font-display); font-size: var(--s-0); color: var(--ink-2);
@@ -88,8 +88,7 @@ const g = await getGrading();
     white-space: nowrap;
   }
   .comp__c { margin-inline-start: auto; align-self: center; }
-  .crit__i dd { font-size: var(--s--1); line-height: 1.65; color: var(--text-soft); }
-  @media (max-width: 34rem) { .crit__i { grid-template-columns: 1fr; gap: var(--sp-1); } }
+  .crit__i dd { font-size: var(--s--1); line-height: 1.65; color: var(--text-soft); max-inline-size: 66ch; }
 
   .cred { border-collapse: collapse; max-inline-size: 20rem; }
   .cred th, .cred td { text-align: start; padding: 0.55rem 1rem 0.55rem 0; border-block-end: 1px solid var(--line-soft); font-size: var(--s--1); }
