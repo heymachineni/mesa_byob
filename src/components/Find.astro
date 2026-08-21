@@ -3,7 +3,7 @@
  * Search. An icon that opens a panel; every result is a page URL, so a result
  * can be opened, shared, or middle-clicked like any link.
  */
-import { getSearchIndex, SEARCH_SUGGESTIONS } from '../lib/content';
+import { getSearchIndex } from '../lib/content';
 
 /* Every entry's target is a real page URL now, so activating a result is just
    navigation — the browser does the rest, and results are shareable links. */
@@ -52,7 +52,6 @@ const index = (await getSearchIndex()).map((e) => ({
 </div>
 
 <script is:inline type="application/json" data-find-index set:html={JSON.stringify(index)} />
-<script is:inline type="application/json" data-find-hints set:html={JSON.stringify(SEARCH_SUGGESTIONS)} />
 
 <style>
   .find {
@@ -236,25 +235,6 @@ const index = (await getSearchIndex()).map((e) => ({
     font-size: var(--s--1);
     color: var(--text-soft);
   }
-  .find__hints {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    padding: var(--sp-4);
-  }
-  .find__hint {
-    padding: 0.35rem 0.75rem;
-    border-radius: var(--r-btn);
-    font-size: var(--s--2);
-    font-weight: 600;
-    color: var(--ink);
-    background: var(--card);
-    box-shadow: inset 0 0 0 1px var(--card-line);
-    cursor: pointer;
-    transition: box-shadow var(--fast) var(--ease);
-  }
-  .find__hint:hover { box-shadow: inset 0 0 0 1px var(--coral); }
-
   /* Where search sent you. Without it you arrive mid-section and still have to
      hunt for the line that answered the question. */
   .is-found {
@@ -285,7 +265,6 @@ const index = (await getSearchIndex()).map((e) => ({
     JSON.parse(document.querySelector<HTMLScriptElement>(sel)!.textContent!);
 
   const INDEX = read<Hit[]>('[data-find-index]');
-  const HINTS = read<string[]>('[data-find-hints]');
 
   const root = document.querySelector<HTMLElement>('[data-find]')!;
   const q = document.querySelector<HTMLInputElement>('[data-find-q]')!;
@@ -335,12 +314,10 @@ const index = (await getSearchIndex()).map((e) => ({
     const terms = raw.toLowerCase().trim().split(/\s+/).filter(Boolean);
     active = -1;
 
+    /* An empty field shows nothing — the visitor types what they're after. */
     if (!terms.length) {
-      out.innerHTML =
-        `<div class="find__hints">` +
-        HINTS.map((h) => `<button class="find__hint" type="button" data-hint="${h}">${h}</button>`).join('') +
-        `</div>`;
-      show(true);
+      out.innerHTML = '';
+      show(false);
       return;
     }
 
@@ -409,13 +386,15 @@ const index = (await getSearchIndex()).map((e) => ({
   function closeSheet() {
     root.removeAttribute('data-open');
     document.body.classList.remove('is-locked');
+    /* A fresh field every time it opens — stale queries stay behind. */
+    q.value = '';
+    out.innerHTML = '';
     show(false);
   }
 
   function activate(el: HTMLElement) {
     const target = el.dataset.a!;
     closeSheet();
-    q.value = '';
     location.assign(target);
   }
 
@@ -450,15 +429,8 @@ const index = (await getSearchIndex()).map((e) => ({
   });
 
   out.addEventListener('click', (e) => {
-    const t = e.target as HTMLElement;
-    const hit = t.closest<HTMLElement>('.find__hit');
-    if (hit) return activate(hit);
-    const hint = t.closest<HTMLElement>('[data-hint]');
-    if (hint) {
-      q.value = hint.dataset.hint!;
-      render(q.value);
-      q.focus();
-    }
+    const hit = (e.target as HTMLElement).closest<HTMLElement>('.find__hit');
+    if (hit) activate(hit);
   });
 
   document.addEventListener('click', (e) => {

@@ -104,8 +104,6 @@ export type SearchEntry = {
   text: string;
 };
 
-export const SEARCH_SUGGESTIONS = ['MOQ', 'week 4', 'influencer', 'ROAS', 'grading', 'flea market'] as const;
-
 export async function getSearchIndex(): Promise<SearchEntry[]> {
   const [milestones, phases, weekly, workshops, channels, money, grading, faqs, flea] =
     await Promise.all([
