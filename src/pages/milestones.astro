@@ -39,9 +39,9 @@ const ladder = await getRevenueLadder();
       {milestones.filter((m) => m.phase === p.id).map((m) => (
         <article class="ms card" id={m.id}>
           <header class="ms__top">
-            <span class="tag tag--coral mono">{m.code}</span>
+            <span class="tag tag--coral mono">Week {m.week}</span>
             <h3 class="ms__t">{m.headline}</h3>
-            <p class="ms__meta mono">{m.deadlineLabel} · {m.date} · {m.revenueLabel}</p>
+            <p class="ms__meta mono">{m.date} · {m.revenueLabel}</p>
           </header>
           <div class="ms__grid">
             <div>
@@ -104,7 +104,7 @@ const ladder = await getRevenueLadder();
     line-height: 1;
     white-space: nowrap;
   }
-  .climb__m { font-size: 0.62rem; color: var(--text-faint); text-align: center; }
+  .climb__m { font-size: clamp(0.52rem, 1.1vw, 0.62rem); color: var(--text-faint); text-align: center; white-space: nowrap; }
 
   .phase { padding-block: var(--sp-6); border-block-start: 1px solid var(--line-soft); display: grid; gap: var(--sp-4); }
   .phase__h { display: grid; gap: var(--sp-2); }
@@ -117,9 +117,14 @@ const ladder = await getRevenueLadder();
     scroll-margin-block-start: calc(var(--hdr-h) + 1rem);
   }
   .ms { display: grid; gap: var(--sp-4); }
-  .ms__top { display: flex; align-items: baseline; gap: var(--sp-3); flex-wrap: wrap; }
-  .ms__t { font-family: var(--font-display); font-size: var(--s-2); color: var(--ink-2); }
-  .ms__meta { font-size: var(--s--2); color: var(--text-faint); margin-inline-start: auto; }
+  .ms__top {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: var(--sp-2) var(--sp-3);
+  }
+  .ms__t { grid-column: 1 / -1; font-family: var(--font-display); font-size: var(--s-2); color: var(--ink-2); }
+  .ms__meta { font-size: var(--s--2); color: var(--text-faint); justify-self: end; }
   .ms__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr)); gap: var(--sp-5); }
   .ms__k {
     font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700;

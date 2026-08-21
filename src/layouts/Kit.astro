@@ -124,8 +124,18 @@ const here = PAGES.find((p) => p.href === current);
         </header>
         <nav aria-label="All pages">
         {groups.map((g) => (
-          <div class="sheet__g">
-            <p class="rail__h">{g}</p>
+          <details
+            class="sheet__g"
+            name="sheet-group"
+            data-acc
+            open={PAGES.some((p) => p.group === g && p.href === current) || undefined}
+          >
+            <summary class="sheet__gh">
+              <span>{g}</span>
+              <svg class="sheet__chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path d="M3.5 6 8 10.5 12.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"></path>
+              </svg>
+            </summary>
             <ul>
               {PAGES.filter((p) => p.group === g).map((p) => (
                 <li>
@@ -137,7 +147,7 @@ const here = PAGES.find((p) => p.href === current);
                 </li>
               ))}
             </ul>
-          </div>
+          </details>
         ))}
         </nav>
         <a class="sheet__out" href="/api/auth/logout">Sign out</a>
@@ -405,7 +415,32 @@ const here = PAGES.find((p) => p.href === current);
         overscroll-behavior: contain;
         min-block-size: 0;
       }
-      .sheet__g + .sheet__g { margin-block-start: var(--sp-5); }
+      .sheet__g + .sheet__g { border-block-start: 1px solid var(--line-soft); }
+      .sheet__gh {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--sp-3);
+        min-block-size: 2.9rem;
+        cursor: pointer;
+        list-style: none;
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--text-faint);
+      }
+      .sheet__gh::-webkit-details-marker { display: none; }
+      .sheet__g[open] .sheet__gh { color: var(--ink); }
+      .sheet__chev {
+        inline-size: 0.9rem;
+        block-size: 0.9rem;
+        flex: 0 0 auto;
+        transition: transform 200ms var(--ease-out);
+      }
+      .sheet__g[open] .sheet__chev { transform: rotate(180deg); }
+      .sheet__g ul { padding-block-end: var(--sp-3); }
       .sheet__a {
         position: relative;
         display: flex;
@@ -497,7 +532,7 @@ const here = PAGES.find((p) => p.href === current);
       /* Keep Tab inside the open sheet — it is a modal, so focus is too. */
       sheet.addEventListener('keydown', (e) => {
         if (e.key !== 'Tab') return;
-        const f = [...sheet.querySelectorAll<HTMLElement>('button, a[href]')].filter(
+        const f = [...sheet.querySelectorAll<HTMLElement>('button, a[href], summary')].filter(
           (el) => el.offsetParent !== null
         );
         if (!f.length) return;
@@ -506,10 +541,22 @@ const here = PAGES.find((p) => p.href === current);
         else if (!e.shiftKey && document.activeElement === last) { first.focus(); e.preventDefault(); }
       });
       openers.forEach((b) => b.addEventListener('click', () => set(!sheet.hasAttribute('data-open'))));
-      sheet.querySelector('[data-dock-close]')!.addEventListener('click', () => set(false));
+      /* Every closer — the scrim AND the X button — dismisses the sheet. */
+      sheet.querySelectorAll('[data-dock-close]').forEach((el) =>
+        el.addEventListener('click', () => set(false))
+      );
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && sheet.hasAttribute('data-open')) set(false);
       });
+
+      /* One group open at a time. <details name> already enforces this in new
+         browsers; this covers the rest. */
+      const accs = [...sheet.querySelectorAll<HTMLDetailsElement>('details[data-acc]')];
+      accs.forEach((d) =>
+        d.addEventListener('toggle', () => {
+          if (d.open) accs.forEach((o) => { if (o !== d) o.open = false; });
+        })
+      );
     </script>
   </body>
 </html>

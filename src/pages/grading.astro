@@ -20,7 +20,7 @@ const g = await getGrading();
         <header class="comp__h">
           <span class="comp__w disp disp--md">{c.weight}</span>
           <h2 class="comp__t" id={`g-${i}`}>{c.name}</h2>
-          {c.creditsTotal && <span class="comp__c mono">{c.creditsTotal} credit</span>}
+          {c.creditsTotal && <span class="comp__c mono">{c.creditsTotal} {c.creditsTotal === '1' ? 'credit' : 'credits'}</span>}
         </header>
         <p class="comp__b">{c.body}</p>
 
@@ -30,7 +30,7 @@ const g = await getGrading();
               <div class="crit__i">
                 <dt>
                   {cr.term}
-                  {cr.credits && <span class="crit__c mono">{cr.credits} cr</span>}
+                  {cr.credits && <span class="crit__c mono">{cr.credits} {cr.credits === '1' ? 'credit' : 'credits'}</span>}
                 </dt>
                 <dd>{cr.body}</dd>
               </div>

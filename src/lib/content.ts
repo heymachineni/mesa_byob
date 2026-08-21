@@ -72,13 +72,13 @@ export async function getRevenueLadder() {
   const ms = await getMilestones();
   const top = Math.max(...ms.map((m) => m.revenueGoal));
   return [
-    { label: '₹0', fraction: 0, codes: 'M1-M2', isTarget: false },
+    { label: '₹0', fraction: 0, codes: 'Weeks 1-2', isTarget: false },
     ...ms
       .filter((m) => m.revenueGoal > 0)
       .map((m) => ({
         label: m.revenueLabel,
         fraction: m.revenueGoal / top,
-        codes: m.code,
+        codes: `Week ${m.week}`,
         isTarget: m.revenueGoal >= top,
       })),
   ];
@@ -124,7 +124,7 @@ export async function getSearchIndex(): Promise<SearchEntry[]> {
   for (const w of weekly) {
     add({
       url: `/weeks#${w.id}`,
-      title: `${w.week} check-in`,
+      title: `${w.week.replace(/^Wk\s*/, 'Week ')} check-in`,
       sub: w.focus.slice(0, 90),
       group: 'Weekly Check-ins',
       where: 'Weekly Check-ins',
@@ -134,10 +134,10 @@ export async function getSearchIndex(): Promise<SearchEntry[]> {
   for (const w of workshops) {
     add({
       url: `/workshops#${w.id}`,
-      title: `${w.code} · ${w.title}`,
+      title: `${w.n} · ${w.title}`,
       sub: w.expect.slice(0, 90),
       group: 'Workshops',
-      where: `Workshops → ${w.code}`,
+      where: `Workshops → ${w.n}`,
       text: w.expect,
     });
   }

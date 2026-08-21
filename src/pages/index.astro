@@ -36,29 +36,27 @@ const program = await getProgram();
 
   <section class="sec" aria-labelledby="about">
     <h2 class="disp disp--md" id="about">What the BYOB Challenge is all about</h2>
-    <ol class="grid2">
+    <ul class="grid2">
       {program.structure.map((s) => (
         <li class="card">
-          <span class="num-mark mono">{s.n}</span>
           <h3 class="card__t">{s.title}</h3>
           <p class="card__b">{s.body}</p>
         </li>
       ))}
-    </ol>
+    </ul>
     <p class="aside aside--violet">{program.keyOutcome}</p>
   </section>
 
   <section class="sec" aria-labelledby="gain">
     <h2 class="disp disp--md" id="gain">What you will gain</h2>
     <p class="lede">{program.gainsIntro}</p>
-    <ol class="grid2">
-      {program.gains.map((g, i) => {
+    <ul class="grid2">
+      {program.gains.map((g) => {
         /* The one sentence the programme wants remembered is set apart in the
            body — brightest text on the page, same voice as the headings. */
         const parts = g.highlight ? g.body.split(g.highlight) : null;
         return (
           <li class="card">
-            <span class="num-mark mono">{i + 1}</span>
             <h3 class="card__t">{g.title}</h3>
             <p class="card__b">
               {parts ? (<>{parts[0]}<strong class="card__hl">{g.highlight}</strong>{parts[1]}</>) : g.body}
@@ -66,7 +64,7 @@ const program = await getProgram();
           </li>
         );
       })}
-    </ol>
+    </ul>
     <p class="close">{program.closingNote}</p>
   </section>
 

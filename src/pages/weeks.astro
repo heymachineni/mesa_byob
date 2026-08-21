@@ -15,13 +15,19 @@ const weekly = await getWeekly();
   </header>
 
   <ol class="wk">
-    {weekly.map((w) => (
-      <li class="wk__row card" id={w.id}>
-        <span class="wk__w mono">{w.week}</span>
-        <span class="wk__m">{w.milestone}</span>
-        <p class="wk__f">{w.focus}</p>
-      </li>
-    ))}
+    {weekly.map((w) => {
+      const week = w.week.replace(/^Wk\s*/, 'Week ');
+      const amount = w.milestone.split('·').pop()?.trim();
+      return (
+        <li class="wk__row card" id={w.id}>
+          <header class="wk__h">
+            <span class="wk__w">{week}</span>
+            <span class="wk__a mono">{amount}</span>
+          </header>
+          <p class="wk__f">{w.focus}</p>
+        </li>
+      );
+    })}
   </ol>
 </Kit>
 
@@ -37,16 +43,14 @@ const weekly = await getWeekly();
   }
   .wk__row {
     display: grid;
-    grid-template-columns: 3.2rem minmax(7rem, auto) 1fr;
-    gap: var(--sp-4);
-    align-items: baseline;
+    gap: var(--sp-2);
     padding: var(--sp-4) var(--sp-5);
   }
-  .wk__w { font-size: var(--s--2); font-weight: 700; color: var(--coral); }
-  .wk__m { font-family: var(--font-display); font-size: var(--s-0); color: var(--ink-2); white-space: nowrap; }
-  .wk__f { font-size: var(--s--1); line-height: 1.7; color: var(--text-soft); }
-  @media (max-width: 40rem) {
-    .wk__row { grid-template-columns: 3.2rem 1fr; }
-    .wk__f { grid-column: 2; }
+  .wk__h { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-3); }
+  .wk__w { font-family: var(--font-display); font-size: var(--s-0); color: var(--ink-2); }
+  .wk__a {
+    font-size: var(--s--2); font-weight: 700; color: var(--coral);
+    white-space: nowrap;
   }
+  .wk__f { font-size: var(--s--1); line-height: 1.7; color: var(--text-soft); max-inline-size: 62ch; }
 </style>
