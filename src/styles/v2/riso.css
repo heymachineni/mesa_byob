@@ -824,7 +824,6 @@ a:hover .arrow, button:hover .arrow, .btn:hover .arrow { translate: 3px 0; }
   padding-block-end: var(--sp-5); color: var(--text-soft);
   max-inline-size: var(--w-read); line-height: 1.75;
 }
-@keyframes rise { from { opacity: 0; translate: 0 -4px; } }
 
 /* A phone bar wants to be shallow; a bar carrying a seven-item menu and a
    search field wants room to breathe. One token, so the sticky marks, the
