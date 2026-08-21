@@ -62,22 +62,26 @@ export async function getStillStuck() {
   return s[0].data;
 }
 
-/** The revenue climb, straight from the milestone goals. */
+/**
+ * The revenue climb, straight from the milestone goals. Labels are the
+ * document's own (₹25,000 … ₹7,00,000+), untransformed: the abbreviation pass
+ * that turned them into ₹25K/₹1.5L produced a third format for the same number
+ * on the same page — and, in one case, the mangled "₹7,00K+".
+ */
 export async function getRevenueLadder() {
   const ms = await getMilestones();
   const top = Math.max(...ms.map((m) => m.revenueGoal));
-  const rungs = [
+  return [
     { label: '₹0', fraction: 0, codes: 'M1-M2', isTarget: false },
     ...ms
       .filter((m) => m.revenueGoal > 0)
       .map((m) => ({
-        label: m.revenueLabel.replace(',000', 'K').replace('₹1,50', '₹1.5L').replace('₹2,75', '₹2.75L').replace('₹5,50', '₹5.5L').replace('₹7,00,000+', '₹7L+'),
+        label: m.revenueLabel,
         fraction: m.revenueGoal / top,
         codes: m.code,
         isTarget: m.revenueGoal >= top,
       })),
   ];
-  return rungs;
 }
 
 /* ------------------------------------------------------------------ search */

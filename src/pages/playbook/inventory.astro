@@ -28,7 +28,12 @@ const { inventory } = await getMoney();
     <h2 class="disp disp--sm" id="phase-h">How to think about it, phase by phase</h2>
     <ol class="steps">
       {inventory.phases.map((p) => (
-        <li><h3 class="step__t">{p.label}</h3><p class="step__b">{p.body}</p></li>
+        <li>
+          <div>
+            <h3 class="step__t">{p.label}</h3>
+            <p class="step__b">{p.body}</p>
+          </div>
+        </li>
       ))}
     </ol>
     <p class="aside aside--violet"><b>A simple system.</b> {inventory.system}</p>
