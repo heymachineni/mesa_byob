@@ -18,9 +18,11 @@ const g = await getGrading();
     {g.components.map((c, i) => (
       <section class="comp card" aria-labelledby={`g-${i}`}>
         <header class="comp__h">
-          <span class="comp__w disp disp--md">{c.weight}</span>
+          <div class="comp__hr">
+            <span class="comp__w disp disp--md">{c.weight}</span>
+            {c.creditsTotal && <span class="comp__c mono">{c.creditsTotal} {c.creditsTotal === '1' ? 'credit' : 'credits'}</span>}
+          </div>
           <h2 class="comp__t" id={`g-${i}`}>{c.name}</h2>
-          {c.creditsTotal && <span class="comp__c mono">{c.creditsTotal} {c.creditsTotal === '1' ? 'credit' : 'credits'}</span>}
         </header>
         <p class="comp__b">{c.body}</p>
 
@@ -64,8 +66,9 @@ const g = await getGrading();
   .comps { display: grid; gap: var(--sp-5); }
   .card { padding: var(--sp-6); border-radius: var(--r-card); background: var(--card); box-shadow: inset 0 0 0 1.4px var(--card-line); }
   .comp { display: grid; gap: var(--sp-4); }
-  .comp__h { display: flex; align-items: baseline; gap: var(--sp-4); }
-  .comp__w { color: var(--coral); }
+  .comp__h { display: grid; gap: var(--sp-1); }
+  .comp__hr { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); }
+  .comp__w { color: var(--coral); line-height: 1; }
   .comp__t { font-family: var(--font-display); font-size: var(--s-2); color: var(--ink-2); }
   .comp__b { font-size: var(--s--1); line-height: 1.75; color: var(--text-soft); max-inline-size: 66ch; }
 

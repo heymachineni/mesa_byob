@@ -750,16 +750,8 @@ a:hover .arrow, button:hover .arrow, .btn:hover .arrow { translate: 3px 0; }
   background: var(--coral);
 }
 
-.steps { display: grid; gap: var(--sp-5); counter-reset: s; }
-.steps > li {
-  counter-increment: s; display: grid; grid-template-columns: 2rem 1fr;
-  gap: var(--sp-4); align-items: start;
-}
-.steps > li::before {
-  content: counter(s, decimal-leading-zero);
-  font-family: var(--font-mono); font-size: var(--s--2); font-weight: 700;
-  color: var(--coral); padding-block-start: 0.35em;
-}
+.steps { display: grid; gap: var(--sp-5); }
+.steps > li { display: grid; gap: var(--sp-4); align-items: start; }
 
 .nope { display: grid; gap: var(--sp-3); }
 .nope li {

@@ -41,13 +41,10 @@ if (!c) return Astro.redirect('/playbook', 302);
   <section class="sec" aria-labelledby="pb">
     <h2 class="disp disp--sm" id="pb">The playbook</h2>
     <ol class="pbs">
-      {c.playbook.map((s, i) => (
+      {c.playbook.map((s) => (
         <li class="pbs__i">
-          <span class="pbs__n mono">{i + 1}</span>
-          <div>
-            <h3 class="pbs__t">{s.title}</h3>
-            <p class="pbs__b">{s.body}</p>
-          </div>
+          <h3 class="pbs__t">{s.title}</h3>
+          <p class="pbs__b">{s.body}</p>
         </li>
       ))}
     </ol>
@@ -105,8 +102,7 @@ if (!c) return Astro.redirect('/playbook', 302);
   .hww__i dd { font-size: var(--s--1); line-height: 1.7; color: var(--text-soft); }
 
   .pbs { display: grid; gap: var(--sp-4); }
-  .pbs__i { display: grid; grid-template-columns: 2rem 1fr; gap: var(--sp-3); }
-  .pbs__n { font-size: var(--s--2); font-weight: 700; color: var(--coral); padding-block-start: 0.35em; }
+  .pbs__i { display: grid; gap: var(--sp-1); }
   .pbs__t { font-family: var(--font-display); font-size: var(--s-0); color: var(--ink-2); }
   .pbs__b { font-size: var(--s--1); line-height: 1.7; color: var(--text-soft); margin-block-start: 0.2rem; }
 

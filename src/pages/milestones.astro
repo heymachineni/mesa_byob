@@ -39,9 +39,11 @@ const ladder = await getRevenueLadder();
       {milestones.filter((m) => m.phase === p.id).map((m) => (
         <article class="ms card" id={m.id}>
           <header class="ms__top">
-            <span class="tag tag--coral mono">Week {m.week}</span>
+            <p class="ms__line">
+              <span class="tag tag--coral mono">Week {m.week}</span>
+              <span class="ms__meta mono">{m.date} · {m.revenueLabel}</span>
+            </p>
             <h3 class="ms__t">{m.headline}</h3>
-            <p class="ms__meta mono">{m.date} · {m.revenueLabel}</p>
           </header>
           <div class="ms__grid">
             <div>
@@ -117,14 +119,16 @@ const ladder = await getRevenueLadder();
     scroll-margin-block-start: calc(var(--hdr-h) + 1rem);
   }
   .ms { display: grid; gap: var(--sp-4); }
-  .ms__top {
-    display: grid;
-    grid-template-columns: auto 1fr;
+  .ms__top { display: grid; gap: var(--sp-2); }
+  .ms__line {
+    display: flex;
     align-items: center;
-    gap: var(--sp-2) var(--sp-3);
+    justify-content: space-between;
+    gap: var(--sp-3);
+    flex-wrap: wrap;
   }
-  .ms__t { grid-column: 1 / -1; font-family: var(--font-display); font-size: var(--s-2); color: var(--ink-2); }
-  .ms__meta { font-size: var(--s--2); color: var(--text-faint); justify-self: end; }
+  .ms__t { font-family: var(--font-display); font-size: var(--s-2); color: var(--ink-2); }
+  .ms__meta { font-size: var(--s--2); color: var(--text-faint); white-space: nowrap; }
   .ms__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr)); gap: var(--sp-5); }
   .ms__k {
     font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700;

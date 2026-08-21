@@ -331,11 +331,11 @@ const here = PAGES.find((p) => p.href === current);
         min-block-size: 3.1rem;
         padding-inline: 1.1rem;
         border-radius: var(--r-btn);
-        /* Translucent enough for the page to show through, blurred enough to
-           stay legible — the frosted look needs both. */
-        background: color-mix(in srgb, var(--paper) 76%, transparent);
-        backdrop-filter: blur(18px) saturate(1.4);
-        -webkit-backdrop-filter: blur(18px) saturate(1.4);
+        /* Frosted, not see-through: content scrolling underneath should read
+           as soft color, never as legible text. */
+        background: color-mix(in srgb, var(--paper) 72%, transparent);
+        backdrop-filter: blur(32px) saturate(1.5);
+        -webkit-backdrop-filter: blur(32px) saturate(1.5);
         box-shadow:
           inset 0 0 0 1.4px var(--ink),
           3px 3px 0 color-mix(in srgb, var(--coral) 40%, var(--paper));

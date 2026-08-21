@@ -17,7 +17,6 @@ const workshops = await getWorkshops();
   <ol class="ws">
     {workshops.map((w) => (
       <li class="ws__card card" id={w.id}>
-        <span class="ws__n mono">{w.n}</span>
         <h2 class="ws__t">{w.title}</h2>
         <p class="ws__e">{w.expect}</p>
       </li>
@@ -45,7 +44,6 @@ const workshops = await getWorkshops();
     align-content: start;
     padding: var(--sp-5);
   }
-  .ws__n { font-size: var(--s-1); font-weight: 700; color: var(--coral); line-height: 1; }
   .ws__t { font-family: var(--font-display); font-size: var(--s-1); color: var(--ink-2); }
   .ws__e { font-size: var(--s--1); line-height: 1.7; color: var(--text-soft); }
 </style>
