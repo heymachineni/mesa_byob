@@ -259,6 +259,8 @@ const index = (await getSearchIndex()).map((e) => ({
 </style>
 
 <script>
+  import { navigate } from 'astro:transitions/client';
+
   type Hit = { t: string; s: string; w: string; g: string; x: string; a: string };
 
   const read = <T,>(sel: string): T =>
@@ -395,7 +397,8 @@ const index = (await getSearchIndex()).map((e) => ({
   function activate(el: HTMLElement) {
     const target = el.dataset.a!;
     closeSheet();
-    location.assign(target);
+    /* Client-side, so the persisted chrome stays put. */
+    navigate(target);
   }
 
   openBtn.addEventListener('click', openSheet);

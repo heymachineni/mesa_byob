@@ -8,6 +8,7 @@
  * small size, and the one you are on is semibold with a short marker line:
  * position is always visible, never announced.
  */
+import { ClientRouter } from 'astro:transitions';
 import '../styles/v2/riso.css';
 import Find from '../components/Find.astro';
 import { PAGES, prevNext } from '../lib/nav';
@@ -38,12 +39,13 @@ const here = PAGES.find((p) => p.href === current);
     <link rel="preload" href="/fonts/newyork-regular.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/manrope-variable.woff2" as="font" type="font/woff2" crossorigin />
     <script is:inline>document.documentElement.classList.add('js');</script>
+    <ClientRouter />
   </head>
 
   <body>
     <a class="skip" href="#main">Skip to content</a>
 
-    <header class="bar">
+    <header class="bar" transition:persist="kit-bar">
       <div class="bar__in">
         <a href="/" class="bar__brand">
           <img class="bar__logo" src="/mesa-mark-on-dark.png" alt="Mesa" width="96" height="96" />
@@ -57,7 +59,7 @@ const here = PAGES.find((p) => p.href === current);
     </header>
 
     <div class="shell">
-      <nav class="rail" aria-label="Pages">
+      <nav class="rail" aria-label="Pages" transition:persist="kit-rail">
         {groups.map((g) => (
           <details
             class="rail__g"
@@ -112,14 +114,14 @@ const here = PAGES.find((p) => p.href === current);
     </div>
 
     <!-- Narrow screens: where you are, and one tap to the full list. -->
-    <button class="dock" type="button" aria-expanded="false" aria-controls="sheet" data-dock-open>
+    <button class="dock" type="button" aria-expanded="false" aria-controls="sheet" data-dock-open transition:persist="kit-dock">
       <span class="dock__label">{here?.label ?? 'Pages'}</span>
       <svg class="dock__chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
         <path d="M3.5 10.5 8 6l4.5 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"></path>
       </svg>
     </button>
 
-    <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Pages">
+    <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Pages" transition:persist="kit-sheet">
       <div class="sheet__scrim" data-dock-close></div>
       <div class="sheet__panel">
         <div class="sheet__grab" aria-hidden="true"></div>
@@ -165,18 +167,6 @@ const here = PAGES.find((p) => p.href === current);
     </div>
 
     <style>
-      /* Page-to-page navigation crossfades instead of flashing white. The
-         chrome — bar, rail, dock — gets its own transition layer: identical
-         before and after, so it reads as fixed while only the content swaps.
-         Browsers without cross-document view transitions just reload. */
-      @view-transition { navigation: auto; }
-      .bar { view-transition-name: kit-bar; }
-      .rail { view-transition-name: kit-rail; }
-      .dock { view-transition-name: kit-dock; }
-      @media (prefers-reduced-motion: reduce) {
-        @view-transition { navigation: none; }
-      }
-
       .skip {
         position: absolute;
         inset-inline-start: 1rem;
@@ -526,7 +516,6 @@ const here = PAGES.find((p) => p.href === current);
 
     <script>
       import { onArrival } from '../lib/goto.client';
-      onArrival();
       addEventListener('hashchange', onArrival);
 
       /* Section reveal: the direct children of main are the blocks — headers,
@@ -534,7 +523,8 @@ const here = PAGES.find((p) => p.href === current);
          Blocks already in the first viewport stagger 50ms; everything below
          reveals as it approaches. Skipped entirely when arriving on a hash,
          so a deep link never makes its target fade in late. */
-      if (!location.hash && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      function reveal() {
+        if (location.hash || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         const blocks = [...document.querySelectorAll<HTMLElement>('#main > *:not(.turn):not(.foot)')];
         let early = 0;
         for (const b of blocks) {
@@ -601,6 +591,30 @@ const here = PAGES.find((p) => p.href === current);
           })
         );
       }
+
+      /* The bar, rail, dock and sheet persist across client-side navigation —
+         they never re-render, so each arrival re-points their current-page
+         state at wherever we landed. Fires on the initial load too. */
+      document.addEventListener('astro:page-load', () => {
+        const path = location.pathname.replace(/\/+$/, '') || '/';
+        let hereLabel = 'Pages';
+        for (const a of document.querySelectorAll<HTMLAnchorElement>('.rail__a, .sheet__a')) {
+          const on = a.getAttribute('href') === path;
+          a.classList.toggle('is-here', on);
+          if (on) {
+            a.setAttribute('aria-current', 'page');
+            hereLabel = a.textContent!.trim();
+            const fold = a.closest('details');
+            if (fold && !fold.open) fold.open = true;
+          } else {
+            a.removeAttribute('aria-current');
+          }
+        }
+        document.querySelector('.dock__label')!.textContent = hereLabel;
+        if (sheet.hasAttribute('data-open')) set(false);
+        onArrival();
+        reveal();
+      });
     </script>
   </body>
 </html>
