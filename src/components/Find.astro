@@ -433,8 +433,11 @@ const index = (await getSearchIndex()).map((e) => ({
     if (hit) activate(hit);
   });
 
+  /* A click anywhere outside dismisses the whole panel, not just the list. */
   document.addEventListener('click', (e) => {
     if (narrow()) return;
-    if (!(e.target as HTMLElement).closest('[data-find]')) show(false);
+    if (root.hasAttribute('data-open') && !(e.target as HTMLElement).closest('[data-find]')) {
+      closeSheet();
+    }
   });
 </script>
