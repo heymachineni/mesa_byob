@@ -285,7 +285,16 @@ const here = PAGES.find((p) => p.href === current);
         text-transform: uppercase;
         color: var(--text-faint);
       }
-      .turn__t { font-family: var(--font-display); font-size: var(--s-1); color: var(--ink-2); }
+      /* Clamped so a long label ("Revenue & Expenses") stays on one line on a
+         phone instead of wrapping the card tall. */
+      .turn__t {
+        font-family: var(--font-display);
+        font-size: clamp(1rem, 0.8rem + 1vw, 1.3rem);
+        color: var(--ink-2);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
 
       .foot {
         margin-block-start: var(--sp-7);
@@ -300,6 +309,9 @@ const here = PAGES.find((p) => p.href === current);
         .bar__burger { display: grid; }
         .bar__s { display: none; }
         body { padding-block-end: 5.5rem; }
+        .content { padding-block-start: var(--sp-5); }
+        .turn { grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+        .turn__a { padding: var(--sp-3) var(--sp-4); }
       }
 
       .dock {
@@ -343,13 +355,25 @@ const here = PAGES.find((p) => p.href === current);
       }
       .sheet__g + .sheet__g { margin-block-start: var(--sp-5); }
       .sheet__a {
+        position: relative;
         display: block;
-        padding: 0.55rem 0.2rem;
-        font-size: var(--s-0);
+        padding: 0.55rem 0.2rem 0.55rem 0.9rem;
+        font-size: var(--s--1);
         color: var(--text-soft);
         text-decoration: none;
+        border-radius: var(--r-sm);
       }
-      .sheet__a.is-here { color: var(--ink); font-weight: 700; }
+      .sheet__a::before {
+        content: '';
+        position: absolute;
+        inset-inline-start: 0;
+        inset-block: 0.7rem;
+        inline-size: 2px;
+        border-radius: 1px;
+        background: transparent;
+      }
+      .sheet__a.is-here { color: var(--ink); font-weight: 600; }
+      .sheet__a.is-here::before { background: var(--coral); }
       .sheet__out {
         display: inline-block;
         margin-block-start: var(--sp-5);
