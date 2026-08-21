@@ -165,6 +165,18 @@ const here = PAGES.find((p) => p.href === current);
     </div>
 
     <style>
+      /* Page-to-page navigation crossfades instead of flashing white. The
+         chrome — bar, rail, dock — gets its own transition layer: identical
+         before and after, so it reads as fixed while only the content swaps.
+         Browsers without cross-document view transitions just reload. */
+      @view-transition { navigation: auto; }
+      .bar { view-transition-name: kit-bar; }
+      .rail { view-transition-name: kit-rail; }
+      .dock { view-transition-name: kit-dock; }
+      @media (prefers-reduced-motion: reduce) {
+        @view-transition { navigation: none; }
+      }
+
       .skip {
         position: absolute;
         inset-inline-start: 1rem;
