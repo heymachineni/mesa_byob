@@ -136,9 +136,12 @@ export function origin(request: Request, fallback: string): string {
   const explicit = env('PUBLIC_SITE_URL');
   if (explicit) return explicit.replace(/\/$/, '');
 
-  const host = request.headers.get('x-forwarded-host') ?? request.headers.get('host');
-  const proto = request.headers.get('x-forwarded-proto') ?? 'https';
-  return host ? `${proto}://${host}` : fallback;
+  /* Only trust forwarded headers when a proxy actually set them. Defaulting the
+     protocol to https was right on Vercel and wrong on localhost, where dev
+     serves plain http and Google then rejects the mismatched redirect_uri. */
+  const host = request.headers.get('x-forwarded-host');
+  if (host) return `${request.headers.get('x-forwarded-proto') ?? 'https'}://${host}`;
+  return fallback;
 }
 
 /** Fails loudly at boot rather than mysteriously at sign-in. */
