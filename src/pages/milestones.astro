@@ -19,8 +19,8 @@ const ladder = await getRevenueLadder();
   </header>
 
   <div class="climb" role="img" aria-label={`The revenue climb from ₹0 to ${program.revenueTargetLabel}`}>
-    {ladder.map((r) => (
-      <div class="climb__s" style={`--h:${(10 + r.fraction * 90).toFixed(1)}%`}>
+    {ladder.map((r, i) => (
+      <div class="climb__s" style={`--h:${(10 + r.fraction * 90).toFixed(1)}%; --i:${i}`}>
         <span class:list={['climb__bar', r.isTarget && 'climb__bar--top']}></span>
         <span class="climb__v">{r.label}</span>
         <span class="climb__m mono">{r.codes}</span>
@@ -85,6 +85,15 @@ const ladder = await getRevenueLadder();
     display: block; inline-size: 100%; block-size: var(--h);
     border-radius: var(--r-sm) var(--r-sm) 0 0;
     background: color-mix(in srgb, var(--violet) 55%, var(--paper));
+    /* Grows from its baseline when the block reveals — transform, not height,
+       so nothing pays layout per frame. 50ms per bar, left to right. */
+    transform-origin: bottom;
+    transition: transform 500ms var(--ease-out);
+    transition-delay: calc(var(--i) * 50ms);
+  }
+  :global(html.js) .climb.rvl:not(.rvl-in) .climb__bar { transform: scaleY(0.15); }
+  @media (prefers-reduced-motion: reduce) {
+    .climb__bar { transition: none; }
   }
   .climb__bar--top { background: var(--coral); }
   .climb__v {

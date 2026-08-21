@@ -397,6 +397,33 @@ const here = PAGES.find((p) => p.href === current);
       onArrival();
       addEventListener('hashchange', onArrival);
 
+      /* Section reveal: the direct children of main are the blocks — headers,
+         sections, asides — so copy animates as passages, never as paragraphs.
+         Blocks already in the first viewport stagger 50ms; everything below
+         reveals as it approaches. Skipped entirely when arriving on a hash,
+         so a deep link never makes its target fade in late. */
+      if (!location.hash && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const blocks = [...document.querySelectorAll<HTMLElement>('#main > *:not(.turn):not(.foot)')];
+        let early = 0;
+        for (const b of blocks) {
+          b.classList.add('rvl');
+          if (b.getBoundingClientRect().top < innerHeight) {
+            b.style.setProperty('--rvl-d', `${Math.min(early++, 5) * 50}ms`);
+          }
+        }
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (!e.isIntersecting) continue;
+              e.target.classList.add('rvl-in');
+              io.unobserve(e.target);
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px' }
+        );
+        blocks.forEach((b) => io.observe(b));
+      }
+
       const sheet = document.getElementById('sheet')!;
       const openers = [...document.querySelectorAll<HTMLButtonElement>('[data-dock-open]')];
       const set = (open: boolean) => {

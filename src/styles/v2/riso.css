@@ -835,6 +835,47 @@ a:hover .arrow, button:hover .arrow, .btn:hover .arrow { translate: 3px 0; }
 }
 
 /* =========================================================================
+   MOTION: page-level
+   ========================================================================= */
+
+/* Cross-page navigation crossfades instead of blinking. One declaration,
+   Chrome-only, and browsers without it keep the instant swap — the correct
+   fallback. */
+@view-transition {
+  navigation: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* Section reveal: block-level only, opacity plus 8px, 350ms, once. The
+   `html.js` guard means a browser without JS shows everything immediately,
+   and the observer in the layout adds `rvl-in` as blocks approach. */
+html.js .rvl {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 350ms var(--ease-out),
+    transform 350ms var(--ease-out);
+  transition-delay: var(--rvl-d, 0ms);
+}
+html.js .rvl-in {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.js .rvl {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* =========================================================================
    WRAPPING
    Set once, here. Headings balance across their lines so no line is left
    holding a single word; running text avoids orphans. Doing this per-component
