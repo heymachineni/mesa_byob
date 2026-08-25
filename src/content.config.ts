@@ -143,7 +143,12 @@ export const collections = {
     schema: z.object({
       id: z.string(), title: z.string(), kicker: z.string(), intro: z.string(),
       note: z.string().optional(),
-      items: z.array(z.object({ title: z.string(), body: z.string() })),
+      groups: z.array(z.object({
+        name: z.string(), tagline: z.string().optional(),
+        awards: z.array(z.object({ achievement: z.string(), reward: z.string() })),
+      })),
+      playTitle: z.string().optional(),
+      play: z.array(z.string()).optional(),
     }),
   }),
 };

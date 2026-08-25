@@ -1,10 +1,71 @@
 [
   {
     "id": "incentives",
-    "title": "Incentives",
-    "kicker": "Incentives",
-    "intro": "What top teams earn beyond the grade.",
-    "note": "The full incentive structure is being finalised by the programme team and will be announced during the challenge. This page updates the moment it lands.",
-    "items": []
+    "title": "What Winning Actually Earns You",
+    "kicker": "Incentives & Rewards",
+    "intro": "Alongside the formal grade, Mesa runs a set of first-to-hit and sustained-performance awards. They're a concrete reason to pick a channel and push on it, instead of drifting.",
+    "groups": [
+      {
+        "name": "Channel milestones",
+        "tagline": "First team to hit it wins.",
+        "awards": [
+          {
+            "achievement": "First to a ₹1.5L+ B2B deal",
+            "reward": "Meta coins · Mesa LinkedIn post, plus a post from Varun"
+          },
+          {
+            "achievement": "First to ₹20K revenue through performance marketing",
+            "reward": "Mesa reel · Meta coins"
+          },
+          {
+            "achievement": "First to 10K followers on your business page",
+            "reward": "Mesa reel · influencer intros"
+          },
+          {
+            "achievement": "First to 3 live influencer reels",
+            "reward": "₹10,000 cash prize"
+          },
+          {
+            "achievement": "First to ₹1L in offline sales",
+            "reward": "Mesa sponsors your flea stall"
+          }
+        ]
+      },
+      {
+        "name": "Revenue milestones",
+        "tagline": "The big numbers, rewarded in kind.",
+        "awards": [
+          {
+            "achievement": "First 2 teams to ₹5L revenue",
+            "reward": "Dinner with Ankit / Varun"
+          },
+          {
+            "achievement": "First to ₹10L revenue within the 8 weeks",
+            "reward": "Guaranteed inroad to MSL"
+          }
+        ]
+      },
+      {
+        "name": "Sustained performance",
+        "tagline": "Not just first-past-the-post.",
+        "awards": [
+          {
+            "achievement": "Biggest weekly improvement — awarded every week, Week 4 to Week 8",
+            "reward": "Flea stall priority · WeWork stall · cash prizes"
+          },
+          {
+            "achievement": "Stay in the top 3 on revenue for 7 consecutive days",
+            "reward": "₹10,000"
+          }
+        ]
+      }
+    ],
+    "playTitle": "How to play these",
+    "play": [
+      "Biggest weekly improvement rewards your delta, not your absolute revenue, and it resets every week from Week 4. Whatever the leaderboard says, this one is always winnable.",
+      "The channel awards force focus. If you're spread thin, pick one and chase it — that's the channel discipline that moves your revenue anyway.",
+      "Top 3 for 7 consecutive days rewards consistency over a single spike. One good week that goes quiet doesn't count."
+    ],
+    "note": "Some reward details are still being finalised by the programme team. This page updates as they're locked in."
   }
 ]
