@@ -12,22 +12,22 @@
           {
             "term": "ICP Definition",
             "body": "how clearly you've defined and validated exactly who you're selling to",
-            "credits": "0.5"
+            "grades": "0.5"
           },
           {
             "term": "Market Validation",
             "body": "how real the gap is that you're going after, backed by actual interviews or demand signals, not assumptions",
-            "credits": "0.5"
+            "grades": "0.5"
           },
           {
             "term": "Brand Building",
             "body": "how coherent your positioning is across your store, social handles, ad creatives, and packaging",
-            "credits": "0.5"
+            "grades": "0.5"
           },
           {
             "term": "GTM Execution",
             "body": "whether you're consistently showing up and executing across your chosen channels, week over week",
-            "credits": "3.5"
+            "grades": "3.5"
           }
         ],
         "note": "GTM Execution alone carries most of the weight here, strategy documents matter, but consistent weekly execution is what actually moves this score."
@@ -36,26 +36,26 @@
         "name": "BYOB Output",
         "weight": "45%",
         "body": "This is the number everyone talks about: revenue against your weekly target, tracked and verified. Your score scales directly with what you generate in Term 1:",
-        "credits": [
+        "grades": [
           {
             "revenue": "₹50K",
-            "credits": "1"
+            "grades": "1"
           },
           {
             "revenue": "₹1L",
-            "credits": "2"
+            "grades": "2"
           },
           {
             "revenue": "₹2.5L",
-            "credits": "3"
+            "grades": "3"
           },
           {
             "revenue": "₹4L",
-            "credits": "4"
+            "grades": "4"
           },
           {
             "revenue": "₹5L",
-            "credits": "5"
+            "grades": "5"
           }
         ]
       },
@@ -78,9 +78,9 @@
           }
         ],
         "note": "This part of your grade is entirely in your teammates' hands. A strong revenue number doesn't cover for being a bad teammate.",
-        "creditsTotal": "1"
+        "gradesTotal": "1"
       }
     ],
-    "cgpaNote": "Your final BYOB scores can impact up to 20% of your CGPA. Full detail comes at the credit and grading session during orientation."
+    "cgpaNote": "Your final BYOB scores can impact up to 20% of your CGPA. Full detail comes at the grading session during orientation."
   }
 ]

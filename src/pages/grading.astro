@@ -20,7 +20,7 @@ const g = await getGrading();
         <header class="comp__h">
           <div class="comp__hr">
             <span class="comp__w disp disp--md">{c.weight}</span>
-            {c.creditsTotal && <span class="comp__c mono">{c.creditsTotal} {c.creditsTotal === '1' ? 'credit' : 'credits'}</span>}
+            {c.gradesTotal && <span class="comp__c mono">{c.gradesTotal} {c.gradesTotal === '1' ? 'grade' : 'grades'}</span>}
           </div>
           <h2 class="comp__t" id={`g-${i}`}>{c.name}</h2>
         </header>
@@ -32,7 +32,7 @@ const g = await getGrading();
               <div class="crit__i">
                 <dt>
                   {cr.term}
-                  {cr.credits && <span class="crit__c mono">{cr.credits} {cr.credits === '1' ? 'credit' : 'credits'}</span>}
+                  {cr.grades && <span class="crit__c mono">{cr.grades} {cr.grades === '1' ? 'grade' : 'grades'}</span>}
                 </dt>
                 <dd>{cr.body}</dd>
               </div>
@@ -40,13 +40,13 @@ const g = await getGrading();
           </dl>
         )}
 
-        {c.credits && (
+        {c.grades && (
           <table class="cred">
-            <caption class="sr-only">Revenue to credits</caption>
-            <thead><tr><th scope="col">Revenue</th><th scope="col">Credits</th></tr></thead>
+            <caption class="sr-only">Revenue to grades</caption>
+            <thead><tr><th scope="col">Revenue</th><th scope="col">Grades</th></tr></thead>
             <tbody>
-              {c.credits.map((r) => (
-                <tr><td class="mono">{r.revenue}</td><td class="mono">{r.credits}</td></tr>
+              {c.grades.map((r) => (
+                <tr><td class="mono">{r.revenue}</td><td class="mono">{r.grades}</td></tr>
               ))}
             </tbody>
           </table>

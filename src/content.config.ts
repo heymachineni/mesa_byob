@@ -110,10 +110,10 @@ export const collections = {
       id: z.string(), title: z.string(), intro: z.string(),
       components: z.array(z.object({
         name: z.string(), weight: z.string(), body: z.string(),
-        criteria: z.array(z.object({ term: z.string(), body: z.string(), credits: z.string().optional() })).optional(),
-        credits: z.array(z.object({ revenue: z.string(), credits: z.string() })).optional(),
+        criteria: z.array(z.object({ term: z.string(), body: z.string(), grades: z.string().optional() })).optional(),
+        grades: z.array(z.object({ revenue: z.string(), grades: z.string() })).optional(),
         note: z.string().optional(),
-        creditsTotal: z.string().optional(),
+        gradesTotal: z.string().optional(),
       })),
       cgpaNote: z.string(),
     }),
