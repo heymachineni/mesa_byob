@@ -2,7 +2,7 @@
   {
     "id": "grading",
     "title": "How You’ll Be Evaluated",
-    "intro": "Your BYOB grade isn't just about the revenue number, it's split three ways, across what you do, what you deliver, and how your team says you showed up.",
+    "intro": "Your BYOB grade is split three ways: what you do, what you deliver, and how your team says you showed up. The revenue number is only one part of it.",
     "components": [
       {
         "name": "BYOB Input",
@@ -30,7 +30,7 @@
             "grades": "3.5"
           }
         ],
-        "note": "GTM Execution alone carries most of the weight here, strategy documents matter, but consistent weekly execution is what actually moves this score."
+        "note": "GTM Execution alone carries most of the weight here, strategy documents matter, but consistent weekly execution is what moves this score."
       },
       {
         "name": "BYOB Output",
@@ -62,7 +62,7 @@
       {
         "name": "BYOB Peer Review",
         "weight": "10%",
-        "body": "At the end of the challenge, your teammates rate how you actually showed up, not what you say you did, but what they saw. Three things get evaluated:",
+        "body": "At the end of the challenge, your teammates rate how you showed up, going by what they saw, not what you say you did. Three things get evaluated:",
         "criteria": [
           {
             "term": "Collaboration",

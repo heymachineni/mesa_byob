@@ -1,7 +1,7 @@
 [
   {
     "id": "incentives",
-    "title": "What Winning Actually Earns You",
+    "title": "What Winning Earns You",
     "kicker": "Incentives & Rewards",
     "intro": "Alongside the formal grade, Mesa runs a set of first-to-hit and sustained-performance awards. They're a concrete reason to pick a channel and push on it, instead of drifting.",
     "groups": [
@@ -50,7 +50,7 @@
         "tagline": "Not just first-past-the-post.",
         "awards": [
           {
-            "achievement": "Biggest weekly improvement — awarded every week, Week 4 to Week 8",
+            "achievement": "Biggest weekly improvement, awarded every week from Week 4 to Week 8",
             "reward": "Flea stall priority · WeWork stall · cash prizes"
           },
           {

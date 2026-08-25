@@ -82,7 +82,7 @@
         },
         {
           "name": "Gross margin",
-          "body": "revenue minus all of the above: what's actually left"
+          "body": "revenue minus all of the above: what's left"
         }
       ],
       "lens": [
@@ -95,14 +95,14 @@
         {
           "milestone": "Weeks 3-4 · Build & Brand",
           "revGoal": "₹75K",
-          "focus": "Your first real cost data starts here, what does it actually cost you, in money and time, to get one sale through each channel? Start learning your rough cost-per-acquisition.",
-          "watchFor": "Spending on ads before your store/landing page can actually convert, that's cash burned with nothing to show for it."
+          "focus": "Your first real cost data starts here, what does it cost you, in money and time, to get one sale through each channel? Start learning your rough cost-per-acquisition.",
+          "watchFor": "Spending on ads before your store/landing page can convert, that's cash burned with nothing to show for it."
         },
         {
           "milestone": "Weeks 5-6 · Sell & Scale",
           "revGoal": "₹75K → ₹2.75L",
           "focus": "Margin discipline matters most here: you're scaling spend on what's working, so know your ROAS and margin per channel before pouring in more money.",
-          "watchFor": "Chasing revenue at the cost of margin, e.g. heavy discounting that grows sales but shrinks what you actually keep."
+          "watchFor": "Chasing revenue at the cost of margin, e.g. heavy discounting that grows sales but shrinks what you keep."
         },
         {
           "milestone": "Weeks 7-8 · Optimize & Close",
