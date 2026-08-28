@@ -5,7 +5,7 @@
     "intro": "Your BYOB grade is split three ways: what you do, what you deliver, and how your team says you showed up. The revenue number is only one part of it.",
     "components": [
       {
-        "name": "BYOB Input",
+        "name": "BYOB Execution",
         "weight": "45%",
         "body": "This is the work that gets you to revenue: how sharp your customer definition is, how real your market validation is, how coherent your brand is, and how consistently you're executing on your go-to-market plan. It's reviewed in your weekly mentor check-in and scored against your BYOB Progress Card.",
         "criteria": [
@@ -33,7 +33,7 @@
         "note": "GTM Execution alone carries most of the weight here, strategy documents matter, but consistent weekly execution is what moves this score."
       },
       {
-        "name": "BYOB Output",
+        "name": "BYOB Outcomes",
         "weight": "45%",
         "body": "This is the number everyone talks about: revenue against your weekly target, tracked and verified. Your score scales directly with what you generate in Term 1:",
         "grades": [
