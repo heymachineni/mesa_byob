@@ -115,11 +115,20 @@ const platform = video.url.includes('instagram.com') ? 'Instagram' : 'YouTube';
   .clip__frame--photo {
     aspect-ratio: 4 / 5;
   }
+  .clip__frame--photo,
+  .clip__frame--shot {
+    border-radius: 20px;
+  }
+  .clip__frame--photo::before,
+  .clip__frame--shot::before {
+    border-radius: 20px;
+  }
   .clip__thumb {
     inline-size: 100%;
     block-size: 100%;
     object-fit: cover;
     display: block;
+    border-radius: 20px;
   }
   .clip__ext--over {
     position: absolute;
@@ -128,6 +137,7 @@ const platform = video.url.includes('instagram.com') ? 'Instagram' : 'YouTube';
     padding: var(--sp-2) var(--sp-3);
     background: color-mix(in srgb, var(--paper) 88%, transparent);
     color: var(--ink-2);
+    border-radius: 0 0 20px 20px;
   }
   .clip__frame--photo:hover .clip__ext--over {
     background: color-mix(in srgb, var(--coral) 24%, var(--paper));
