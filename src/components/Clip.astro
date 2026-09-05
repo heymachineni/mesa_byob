@@ -132,12 +132,10 @@ const platform = video.url.includes('instagram.com') ? 'Instagram' : 'YouTube';
   .clip__frame--photo:hover .clip__ext--over {
     background: color-mix(in srgb, var(--coral) 24%, var(--paper));
   }
-  /* An account card: the profile header screenshot at its natural aspect. */
+  /* An account card: both profile headers are cut to 2.8:1, so every card
+     lands at the same height. */
   .clip__frame--shot {
-    aspect-ratio: auto;
-  }
-  .clip__frame--shot .clip__thumb {
-    block-size: auto;
+    aspect-ratio: 2.8 / 1;
   }
   .clip__frame--shot:hover .clip__ext--over {
     background: color-mix(in srgb, var(--coral) 24%, var(--paper));
