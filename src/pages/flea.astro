@@ -44,7 +44,7 @@ const stuck = await getStillStuck();
     <h3 class="sub">{flea.pastReelsTitle}</h3>
     <div class="vids">{flea.pastReels.map((v) => <Clip video={v} />)}</div>
     <h3 class="sub">{flea.realTitle}</h3>
-    <div class="vids">{flea.realContent.map((v) => <Clip video={v} />)}</div>
+    <div class="vids vids--wide">{flea.realContent.map((v) => <Clip video={v} />)}</div>
   </section>
 
   <aside class="stuck">
@@ -69,6 +69,8 @@ const stuck = await getStillStuck();
   .proof__b { font-size: var(--s--1); line-height: 1.75; color: var(--text-soft); }
   .sub { font-family: var(--font-mono); font-size: 0.66rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--coral); margin-block-start: var(--sp-3); }
   .vids { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr)); gap: var(--sp-5); }
+  /* Account cards carry a whole profile header — one per row, full width. */
+  .vids--wide { grid-template-columns: 1fr; max-inline-size: 46rem; }
   .stuck { margin-block-start: var(--sp-6); padding: var(--sp-5); border-radius: var(--r-card); background: var(--card); box-shadow: inset 0 0 0 1.4px var(--card-line); display: grid; gap: var(--sp-3); }
   .stuck__b { font-size: var(--s--1); line-height: 1.75; color: var(--text-soft); }
   .stuck__c { font-family: var(--font-display); font-size: var(--s-0); color: var(--ink-2); }
