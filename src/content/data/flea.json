@@ -56,13 +56,13 @@
         "title": "Mesa School of Business on Instagram",
         "note": "256K followers. Flea Day reels and student stories.",
         "url": "https://www.instagram.com/mesa.school/",
-        "avatar": "/flea/mesa-instagram.jpg"
+        "shot": "/flea/mesa-instagram.jpg"
       },
       {
         "title": "Mesa School of Business on YouTube",
         "note": "BYOB and campus culture videos.",
         "url": "https://www.youtube.com/@mesaschool",
-        "avatar": "/flea/mesa-youtube.jpg"
+        "shot": "/flea/mesa-youtube.jpg"
       }
     ]
   }
