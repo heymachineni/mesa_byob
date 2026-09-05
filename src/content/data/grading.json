@@ -39,23 +39,23 @@
         "grades": [
           {
             "revenue": "₹50K",
-            "grades": "1"
+            "grades": "10/50"
           },
           {
             "revenue": "₹1L",
-            "grades": "2"
+            "grades": "20/50"
           },
           {
             "revenue": "₹2.5L",
-            "grades": "3"
+            "grades": "30/50"
           },
           {
             "revenue": "₹4L",
-            "grades": "4"
+            "grades": "40/50"
           },
           {
             "revenue": "₹5L",
-            "grades": "5"
+            "grades": "50/50"
           }
         ]
       },
@@ -81,6 +81,6 @@
         "gradesTotal": "1"
       }
     ],
-    "cgpaNote": "Your final BYOB scores can impact up to 20% of your CGPA. Full detail comes at the grading session during orientation."
+    "cgpaNote": "Your final BYOB scores carry a 50% weightage in your CGPA. Full detail comes at the grading session during orientation."
   }
 ]

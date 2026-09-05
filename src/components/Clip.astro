@@ -9,10 +9,11 @@ import { youTubeId } from '../lib/format';
  * Real iframes, lazy: inside a closed panel they are never fetched at all.
  */
 interface Props {
-  video: { title: string; url: string; note?: string | undefined };
+  video: { title: string; url: string; note?: string | undefined; thumb?: string | undefined; avatar?: string | undefined };
 }
 const { video } = Astro.props;
 const yt = youTubeId(video.url);
+const platform = video.url.includes('instagram.com') ? 'Instagram' : 'YouTube';
 ---
 
 <figure class="clip">
@@ -28,10 +29,20 @@ const yt = youTubeId(video.url);
           referrerpolicy="strict-origin-when-cross-origin"
         />
       </div>
+    ) : video.thumb ? (
+      <a class="clip__frame clip__frame--photo" href={video.url} target="_blank" rel="noopener noreferrer">
+        <img class="clip__thumb" src={video.thumb} alt="" loading="lazy" />
+        <span class="clip__ext clip__ext--over hand">Watch on {platform} <span class="arrow">↗</span></span>
+      </a>
+    ) : video.avatar ? (
+      <a class="clip__frame clip__frame--link" href={video.url} target="_blank" rel="noopener noreferrer">
+        <img class="clip__avatar" src={video.avatar} alt="" loading="lazy" />
+        <span class="clip__ext hand">Open on {platform} <span class="arrow">↗</span></span>
+      </a>
     ) : (
       <a class="clip__frame clip__frame--link" href={video.url} target="_blank" rel="noopener noreferrer">
         <span class="clip__ext hand">
-          {video.url.includes('instagram.com') ? 'Watch on Instagram' : 'Open'} <span class="arrow">↗</span>
+          {platform === 'Instagram' ? 'Watch on Instagram' : 'Open'} <span class="arrow">↗</span>
         </span>
       </a>
     )
@@ -99,6 +110,36 @@ const yt = youTubeId(video.url);
   }
   .clip__frame--link:hover {
     background: color-mix(in srgb, var(--coral) 24%, var(--paper));
+  }
+  /* A reel poster: portrait crop, the link label printed over the bottom edge. */
+  .clip__frame--photo {
+    aspect-ratio: 4 / 5;
+  }
+  .clip__thumb {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .clip__ext--over {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline: 0;
+    padding: var(--sp-2) var(--sp-3);
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    color: var(--ink-2);
+  }
+  .clip__frame--photo:hover .clip__ext--over {
+    background: color-mix(in srgb, var(--coral) 24%, var(--paper));
+  }
+  .clip__avatar {
+    inline-size: 2.6rem;
+    block-size: 2.6rem;
+    border-radius: 50%;
+    object-fit: cover;
+    flex: none;
+    margin-inline-end: var(--sp-3);
+    box-shadow: 0 0 0 1.5px var(--line);
   }
   .clip__slot {
     font-size: var(--s--1);

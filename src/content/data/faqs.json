@@ -10,7 +10,7 @@
   {
     "id": "cgpa",
     "q": "Does this impact my CGPA?",
-    "a": "Yes, the final scores you achieve as part of BYOB can impact upto 20% of your CGPA. More details about this will be provided during the grading session at the orientation.",
+    "a": "Yes, the final scores you achieve as part of BYOB carry a 50% weightage in your CGPA. More details about this will be provided during the grading session at the orientation.",
     "tags": [
       "Grading"
     ]

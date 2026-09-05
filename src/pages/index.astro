@@ -29,7 +29,7 @@ const program = await getProgram();
     <dl class="facts">
       <div class="facts__i"><dt>Starts</dt><dd>{program.startLabel}</dd></div>
       <div class="facts__i"><dt>Ends</dt><dd>{program.endLabel}</dd></div>
-      <div class="facts__i"><dt>Capital repaid by</dt><dd>{program.repaymentLabel}</dd></div>
+      <div class="facts__i"><dt>Capital</dt><dd>{program.repaymentLabel}</dd></div>
       <div class="facts__i"><dt>Tranches</dt><dd>{program.trancheLabel}</dd></div>
     </dl>
   </header>
@@ -44,7 +44,7 @@ const program = await getProgram();
         </li>
       ))}
     </ul>
-    <p class="aside aside--violet">{program.keyOutcome}</p>
+    <p class="aside aside--violet"><strong>{program.keyOutcome}</strong></p>
   </section>
 
   <section class="sec" aria-labelledby="gain">

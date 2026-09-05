@@ -1,5 +1,5 @@
 ---
-/** Eight milestones across four phases: dates, goals, deliverables, gates. */
+/** Eight milestones across four phases: goals, deliverables, gates. */
 import Kit from '../layouts/Kit.astro';
 import { getProgram, getPhases, getMilestones, getRevenueLadder } from '../lib/content';
 
@@ -41,7 +41,7 @@ const ladder = await getRevenueLadder();
           <header class="ms__top">
             <p class="ms__line">
               <span class="tag tag--coral mono">Week {m.week}</span>
-              <span class="ms__meta mono">{m.date} · {m.revenueLabel}</span>
+              <span class="ms__meta mono">{m.revenueLabel}</span>
             </p>
             <h3 class="ms__t">{m.headline}</h3>
           </header>

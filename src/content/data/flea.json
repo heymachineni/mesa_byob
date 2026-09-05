@@ -36,15 +36,18 @@
     "pastReels": [
       {
         "title": "PG Flea Market",
-        "url": "https://www.instagram.com/reel/DPBnmvEE3bA/?igsh=NDFhYjU2ank5OWQx"
+        "url": "https://www.instagram.com/reel/DPBnmvEE3bA/?igsh=NDFhYjU2ank5OWQx",
+        "thumb": "/flea/reel-pg-flea.jpg"
       },
       {
         "title": "Zora - PG Team",
-        "url": "https://www.instagram.com/reel/DO2rNXUk1-l/?igsh=MTQ2dXF2NGRkeXlwdA=="
+        "url": "https://www.instagram.com/reel/DO2rNXUk1-l/?igsh=MTQ2dXF2NGRkeXlwdA==",
+        "thumb": "/flea/reel-zora.jpg"
       },
       {
         "title": "Future Founders flea market",
-        "url": "https://www.instagram.com/reel/DaiDcreT873/?igsh=MXE1emxzNnhrc3lnbw%3D%3D"
+        "url": "https://www.instagram.com/reel/DaiDcreT873/?igsh=MXE1emxzNnhrc3lnbw%3D%3D",
+        "thumb": "/flea/reel-future-founders.jpg"
       }
     ],
     "realTitle": "Real Mesa content",
@@ -52,12 +55,14 @@
       {
         "title": "Mesa School of Business on Instagram",
         "note": "256K followers. Flea Day reels and student stories.",
-        "url": "https://www.instagram.com/mesa.school/"
+        "url": "https://www.instagram.com/mesa.school/",
+        "avatar": "/flea/mesa-instagram.jpg"
       },
       {
         "title": "Mesa School of Business on YouTube",
         "note": "BYOB and campus culture videos.",
-        "url": "https://www.youtube.com/@mesaschool"
+        "url": "https://www.youtube.com/@mesaschool",
+        "avatar": "/flea/mesa-youtube.jpg"
       }
     ]
   }

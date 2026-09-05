@@ -86,7 +86,6 @@ const here = PAGES.find((p) => p.href === current);
             </ul>
           </details>
         ))}
-        <a class="rail__out" href="/api/auth/logout">Sign out</a>
       </nav>
 
       <main id="main" class="content">
@@ -162,7 +161,6 @@ const here = PAGES.find((p) => p.href === current);
           </details>
         ))}
         </nav>
-        <a class="sheet__out" href="/api/auth/logout">Sign out</a>
       </div>
     </div>
 
@@ -280,15 +278,6 @@ const here = PAGES.find((p) => p.href === current);
       .rail__a:hover { color: var(--ink); }
       .rail__a.is-here { color: var(--ink); font-weight: 600; }
       .rail__a.is-here::before { background: var(--coral); }
-      .rail__out {
-        display: inline-block;
-        margin-block-start: var(--sp-6);
-        font-size: var(--s--2);
-        color: var(--text-faint);
-        text-decoration: none;
-      }
-      .rail__out:hover { color: var(--coral); }
-
       .content { padding-block: var(--sp-7) var(--sp-8); min-inline-size: 0; }
 
       /* ── prev/next ────────────────────────────────────────────────────── */
@@ -494,19 +483,6 @@ const here = PAGES.find((p) => p.href === current);
       }
       .sheet__a.is-here { color: var(--ink); font-weight: 600; }
       .sheet__a.is-here::before { background: var(--coral); }
-      .sheet__out {
-        display: flex;
-        align-items: center;
-        min-block-size: 2.75rem;
-        margin-block-start: var(--sp-3);
-        padding-block-start: var(--sp-2);
-        border-block-start: 1px solid var(--line-soft);
-        font-size: var(--s--2);
-        color: var(--text-faint);
-        text-decoration: none;
-        flex: 0 0 auto;
-      }
-
       @media (prefers-reduced-motion: reduce) {
         .skip, .rail__a, .turn__a { transition: none; }
         .sheet__panel { transition: none; }

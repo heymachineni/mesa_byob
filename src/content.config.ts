@@ -9,7 +9,10 @@ import { z } from 'astro:schema';
  */
 const data = (name: string) => file(`src/content/data/${name}.json`);
 
-const video = z.object({ title: z.string(), url: z.string(), note: z.string().optional() });
+const video = z.object({
+  title: z.string(), url: z.string(), note: z.string().optional(),
+  thumb: z.string().optional(), avatar: z.string().optional(),
+});
 
 export const collections = {
   program: defineCollection({
